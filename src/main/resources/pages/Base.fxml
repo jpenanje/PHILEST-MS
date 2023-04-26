@@ -4,13 +4,13 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="463.0" prefWidth="717.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="463.0" prefWidth="717.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane fx:id="menuPane" HBox.hgrow="SOMETIMES" />
       <VBox HBox.hgrow="ALWAYS">
          <children>
             <StackPane fx:id="topBarPane" style="-fx-border-style: solid; -fx-border-color: #E6E6E6; -fx-border-width: 0 0 1 0;" VBox.vgrow="SOMETIMES" />
-            <StackPane fx:id="mainPane" VBox.vgrow="ALWAYS" />
+            <StackPane fx:id="mainPane" alignment="TOP_LEFT" style="-fx-background-color: white;" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </children>

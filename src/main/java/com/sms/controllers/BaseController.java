@@ -29,6 +29,8 @@ public class BaseController implements Initializable {
 
     private Function<NullType, NullType> showProfileModal;
 
+    private int currentItemIndex = 0;
+
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         loadLeftMenu();
@@ -40,6 +42,8 @@ public class BaseController implements Initializable {
         this.onChange = new Function<Integer, NullType>() {
             @Override
             public NullType apply(Integer index) {
+                currentItemIndex = index;
+                loadMainPane();
                 System.out.println("Changed pane to " + index);
                 return null;
             }
@@ -69,7 +73,7 @@ public class BaseController implements Initializable {
 
     void loadMainPane(){
 
-        Pane mainPane = Tools.getPaneFromControllerAndFxmlPath(new MainPaneController(),
+        Pane mainPane = Tools.getPaneFromControllerAndFxmlPath(new MainPaneController(currentItemIndex),
                 "/sections/MainPane.fxml");
         // mainPane.setStyle("-fx-background-color: " + Config.whiteColor + ";");
         this.mainPane.getChildren().add(mainPane);

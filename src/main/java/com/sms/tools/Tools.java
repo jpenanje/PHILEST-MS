@@ -1,11 +1,14 @@
 package com.sms.tools;
 
+import java.lang.reflect.Constructor;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
 /**
@@ -37,7 +40,28 @@ public class Tools {
 
     }
 
-    public static Font getRegularFont(int fontSize){
+    public static Font getRegularFont(int fontSize) {
         return Font.loadFont(Tools.class.getResource("/fonts/lato/Lato-Regular.ttf").getPath(), fontSize);
+    }
+
+    public static Pane getPaneFromLeftMenuNode(JsonNode node) {
+        Initializable controller = getControllerFromNode(node);
+        return getPaneFromControllerAndFxmlPath(controller, node.get("view").asText());
+    }
+
+    static Initializable getControllerFromNode(JsonNode node){
+        try {
+            String className = node.get("controller").asText();
+            Class<?> clazz = Class.forName(className);
+            Constructor<?> constructor = clazz.getDeclaredConstructor();
+            Object obj = constructor.newInstance();
+            Initializable controller = (Initializable)obj;
+
+            return controller;
+        } catch (Exception e) {
+            System.out.println("Could not load controller "+ node.get("controller").asText());
+            e.printStackTrace();
+            return null;
+        }
     }
 }

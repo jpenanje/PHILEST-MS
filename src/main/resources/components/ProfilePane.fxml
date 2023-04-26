@@ -15,7 +15,11 @@
    <children>
       <HBox onMouseClicked="#showProfileModal">
          <children>
-            <StackPane prefWidth="1.0" style="-fx-background-color: #E6E6E6;" />
+            <StackPane prefWidth="1.0" style="-fx-background-color: #E6E6E6;">
+               <HBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </HBox.margin>
+            </StackPane>
             <StackPane prefWidth="17.0" />
             <ImageView fx:id="pic" fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                <image>

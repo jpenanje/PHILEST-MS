@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
 /**

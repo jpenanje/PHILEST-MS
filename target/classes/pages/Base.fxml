@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<StackPane fx:id="basePane" minHeight="463.0" minWidth="717.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox>
+         <children>
+            <StackPane fx:id="menuPane" HBox.hgrow="SOMETIMES" />
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <StackPane fx:id="topBarPane" style="-fx-border-style: solid; -fx-border-color: #E6E6E6; -fx-border-width: 0 0 1 0;" VBox.vgrow="SOMETIMES" />
+                  <StackPane fx:id="mainPane" alignment="TOP_LEFT" style="-fx-background-color: white;" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</StackPane>

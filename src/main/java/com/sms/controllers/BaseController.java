@@ -2,10 +2,13 @@ package com.sms.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import javax.lang.model.type.NullType;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sms.repositories.Repository;
 import com.sms.tools.Config;
 import com.sms.tools.Tools;
 
@@ -48,6 +51,8 @@ public class BaseController implements Initializable {
 
     private Stage primaryStage;
 
+    private JsonNode menuItems = Repository.getMenuItems();
+
     public BaseController(Stage primaryStage) {
         super();
         this.primaryStage = primaryStage;
@@ -57,7 +62,7 @@ public class BaseController implements Initializable {
     public void initialize(URL arg0, ResourceBundle arg1) {
         loadLeftMenu();
         loadHeader();
-        loadMainPane();
+        loadMainPane("Dashboard");
     }
 
     void loadLeftMenu() {
@@ -65,15 +70,20 @@ public class BaseController implements Initializable {
             @Override
             public NullType apply(Integer index) {
                 currentItemIndex = index;
-                loadMainPane();
+                loadMainPane(getTitleFromIndex(index));
                 System.out.println("Changed pane to " + index);
                 return null;
             }
         };
-        Pane menuPaneChild = Tools.getPaneFromControllerAndFxmlPath(new LeftMenuController(onChange, 0),
+        Pane menuPaneChild = Tools.getPaneFromControllerAndFxmlPath(new LeftMenuController(menuItems, onChange, 0),
                 "/sections/LeftMenu.fxml");
         menuPaneChild.setStyle("-fx-background-color: " + Config.primaryColor + ";");
         menuPane.getChildren().add(menuPaneChild);
+    }
+
+    String getTitleFromIndex(int index){
+        JsonNode newMenuItem = menuItems.get(index);
+        return newMenuItem.get("title").asText();
     }
 
     void loadHeader() {
@@ -92,20 +102,20 @@ public class BaseController implements Initializable {
         topBarPane.getChildren().add(headerPane);
     }
 
-    void loadMainPane() {
+    void loadMainPane(String title) {
 
-        Pane mainPane = Tools.getPaneFromControllerAndFxmlPath(new MainPaneController(currentItemIndex),
+        Pane mainPane = Tools.getPaneFromControllerAndFxmlPath(new MainPaneController(currentItemIndex, title),
                 "/sections/MainPane.fxml");
         // mainPane.setStyle("-fx-background-color: " + Config.whiteColor + ";");
+        this.mainPane.getChildren().clear();
         this.mainPane.getChildren().add(mainPane);
     }
 
-
-    void blurBasePane(){
+    void blurBasePane() {
 
     }
 
-    void showProfileModal(){
+    void showProfileModal() {
         // create a new modal stage
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -113,7 +123,8 @@ public class BaseController implements Initializable {
 
         // create a pane with some content
         ViewProfilePaneController viewProfilePaneController = new ViewProfilePaneController();
-        Pane modalPane = Tools.getPaneFromControllerAndFxmlPath(viewProfilePaneController, "/pages/ViewProfilePane.fxml");
+        Pane modalPane = Tools.getPaneFromControllerAndFxmlPath(viewProfilePaneController,
+                "/pages/ViewProfilePane.fxml");
         Scene modalScene = new Scene(modalPane);
         viewProfilePaneController.setStage(modalStage);
 

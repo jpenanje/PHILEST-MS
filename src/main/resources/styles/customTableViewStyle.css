@@ -1,0 +1,4 @@
+.custom-table-view{
+    -fx-border-style: none; 
+    -fx-table-cell-border-color: transparent;
+}

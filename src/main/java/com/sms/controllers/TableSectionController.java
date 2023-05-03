@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import com.sms.interfaces.TableRowable;
+import com.sms.models.CustomTableCell;
 import com.sms.tools.Tools;
 
 import javafx.collections.FXCollections;
@@ -15,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -133,18 +135,28 @@ public class TableSectionController implements Initializable {
     }
 
     void initializeTable() {
-        table.setRowFactory(new Callback<TableView<TableRowable>,TableRow<TableRowable>>() {
-            public TableRow<TableRowable> call(TableView<TableRowable>  arg0) {
-                // requires the specificaiton of the method to change the table rowable to a tablerow
-                return null;
-            };
-        });
-        ObservableList<TableColumn<TableRowable, ?>> columns = table.getColumns();
-        int index = 0;
-        for (TableColumn<TableRowable, ?> column : columns) {
-            column.setText(titles.get(index));
-            index++;
+        for(String title : titles){
+            TableColumn<TableRowable, String> column = new TableColumn<>(title);
+            column.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
+                @Override
+                public TableCell<TableRowable, String> call(TableColumn<TableRowable, String> column) {
+                    return new CustomTableCell();
+                }
+            });
+            // colum
         }
+        // table.setRowFactory(new Callback<TableView<TableRowable>,TableRow<TableRowable>>() {
+        //     public TableRow<TableRowable> call(TableView<TableRowable>  rowMetas) {
+        //         // requires the specification of the method to change the table rowable to a tablerow
+        //         return null;
+        //     };
+        // });
+        // ObservableList<TableColumn<TableRowable, ?>> columns = table.getColumns();
+        // int index = 0;
+        // for (TableColumn<TableRowable, ?> column : columns) {
+        //     column.setText(titles.get(index));
+        //     index++;
+        // }
     }
 
     void refreshIndices() {

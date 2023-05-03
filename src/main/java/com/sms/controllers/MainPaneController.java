@@ -17,9 +17,10 @@ import javafx.scene.text.Text;
 public class MainPaneController implements Initializable {
 
     int currentItemIndex;
-    public MainPaneController(int currentItemIndex) {
+    public MainPaneController(int currentItemIndex, String newTitle) {
         super();
         this.currentItemIndex = currentItemIndex;
+        this.newTitle = newTitle;
     }
 
     @FXML
@@ -31,12 +32,15 @@ public class MainPaneController implements Initializable {
     @FXML
     private Text title;
 
+    private String newTitle;
+
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         if(currentItemIndex == 0){
             addButton.setVisible(false);
         }
         MainPaneChild.getChildren().add(getCurrentPaneFromIndex());
+        title.setText(newTitle);
     }
 
     Pane getCurrentPaneFromIndex(){

@@ -13,7 +13,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sms.repositories.Repository;
 import com.sms.tools.Tools;
 
 public class LeftMenuController implements Initializable {
@@ -21,9 +20,10 @@ public class LeftMenuController implements Initializable {
     JsonNode menuItems;
     Function<Integer, NullType> onChange;
 
-    LeftMenuController(Function<Integer, NullType> onChange, int selectedItemIndex) {
+    LeftMenuController(JsonNode menuItems,Function<Integer, NullType> onChange, int selectedItemIndex) {
         this.selectedItemIndex = selectedItemIndex;
         this.onChange = onChange;
+        this.menuItems = menuItems;
     }
 
     @FXML
@@ -32,7 +32,6 @@ public class LeftMenuController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         ArrayList<Pane> itemsPanes = new ArrayList<Pane>();
-        menuItems = Repository.getMenuItems();
         int counter = 0;
         for (JsonNode menuItem : menuItems) {
             itemsPanes.add(getItemPaneFromJsonNode(menuItem, counter, counter == selectedItemIndex));
@@ -55,6 +54,11 @@ public class LeftMenuController implements Initializable {
         };
         Initializable controller = new MenuItemController(menuItem, selected, onMenuItemClick, index);
         return Tools.getPaneFromControllerAndFxmlPath(controller, "/components/MenuItem.fxml");
+    }
+
+    String getNewTitleFromMenuItems(int newIndex){
+        JsonNode newMenuItem = menuItems.get(newIndex);
+        return newMenuItem.get("title").asText();
     }
 
     void unselectCurrentMenuItem() {

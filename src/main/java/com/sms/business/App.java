@@ -19,7 +19,7 @@ public class App extends Application {
         try {
             System.out.println(getClass().getResource("/"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/pages/Base.fxml"));
-            BaseController controller = new BaseController();
+            BaseController controller = new BaseController(primaryStage);
             loader.setController(controller);
             Pane mainPage = loader.load();
             Scene sc = new Scene(mainPage);

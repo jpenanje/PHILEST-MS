@@ -1,4 +1,104 @@
-.custom-table-view{
-    -fx-border-style: none; 
+.custom-table-view {
+    -fx-border-style: none;
     -fx-table-cell-border-color: transparent;
+    -fx-background-color: white;
+}
+
+.table-view {
+    -fx-background-color: white;
+}
+
+.table-view:focused {
+    -fx-background-color: white;
+}
+
+.table-view .column-header-background *{
+    -fx-background-color: white;
+    /* -fx-border-color:white; */
+    -fx-border-width:0px;
+    -fx-text-fill: #000000;
+}
+
+.table-view .column-header > .label {
+    -fx-padding: 8 0 8 0;
+}
+
+/* .table-view .column-header-background .filler{
+    -fx-background-color: white;
+} */
+
+.table-view .column-header {
+    -fx-background-color: white;
+    
+}
+
+.table-view {
+    -fx-border-color: transparent;
+}
+
+.table-view .header * {
+    -fx-background-color: white;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #FAFAFA;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: white;
+}
+
+.table-view .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #C9C9C9;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: white;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+.scroll-bar:vertical > .increment-button, .scroll-bar:vertical > .decrement-button {
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+/* .scroll-bar:vertical > .thumb {
+    -fx-background-color: #cccccc;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-min-height: 0;
+    -fx-max-height: 0;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+} */
+
+.scroll-bar:vertical {
+    -fx-opacity: 0; /* set the vertical scroll bar to be invisible */
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: white;
+}
+
+.table-view .corner {
+    -fx-background-color: white;
+}
+
+.scroll-pane {
+    -fx-background-color: white;
+}
+
+/* .table-view .column-header {
+    -fx-background-color: white;
+    -fx-border-width: .1
+} */
+
+.table-view .column-header {
+    -fx-padding: 0 0 0 0; /* set 5 pixels of padding on the left and right edges of the header */
+    -fx-margin: 0 0 0 0;
 }

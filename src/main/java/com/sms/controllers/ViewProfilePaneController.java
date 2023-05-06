@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.sms.tools.Tools;
+
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -89,7 +91,7 @@ public class ViewProfilePaneController implements Initializable {
 
     @FXML
     void cancel(ActionEvent event) {
-
+        Tools.closeStageFromNode(basePane);
     }
 
     @FXML

@@ -15,7 +15,7 @@
 
 <StackPane fx:id="addStudentModal" minHeight="446.0" minWidth="360.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox fx:id="mainPane" alignment="TOP_CENTER">
+      <VBox fx:id="mainPane" alignment="TOP_CENTER" prefHeight="446.0" prefWidth="286.0">
          <children>
             <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Fill the fields below">
                <VBox.margin>
@@ -35,11 +35,6 @@
                            </VBox.margin>
                         </Text>
                         <TextField fx:id="pupilName" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="name" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
-                        <Text fx:id="fullNameErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -59,6 +54,9 @@
                           </items>
                         </SplitMenuButton>
                      </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
                   </VBox>
                   <VBox>
                      <children>
@@ -68,11 +66,6 @@
                            </VBox.margin>
                         </Text>
                         <TextField fx:id="parentName" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="name" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
-                        <Text fx:id="usernameErrorMessage" fill="RED" layoutX="10.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -86,83 +79,63 @@
                            </VBox.margin>
                         </Text>
                         <TextField fx:id="phoneNumber" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="phone number" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
-                        <Text fx:id="phoneNumberErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                   </VBox>
-                  <VBox fx:id="previousPassword">
+                  <VBox>
                      <children>
                         <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Parent's e-mail">
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
                         </Text>
-                        <StackPane alignment="CENTER_RIGHT">
-                           <children>
-                              <TextField fx:id="previousPasswordTextField" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="previous password" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" visible="false" />
-                              <TextField fx:id="parentEmail" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="email" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
-                           </children>
-                        </StackPane>
-                        <Text fx:id="previousPasswordErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
+                        <TextField fx:id="parentEmail" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="email" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                   </VBox>
-                  <VBox fx:id="previousPassword1" layoutX="10.0" layoutY="283.0">
+                  <VBox fx:id="previousPassword1">
                      <children>
                         <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Fees">
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
                         </Text>
+                        <SplitMenuButton fx:id="feeInstallment" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Choose installment" textFill="#656262">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </SplitMenuButton>
                         <StackPane alignment="CENTER_RIGHT">
                            <children>
-                              <TextField fx:id="previousPasswordTextField1" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="previous password" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" visible="false" />
-                              <TextField fx:id="fees" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="fees" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
+                              <TextField fx:id="fees" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="enter amount" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;">
+                                 <StackPane.margin>
+                                    <Insets top="5.0" />
+                                 </StackPane.margin></TextField>
                            </children>
                         </StackPane>
-                        <Text fx:id="previousPasswordErrorMessage1" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
                      </children>
-                  </VBox>
-                  <VBox layoutX="10.0" layoutY="78.0">
-                     <children>
-                        <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Class">
-                           <VBox.margin>
-                              <Insets bottom="1.0" left="5.0" />
-                           </VBox.margin>
-                        </Text>
-                        <Text fx:id="fullNameErrorMessage11" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
-                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
                   </VBox>
                </children>
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </VBox>
-            <HBox prefHeight="29.0" prefWidth="267.0">
+            <HBox prefHeight="25.0" prefWidth="219.0">
                <children>
                   <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
-                  <DatePicker fx:id="dateAdded" />
+                  <DatePicker fx:id="dateAdded" prefHeight="5.0" prefWidth="174.0" />
                </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
             </HBox>
             <HBox alignment="CENTER" prefHeight="30.0" prefWidth="286.0" spacing="15.0">
                <children>

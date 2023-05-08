@@ -26,7 +26,7 @@
                      </font>
                   </Text>
                   <StackPane prefWidth="25.0" />
-                  <Button fx:id="addButton" mnemonicParsing="false" style="-fx-background-color: #4A0000;" text="Add Student" textFill="WHITE">
+                  <Button fx:id="addButton" mnemonicParsing="false" style="-fx-background-color: #4A0000;" text="Add Pupil" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="21.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                            <image>

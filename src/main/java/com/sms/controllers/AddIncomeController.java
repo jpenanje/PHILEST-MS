@@ -13,31 +13,31 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class AddExpenditureController implements Initializable {
+public class AddIncomeController implements Initializable {
 
     @FXML
-    private Button addExpButton;
+    private Button addIncButton;
 
     @FXML
-    private StackPane addExpenditureModal;
+    private StackPane addIncomeModal;
 
     @FXML
-    private Button cancelExpButton;
+    private Button cancelIncButton;
 
     @FXML
-    private DatePicker dateOfExpense;
-
-    @FXML
-    private TextField expenseAmount;
-
-    @FXML
-    private SplitMenuButton expenseType;
+    private DatePicker dateOfIncome;
 
     @FXML
     private VBox formPane;
 
     @FXML
-    private VBox mainPaneExp;
+    private TextField incomeAmount;
+
+    @FXML
+    private SplitMenuButton incomeType;
+
+    @FXML
+    private VBox mainPaneInc;
 
     @FXML
     private VBox previousPassword1;
@@ -58,5 +58,6 @@ public class AddExpenditureController implements Initializable {
         
     }
 
+    
 }
 

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="addExpenditureModal" minHeight="315.0" minWidth="360.0" prefHeight="315.0" prefWidth="360.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox fx:id="mainPaneExp" alignment="TOP_CENTER" prefHeight="446.0" prefWidth="286.0">
+         <children>
+            <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Fill the fields below">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <VBox fx:id="formPane">
+               <children>
+                  <VBox fx:id="previousPassword1">
+                     <children>
+                        <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Expense type">
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <SplitMenuButton fx:id="expenseType" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Choose type" textFill="#656262">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </SplitMenuButton>
+                        <StackPane alignment="CENTER_RIGHT">
+                           <children>
+                              <TextField fx:id="expenseAmount" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="enter amount" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;">
+                                 <StackPane.margin>
+                                    <Insets top="5.0" />
+                                 </StackPane.margin>
+                              </TextField>
+                           </children>
+                        </StackPane>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </VBox>
+            <HBox prefHeight="25.0" prefWidth="219.0">
+               <children>
+                  <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Date">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Text>
+                  <DatePicker fx:id="dateOfExpense" prefHeight="25.0" prefWidth="167.0" promptText="select date">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin></DatePicker>
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="286.0" spacing="15.0">
+               <children>
+                  <Button fx:id="addExpButton" mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #7CFF7C;" text="Add">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="cancelExpButton" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: FF2020;" text="Cancel" textFill="WHITE">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="46.0" left="37.0" right="37.0" top="30.0" />
+   </padding>
+</StackPane>

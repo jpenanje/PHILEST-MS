@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="addIncomeModal" minHeight="315.0" minWidth="360.0" prefHeight="315.0" prefWidth="360.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="addIncomeModal" minHeight="315.0" minWidth="360.0" prefHeight="325.0" prefWidth="360.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox fx:id="mainPaneInc" alignment="TOP_CENTER" prefHeight="446.0" prefWidth="286.0">
          <children>
@@ -27,7 +27,7 @@
             </Text>
             <VBox fx:id="formPane">
                <children>
-                  <VBox fx:id="previousPassword1">
+                  <VBox>
                      <children>
                         <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Income type">
                            <VBox.margin>
@@ -43,15 +43,41 @@
                               <MenuItem mnemonicParsing="false" text="Action 2" />
                            </items>
                         </SplitMenuButton>
-                        <StackPane alignment="CENTER_RIGHT">
-                           <children>
-                              <TextField fx:id="incomeAmount" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="enter amount" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;">
-                                 <StackPane.margin>
-                                    <Insets top="5.0" />
-                                 </StackPane.margin>
-                              </TextField>
-                           </children>
-                        </StackPane>
+                        <StackPane alignment="CENTER_RIGHT" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="20.0">
+                     <children>
+                        <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount">
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="incomeAmount" promptText="enter amount" />
+                        <StackPane alignment="CENTER_RIGHT" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="66.0">
+                     <children>
+                        <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Date">
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <DatePicker fx:id="dateOfIncome" prefHeight="5.0" prefWidth="174.0" promptText="Select date" />
+                        <StackPane alignment="CENTER_RIGHT" />
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -63,16 +89,6 @@
                </VBox.margin>
             </VBox>
             <HBox prefHeight="25.0" prefWidth="219.0">
-               <children>
-                  <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Date">
-                     <font>
-                        <Font size="14.0" />
-                     </font></Text>
-                  <DatePicker fx:id="dateOfIncome" prefHeight="5.0" prefWidth="174.0" promptText="Select date">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin></DatePicker>
-               </children>
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
@@ -93,7 +109,7 @@
                <VBox.margin>
                   <Insets top="13.0" />
                </VBox.margin>
-            </HBox>git s
+            </HBox>
          </children>
       </VBox>
    </children>

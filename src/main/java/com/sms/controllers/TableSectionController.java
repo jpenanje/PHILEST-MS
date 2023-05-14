@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import javax.lang.model.type.NullType;
@@ -20,6 +22,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -27,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -34,6 +39,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -49,6 +56,7 @@ public class TableSectionController implements Initializable {
     Initializable searchBarController;
     String searchBarFXMLPath;
     ArrayList<String> titles;
+    Service fetchItemsService;
     ArrayList<TableRowable> items = new ArrayList<>();
     ArrayList<TableColumn<TableRowable, String>> columns = new ArrayList<>();
     ObservableList<TableRowable> displayItems = FXCollections.observableArrayList(new ArrayList());
@@ -63,8 +71,10 @@ public class TableSectionController implements Initializable {
     @FXML
     StackPane basePane;
 
+    Node cachedBasePane;
+
     @FXML
-    private StackPane tablePane;
+    StackPane tablePane;
 
     @FXML
     VBox indicesPane;
@@ -112,11 +122,12 @@ public class TableSectionController implements Initializable {
     public void initialize(URL arg0, ResourceBundle arg1) {
         System.out.println("init");
         showLoadingIcon();
+        fetchItems(fetchItemsService);
         initializeTable();
         bindTablePaneWithNumberOfDisplayItems();
         loadSearchPane();
-        fetchItems();
-        refreshDisplayItems();
+        loadMockItems();
+
         // refreshRows();
     }
 
@@ -280,7 +291,8 @@ public class TableSectionController implements Initializable {
         return !items.isEmpty();
     }
 
-    void fetchItems() {
+    void loadMockItems() {
+        // items = null;
         items.add(new Student());
         items.add(new Student());
         items.add(new Student());
@@ -307,7 +319,20 @@ public class TableSectionController implements Initializable {
     }
 
     void showLoadingIcon() {
+        cachedBasePane = basePane.getChildren().get(0);
+        Service fetchItemsService = getFetchItemsService();
+        this.fetchItemsService = fetchItemsService;
+        bindServiceWithDisplay(fetchItemsService);
+        basePane.getChildren().set(0, getLoadingIcon(fetchItemsService));
         System.out.println("Loading icon...");
+    }
+
+    void fetchItems(Service service) {
+        try {
+            service.start();
+        } catch (Exception e) {
+            displayErrorPane();
+        }
     }
 
     void removeLoadingIcon() {
@@ -331,5 +356,90 @@ public class TableSectionController implements Initializable {
 
     void refreshCurrentPage() {
         pageNumber.setText("" + (currentPage + 1));
+    }
+
+    Node getLoadingIcon(Service service) {
+        return Tools.getLoadingIcon(service);
+    }
+
+    Service getFetchItemsService() {
+        Service service = new Service() {
+            @Override
+            protected Task createTask() {
+                return new Task() {
+                    @Override
+                    protected Object call() throws Exception {
+                        CompletableFuture<Void> future = CompletableFuture.runAsync(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    for (int i = 0; i <= 100; i++) {
+                                        updateProgress(i, 100);
+                                        try {
+                                            Thread.sleep(50);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("error");
+                                    items = null;
+                                    updateProgress(100, 100);
+                                }
+
+                            }
+                        });
+                        try {
+                            future.get(Config.fetchItemTimeout, TimeUnit.SECONDS);
+                        } catch (Exception e) {
+                            System.out.println("future error");
+                            items = null;
+                            updateProgress(100, 100);
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+
+        return service;
+    }
+
+    void bindServiceWithDisplay(Service service) {
+        service.progressProperty().addListener(new ChangeListener<Object>() {
+            public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
+                    Object newValue) {
+                if (Math.abs(((Double) newValue - 1.0)) < Math.pow(10, -15)) {
+                    if (items != null) {
+                        refreshDisplayItems();
+                        loadCachedPane();
+                    } else {
+                        displayErrorPane();
+                    }
+
+                }
+            };
+        });
+    }
+
+    void loadCachedPane() {
+        basePane.getChildren().clear();
+        basePane.getChildren().add(cachedBasePane);
+    }
+
+    void displayErrorPane() {
+        basePane.getChildren().clear();
+        basePane.getChildren().add(getErrorPane());
+    }
+
+    Pane getErrorPane() {
+        Function<NullType, NullType> refresh = new Function<NullType,NullType>() {
+            @Override
+            public NullType apply(NullType t) {
+                initialize(null, null);
+                return null;
+            }
+        };
+        return Tools.getPaneFromControllerAndFxmlPath(new ErrorPaneController(refresh), "/sections/ErrorPane.fxml");
     }
 }

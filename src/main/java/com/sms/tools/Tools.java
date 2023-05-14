@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sms.controllers.LoadingIconController;
 
+import javafx.concurrent.Service;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -152,5 +154,9 @@ public class Tools {
     public static void closeStageFromNode(Node node){
         Stage stage = (Stage) node.getScene().getWindow();
         stage.close();
+    }
+
+    public static Node getLoadingIcon(Service service){
+        return getPaneFromControllerAndFxmlPath(new LoadingIconController(service), "/components/LoadingIcon.fxml");
     }
 }

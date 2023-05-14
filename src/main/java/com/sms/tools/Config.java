@@ -12,4 +12,5 @@ public class Config {
     public static double tableRowHeight = 30;
     public static double iconHeight = tableRowHeight + 6.2;
     public static String valueDelimiter = "$$";
+    public static int fetchItemTimeout = 10;
 }

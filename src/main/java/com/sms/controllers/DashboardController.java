@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import javafx.fxml.Initializable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -36,6 +38,14 @@ import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 public class DashboardController implements Initializable {
+
+    public DashboardController() {
+        super();
+    }
+
+    public DashboardController(JsonNode node) {
+        super();
+    }
 
     @FXML
     private Text classes;

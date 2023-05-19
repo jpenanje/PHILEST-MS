@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.StackPane?>
+
+
+<StackPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" prefWidth="35.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ProgressIndicator fx:id="progressIndicator" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="44.0" prefWidth="26.0" progress="1.0" style="-fx-accent: #4A0000;" stylesheets="@../styles/successPogressIndicatorStyle.css">
+         <StackPane.margin>
+            <Insets top="16.0" />
+         </StackPane.margin>
+      </ProgressIndicator>
+   </children>
+</StackPane>

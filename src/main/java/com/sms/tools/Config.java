@@ -13,4 +13,7 @@ public class Config {
     public static double iconHeight = tableRowHeight + 6.2;
     public static String valueDelimiter = "$$";
     public static int fetchItemTimeout = 10;
+    public static int saveItemTimeout = 30;
+    public static double numItemsRequestLoadingIncrement = 10;
+    public static double dropDownRequestLoadingIncrement = 5;
 }

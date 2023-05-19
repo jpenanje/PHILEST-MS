@@ -25,6 +25,7 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         pane.setPadding(new Insets(0, 30, 0, 30));
         label = new Label();
         label.setStyle("-fx-font-size: 12.5px;");
+        label.setTextFill(Color.BLACK);
         label.setWrapText(true);
         pane.getChildren().add(label);
         pane.setPrefHeight(Config.tableRowHeight);

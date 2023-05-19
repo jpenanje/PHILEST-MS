@@ -1,6 +1,8 @@
 package com.sms.controllers;
 
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -11,12 +13,16 @@ import java.util.function.Function;
 import javax.lang.model.type.NullType;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sms.interfaces.TableRowable;
 import com.sms.models.CustomTableCell;
+import com.sms.models.Response;
 import com.sms.models.Student;
 import com.sms.tools.Config;
+import com.sms.tools.RequestManager;
 import com.sms.tools.Tools;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -32,6 +38,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -56,16 +63,29 @@ public class TableSectionController implements Initializable {
     Initializable searchBarController;
     String searchBarFXMLPath;
     ArrayList<String> titles;
+    JsonNode currentNode;
     Service fetchItemsService;
+    String url;
+    Function<JsonNode, TableRowable> getItemFromNode;
+    ArrayList<String> formDropDownAttributes;
     ArrayList<TableRowable> items = new ArrayList<>();
     ArrayList<TableColumn<TableRowable, String>> columns = new ArrayList<>();
     ObservableList<TableRowable> displayItems = FXCollections.observableArrayList(new ArrayList());
     ArrayList<Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>> cellFactories;
 
-    public TableSectionController(Initializable searchBarController, String searchBarFXMLPath) {
+    ArrayList<ArrayList> formDropDownLists = new ArrayList();
+
+    ArrayList<ArrayList> formDisplayDropDownLists = new ArrayList();
+
+    public TableSectionController(Initializable searchBarController, String searchBarFXMLPath, JsonNode currentNode,
+            Function<JsonNode, TableRowable> getItemfromNode, String url, ArrayList<String> formDropDownAttributes) {
         super();
+        this.getItemFromNode = getItemfromNode;
         this.searchBarController = searchBarController;
         this.searchBarFXMLPath = searchBarFXMLPath;
+        this.currentNode = currentNode;
+        this.formDropDownAttributes = formDropDownAttributes;
+        this.url = url;
     }
 
     @FXML
@@ -90,6 +110,12 @@ public class TableSectionController implements Initializable {
 
     @FXML
     private Text pageNumber;
+
+    @FXML
+    private Text title;
+
+    @FXML
+    private Button addButton;
 
     @FXML
     void nextPage(ActionEvent event) {
@@ -121,14 +147,50 @@ public class TableSectionController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         System.out.println("init");
+        initializeTitle();
+        initializeAddButton();
         showLoadingIcon();
         fetchItems(fetchItemsService);
         initializeTable();
         bindTablePaneWithNumberOfDisplayItems();
+        bindTableRowsWithEditAction();
         loadSearchPane();
         loadMockItems();
 
         // refreshRows();
+    }
+
+    void bindTableRowsWithEditAction() {
+        table.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 2) {
+                    // Double click detected
+                    int selectedIndex = table.getSelectionModel().getSelectedIndex();
+                    if (selectedIndex != -1) {
+                        editItemByIndex(selectedIndex);
+                    }
+                }
+            }
+        });
+    }
+
+    void editItemByIndex(int index) {
+        int actualIndex = (currentPage * maxPageItems) + index;
+        TableRowable toBeEdited = items.get(actualIndex);
+        displayEditItemPane(toBeEdited);
+        // System.out.println("Edit item at index "+
+        // ((currentPage*maxPageItems)+index));
+    }
+
+    void displayEditItemPane(TableRowable toBeEdited) {
+
+        String addFormViewPath = currentNode.get("form_view").asText();
+        String addControllerPath = currentNode.get("form_controller").asText();
+        Class[] classArgs = { Student.class, ArrayList.class };
+        Initializable addFormController = Tools.getControllerFromPath(addControllerPath, classArgs,
+                toBeEdited, formDisplayDropDownLists);
+        Tools.showModal(addFormController, addFormViewPath, Tools.getStageFromNode(basePane));
     }
 
     void bindTablePaneWithNumberOfDisplayItems() {
@@ -305,7 +367,17 @@ public class TableSectionController implements Initializable {
         items.add(new Student());
         items.add(new Student());
         items.add(new Student());
-        items.add(new Student());
+        items.add(new Student("kkk", "Luna", "Class 1", "20000", "Luna parent", "654370303", "true", "15000", "0", "0",
+                "0", "0"));
+
+        // ArrayList<String> classes = new ArrayList<>();
+        // classes.add("class 1");
+        // classes.add("class 2");
+        // classes.add("class 3");
+        // classes.add("class 4");
+        // classes.add("class 5");
+        // classes.add("class 6");
+        // formDropDownLists.add(classes);
         // displayItems.add(new Student("class 2"));
         // table.getItems().add(new Student());
     }
@@ -373,14 +445,126 @@ public class TableSectionController implements Initializable {
                             @Override
                             public void run() {
                                 try {
-                                    for (int i = 0; i <= 100; i++) {
-                                        updateProgress(i, 100);
-                                        try {
-                                            Thread.sleep(50);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
+                                    Function<Double, NullType> incrementProgress = new Function<Double, NullType>() {
+                                        public NullType apply(Double increment) {
+                                            try {
+                                                Platform.runLater(() -> {
+                                                    double newValue = (getProgress() * 100) + increment;
+                                                    if (newValue - 100.0 <= Math.pow(10, -2)) {
+                                                        updateProgress(newValue, 100.0);
+                                                    }
+                                                });
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            return null;
                                         }
+                                    };
+                                    // Response numOfItemsresponse = RequestManager.fetchNumberOfItems(url);
+                                    HttpResponse<String> numberOfItemsResponse = RequestManager.fetchNumberOfItems(url)
+                                            .get();
+                                    Response numberOfItemsCustomResponse = Tools
+                                            .getCustomResponseFromResponse(numberOfItemsResponse);
+
+                                    if (numberOfItemsCustomResponse.getCode() == 200) {
+
+                                        updateProgress(Config.numItemsRequestLoadingIncrement + 0.0, 100);
+                                        int numberOfItems = getNumberOfItemsFromResponse(
+                                                numberOfItemsCustomResponse);
+                                        System.out.println(numberOfItems);
+
+                                        ArrayList<Response> itemsResponses = RequestManager.fetchItems(url,
+                                                incrementProgress, numberOfItems,
+                                                computeItemRequestLoadingIncrement(numberOfItems));
+                                        for (Response itemResponse : itemsResponses) {
+                                            addItemFromResponse(itemResponse);
+                                        }
+
+                                        HttpResponse<String> dropDownListsResponse = RequestManager
+                                                .fetchDropDownLists(url, incrementProgress,
+                                                        Config.dropDownRequestLoadingIncrement)
+                                                .get();
+                                        Response dropDownListCustomResponse = Tools
+                                                .getCustomResponseFromResponse(dropDownListsResponse);
+                                        if (dropDownListCustomResponse.getCode() == 200) {
+                                            addDropDownItemsFromResponse(dropDownListCustomResponse);
+                                            incrementProgress.apply(Config.dropDownRequestLoadingIncrement);
+                                        } else {
+                                            items = null;
+                                            updateProgress(100, 100);
+                                        }
+                                    } else {
+                                        items = null;
+                                        updateProgress(100, 100);
                                     }
+                                    // RequestManager.fetchNumberOfItems(url).thenApply((numberOfItemsResponse) -> {
+                                    // Response numberOfItemsCustomResponse = Tools
+                                    // .getCustomResponseFromResponse(numberOfItemsResponse);
+                                    // if (numberOfItemsCustomResponse.getCode() == 200) {
+                                    // updateProgress(Config.numItemsRequestLoadingIncrement + 0.0, 100);
+                                    // int numberOfItems = getNumberOfItemsFromResponse(
+                                    // numberOfItemsCustomResponse);
+                                    // System.out.println(numberOfItems);
+                                    // RequestManager.fetchItems(url, incrementProgress, numberOfItems,
+                                    // computeItemRequestLoadingIncrement(numberOfItems));
+                                    // // RequestManager.fetchDropDownLists(url, incrementProgress,
+                                    // // Config.dropDownRequestLoadingIncrement);
+                                    // } else {
+                                    // items = null;
+                                    // updateProgress(100, 100);
+
+                                    // }
+                                    // return numberOfItemsResponse.body();
+                                    // }).thenAccept((body) -> {
+                                    // JsonNode jsonBody = Tools.getJsonNodeFromString(body);
+                                    // }).join();
+
+                                    // for(int i = 0; i < numberOfItems && getProgress() < 100; i++){
+                                    // Response response = new Response();
+                                    // response.setCode(200);
+                                    // // Response response = fetchItemFromIndex(i);
+                                    // //valid response
+                                    // if(response.getCode() == 200){
+                                    // updateProgress((i/numberOfItems) * Config.totalItemsProgressPercent, 100);
+                                    // addItemFromResponse(response);
+                                    // }
+
+                                    // // item does not exist in back
+                                    // else if(response.getCode() == 410){
+                                    // updateProgress((i/numberOfItems) * Config.totalItemsProgressPercent, 100);
+                                    // }
+                                    // // error occured
+                                    // else if(response.getCode() == 500){
+                                    // System.out.println("error occured while loading the items");
+                                    // items = null;
+                                    // updateProgress(100, 100);
+                                    // }
+                                    // }
+
+                                    // if(getProgress() < 100){
+                                    // Response response = new Response();
+                                    // response.setCode(200);
+                                    // // Response response = getDropDownItems();
+                                    // if(response.getCode() == 200){
+                                    // addDropDownItemsFromResponse(response);
+                                    // }
+                                    // else{
+                                    // System.out.println("error occured while loading drop down items");
+                                    // items = null;
+                                    // }
+                                    // updateProgress(100, 100);
+                                    // }
+
+                                    // for (int i = 0; i <= 100; i++) {
+                                    // updateProgress(i, 100);
+                                    // try {
+                                    // Thread.sleep(50);
+                                    // } catch (InterruptedException e) {
+                                    // e.printStackTrace();
+                                    // }
+                                    // }
                                 } catch (Exception e) {
                                     System.out.println("error");
                                     items = null;
@@ -433,7 +617,7 @@ public class TableSectionController implements Initializable {
     }
 
     Pane getErrorPane() {
-        Function<NullType, NullType> refresh = new Function<NullType,NullType>() {
+        Function<NullType, NullType> refresh = new Function<NullType, NullType>() {
             @Override
             public NullType apply(NullType t) {
                 initialize(null, null);
@@ -441,5 +625,64 @@ public class TableSectionController implements Initializable {
             }
         };
         return Tools.getPaneFromControllerAndFxmlPath(new ErrorPaneController(refresh), "/sections/ErrorPane.fxml");
+    }
+
+    void initializeTitle() {
+        title.setText(currentNode.get("title").asText());
+    }
+
+    void initializeAddButton() {
+        addButton.setText(currentNode.get("add_button_title").asText());
+        addButton.setOnAction(getAddActionFromCurrentNode());
+    }
+
+    EventHandler<ActionEvent> getAddActionFromCurrentNode() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                String addFormViewPath = currentNode.get("form_view").asText();
+                String addControllerPath = currentNode.get("form_controller").asText();
+                Class[] classArgs = { ArrayList.class };
+                Initializable addFormController = Tools.getControllerFromPath(addControllerPath, classArgs,
+                formDisplayDropDownLists);
+                Tools.showModal(addFormController, addFormViewPath, Tools.getStageFromNode(addButton));
+            }
+        };
+    }
+
+    void addItemFromResponse(Response response) {
+        items.add(getItemFromNode.apply(response.getData()));
+    }
+
+    void addDropDownItemsFromResponse(Response response) {
+        int index = 0;
+        for (JsonNode dropDownItemsList : response.getData()) {
+        
+            ArrayList<JsonNode> dropDownItems = new ArrayList<>();
+            ArrayList<String> displayDropDownItems = new ArrayList<>();
+
+            for (JsonNode dropDownItem : dropDownItemsList) {
+                dropDownItems.add(dropDownItem);
+                displayDropDownItems.add(getDisplayDropDownFromItemAndIndex(dropDownItem,index));
+            }
+            formDropDownLists.add(dropDownItems);
+            formDisplayDropDownLists.add(displayDropDownItems);
+            index ++;
+        }
+        System.out.println(formDisplayDropDownLists);
+    }
+
+    String getDisplayDropDownFromItemAndIndex(JsonNode dropDownItem, int index){
+        return dropDownItem.get(formDropDownAttributes.get(index)).asText();
+    }
+
+    int getNumberOfItemsFromResponse(Response numOfItemsresponse) {
+        return numOfItemsresponse.getData().get("count").asInt();
+    }
+
+    double computeItemRequestLoadingIncrement(int numberOfItems) {
+        double itemsRequestLoadingIncrement = 100
+                - (Config.dropDownRequestLoadingIncrement + Config.numItemsRequestLoadingIncrement);
+        return itemsRequestLoadingIncrement / numberOfItems;
     }
 }

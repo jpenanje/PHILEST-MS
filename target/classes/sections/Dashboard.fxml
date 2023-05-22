@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <padding>
+      <Insets left="75.0" right="75.0" top="20.0" />
+   </padding>
+   <children>
+      <StackPane>
+         <children>
+            <VBox>
+               <children>
+                  <HBox>
+                     <children>
+                        <HBox alignment="CENTER" style="-fx-background-color: #fafaff; -fx-background-radius: 10;" HBox.hgrow="SOMETIMES">
+                           <padding>
+                              <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <ImageView fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                                 <image>
+                                    <Image url="@../images/dashboard_stds.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox alignment="CENTER_LEFT" HBox.hgrow="NEVER">
+                                 <children>
+                                    <Text fx:id="students" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="22.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Pupils">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <StackPane prefWidth="10.0" HBox.hgrow="SOMETIMES" />
+                        <StackPane prefWidth="1.0" style="-fx-background-color: #E6E6E6;" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets bottom="25.0" top="25.0" />
+                           </HBox.margin>
+                        </StackPane>
+                        <StackPane prefWidth="10.0" HBox.hgrow="SOMETIMES" />
+                        <HBox alignment="CENTER" style="-fx-background-color: #fffcf7; -fx-background-radius: 10;" HBox.hgrow="SOMETIMES">
+                           <padding>
+                              <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <ImageView fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                                 <image>
+                                    <Image url="@../images/dashboard_lec.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox alignment="CENTER_LEFT" HBox.hgrow="NEVER">
+                                 <children>
+                                    <Text fx:id="teachers" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="22.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Teachers">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <StackPane prefWidth="10.0" HBox.hgrow="SOMETIMES" />
+                        <StackPane prefWidth="1.0" style="-fx-background-color: #E6E6E6;" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets bottom="25.0" top="25.0" />
+                           </HBox.margin>
+                        </StackPane>
+                        <StackPane layoutX="400.0" layoutY="10.0" prefWidth="10.0" HBox.hgrow="SOMETIMES" />
+                        <HBox alignment="CENTER" style="-fx-background-color: #fffafa; -fx-background-radius: 10;" HBox.hgrow="SOMETIMES">
+                           <padding>
+                              <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <ImageView fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                                 <image>
+                                    <Image url="@../images/dashboard_sjts.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox alignment="CENTER_LEFT" HBox.hgrow="NEVER">
+                                 <children>
+                                    <Text fx:id="subjects" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="22.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Subjects">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <StackPane layoutX="400.0" layoutY="10.0" prefWidth="10.0" HBox.hgrow="SOMETIMES" />
+                        <StackPane prefWidth="1.0" style="-fx-background-color: #E6E6E6;" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets bottom="25.0" top="25.0" />
+                           </HBox.margin>
+                        </StackPane>
+                        <StackPane layoutX="595.0" layoutY="10.0" prefWidth="10.0" HBox.hgrow="SOMETIMES" />
+                        <HBox alignment="CENTER" style="-fx-background-color: f7fbf7; -fx-background-radius: 10;" HBox.hgrow="SOMETIMES">
+                           <padding>
+                              <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <ImageView fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                                 <image>
+                                    <Image url="@../images/dashboard_classes.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox alignment="CENTER_LEFT" HBox.hgrow="NEVER">
+                                 <children>
+                                    <Text fx:id="classes" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="22.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Classes">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <StackPane style="-fx-border-color: f3f3f3; -fx-border-style: solid; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="50.0" right="50.0" top="30.0" />
+                     </VBox.margin>
+                     <children>
+                        <VBox>
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <VBox>
+                                       <children>
+                                          <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Net Income" />
+                                          <Text fx:id="netIncome" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="2,300,000 FCFA">
+                                             <font>
+                                                <Font name="System Bold" size="26.0" />
+                                             </font>
+                                          </Text>
+                                       </children>
+                                    </VBox>
+                                    <StackPane HBox.hgrow="ALWAYS" />
+                                    <VBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT">
+                                             <children>
+                                                <Circle fill="#7cff7c" radius="5.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+                                                <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Income">
+                                                   <HBox.margin>
+                                                      <Insets left="7.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT">
+                                             <children>
+                                                <Circle fill="#ff2020" radius="5.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+                                                <Text fill="#a6a6a6" strokeType="OUTSIDE" strokeWidth="0.0" text="Expenditures">
+                                                   <HBox.margin>
+                                                      <Insets left="7.0" />
+                                                   </HBox.margin>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <StackPane HBox.hgrow="ALWAYS" />
+                                    <MenuButton fx:id="year" mnemonicParsing="false" onAction="#changeYear" style="-fx-background-color: transparent; -fx-border-style: solid; -fx-border-color: E6E6E6; -fx-border-radius: 3.64;" text="Year">
+                                      <items>
+                                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                                        <MenuItem mnemonicParsing="false" text="Action 2" />
+                                      </items>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </MenuButton>
+                                 </children>
+                              </HBox>
+                              <StackPane minHeight="25.0" />
+                              <BarChart fx:id="barChart" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" maxHeight="1000000.0" verticalGridLinesVisible="false" VBox.vgrow="ALWAYS">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" tickLabelFill="#a6a6a6" tickMarkVisible="false">
+                                       <tickLabelFont>
+                                          <Font size="12.0" />
+                                       </tickLabelFont>
+                                    </CategoryAxis>
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis minorTickCount="0" side="LEFT" tickLabelFill="#a6a6a6" tickMarkVisible="false">
+                                       <tickLabelFont>
+                                          <Font size="12.0" />
+                                       </tickLabelFont>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </NumberAxis>
+                                </yAxis>
+                              </BarChart>
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </children>
+</StackPane>

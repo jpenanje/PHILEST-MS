@@ -11,7 +11,7 @@
    <children>
       <VBox alignment="CENTER" StackPane.alignment="CENTER">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="There was an issue while trying to save this item. Check your internet connection and try again." textAlignment="CENTER" wrappingWidth="222.2031707763672">
+            <Text fx:id="message" strokeType="OUTSIDE" strokeWidth="0.0" text="error" textAlignment="CENTER" wrappingWidth="222.2031707763672">
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>

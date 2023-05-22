@@ -11,11 +11,15 @@ import com.sms.controllers.LoadingIconController;
 import com.sms.models.Response;
 
 import javafx.concurrent.Service;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBase;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Pane;
@@ -210,6 +214,22 @@ public class Tools {
         }
     }
 
+    public static boolean dropDownValidation(ButtonBase field, String defaultValue, Text errorText){
+        return simpleValidation(field, errorText) && defaultDropDownValidation(field, defaultValue, errorText);
+    }
+
+    public static boolean defaultDropDownValidation(ButtonBase field, String defaultValue, Text errorText){
+        errorText.setText("Please select a value for this field");
+        if(field.getText().equals(defaultValue) ){
+            errorText.setVisible(true);
+            return false;
+        }
+        else{
+            errorText.setVisible(false);
+            return true;
+        }
+    }
+
     public static boolean digitValidation(TextInputControl field, Text errorText){
         try {
             Integer.parseInt(field.getText());
@@ -227,6 +247,35 @@ public class Tools {
         customResponse.setCode(response.statusCode());
         customResponse.setData(getJsonNodeFromString(response.body()));
         return customResponse;
+    }
+
+    public static void addDropDownItemsFromFieldAndItems(MenuButton field, ArrayList<String> itemsStr){
+        if(itemsStr != null){
+            ArrayList menuItems = getMenuItems(itemsStr, field);
+            field.getItems().addAll(menuItems);
+        }
+    }
+
+    static ArrayList<MenuItem> getMenuItems(ArrayList<String> itemsStr, MenuButton field){
+        ArrayList<MenuItem> items = new ArrayList<>();
+        for(String itemStr : itemsStr){
+            items.add(getMenuItem(itemStr, field));
+        }
+        return items;
+    }
+
+    static MenuItem getMenuItem(String text, MenuButton field) {
+        MenuItem toBeReturned = new MenuItem();
+        toBeReturned.setText(text);
+        final String finalText = text;
+        toBeReturned.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                field.setText(finalText);
+            }
+        });
+
+        return toBeReturned;
     }
     
 }

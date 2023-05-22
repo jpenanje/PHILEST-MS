@@ -87,6 +87,15 @@ public class StudentsController extends TableSectionController {
             }
         });
 
+        TableColumn<TableRowable, String> columnYear = new TableColumn<>("Academic Year");
+        columnYear.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("currentYear"));
+        columnYear.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
+            @Override
+            public TableCell<TableRowable, String> call(TableColumn<TableRowable, String> column) {
+                return new CustomTableCell(RowTypes.TEXT);
+            }
+        });
+
         TableColumn<TableRowable, String> column6 = new TableColumn<>("Registered");
         column6.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("registered"));
         column6.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
@@ -159,9 +168,10 @@ public class StudentsController extends TableSectionController {
             }
         });
 
-        columns.addAll(Arrays.asList(column1, column2, column3, column4, column5, column6, column7, column8, column9,
+        columns.addAll(Arrays.asList(column1, column2, column3, column4, column5, columnYear, column6, column7, column8, column9,
                 column10, column11, column12, column13));
 
+        makeColumnsNotSortable(columns);
         return columns;
     }
 
@@ -178,6 +188,8 @@ public class StudentsController extends TableSectionController {
                     String phoneNumber = studentNode.get("parent_phone").asText();
                     String studentClass = studentNode.get("class").get("name").asText();
                     String classFee = studentNode.get("class").get("fee").asText();
+                    int classId = studentNode.get("class").get("id").asInt(0);
+                    String currentAcademicYear = studentNode.get("current_year").asText();
                     String registered = "false";
                     String installment1 = "0";
                     String installment2 = "0";
@@ -225,8 +237,8 @@ public class StudentsController extends TableSectionController {
                         }
                     }
 
-                    Student toBeReturned = new Student(id, pupilName, studentClass, classFee, parentName,
-                    phoneNumber, registered, installment1, installment2, installment3,
+                    Student toBeReturned = new Student(id, pupilName, studentClass, classFee, classId, parentName,
+                    phoneNumber, currentAcademicYear, registered, installment1, installment2, installment3,
                     installment4, installment5);
                     return toBeReturned;
                 } catch (Exception e) {
@@ -241,6 +253,13 @@ public class StudentsController extends TableSectionController {
     static ArrayList<String> getAttributes(){
         ArrayList<String> attributes = new ArrayList<>();
         attributes.add("name");
+        attributes.add("year");
         return attributes;
+    }
+
+    static void makeColumnsNotSortable(ArrayList<TableColumn<TableRowable, String>> columns){
+        for(TableColumn<TableRowable, String> column : columns){
+            column.setSortable(false);
+        }
     }
 }

@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane fx:id="basePane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="CENTER" StackPane.alignment="CENTER">
@@ -25,7 +24,7 @@
                   <Insets bottom="20.0" top="10.0" />
                </VBox.margin>
             </Text>
-            <HBox>
+            <HBox fx:id="buttonsPane" alignment="CENTER">
                <children>
                   <Button focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#delete" prefHeight="26.0" prefWidth="114.0" style="-fx-background-color: #7CFF7C;" text="Yes">
                      <cursor>

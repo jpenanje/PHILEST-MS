@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" spacing="5.0">
+         <children>
+            <StackPane>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fetching Items..." textAlignment="CENTER" />
+               </children>
+            </StackPane>
+            <ProgressBar fx:id="progressBar" prefHeight="10.0" prefWidth="197.0" progress="0.0" stylesheets="@../styles/progressBarStyle.css" />
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="30.0" />
+   </padding>
+</StackPane>

@@ -12,11 +12,11 @@ public class Student implements TableRowable {
     private String parentName = "Ade Fru Maeva";
     private String phoneNumber = "654370303";
     private String registered = "false";
-    private String installment1 = "10000";
-    private String installment2 = "10000";
-    private String installment3 = "10000";
-    private String installment4 = "10000";
-    private String installment5 = "10000";
+    private String installment1 = "0";
+    private String installment2 = "0";
+    private String installment3 = "0";
+    private String installment4 = "0";
+    private String installment5 = "0";
     private String feesOwed = "500";
     private String totalPaid = "100";
 
@@ -38,9 +38,7 @@ public class Student implements TableRowable {
             String phoneNumber, String registered, String installment1, String installment2, String installment3,
             String installment4, String installment5) {
         super();
-        initTotalPaid();
-        initFeesOwed();
-        concatPaymentFields();
+        
 
         this.id = id;
         this.pupilName = pupilName;
@@ -54,6 +52,10 @@ public class Student implements TableRowable {
         this.installment3 = installment3;
         this.installment4 = installment4;
         this.installment5 = installment5;
+
+        initTotalPaid();
+        initFeesOwed();
+        concatPaymentFields();
     }
 
     public String getId() {

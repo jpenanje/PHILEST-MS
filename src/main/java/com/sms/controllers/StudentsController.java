@@ -5,10 +5,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.interfaces.TableRowable;
 import com.sms.models.CustomTableCell;
 import com.sms.models.RowTypes;
+import com.sms.models.Student;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -18,7 +21,11 @@ import javafx.util.Callback;
 public class StudentsController extends TableSectionController {
 
     public StudentsController() {
-        super(new SearchStudentController(), "/sections/StudentSearch.fxml");
+        super(null, null, null, null, null, null);
+    }
+
+    public StudentsController(JsonNode node) {
+        super(new SearchStudentController(), "/sections/StudentSearch.fxml", node, itemFromNodeFunction(), "students/", getAttributes());
         super.setColumns(getColumns());
         // requires the search controller and the fxml path
     }
@@ -156,5 +163,84 @@ public class StudentsController extends TableSectionController {
                 column10, column11, column12, column13));
 
         return columns;
+    }
+
+    static Function<JsonNode, TableRowable> itemFromNodeFunction() {
+        return new Function<JsonNode, TableRowable>() {
+            @Override
+            public TableRowable apply(JsonNode node) {
+                try {
+                    System.out.println(node);
+                    JsonNode studentNode = node.get(0);
+                    String pupilName = studentNode.get("full_name").asText();
+                    String id = studentNode.get("id").asInt() + "";
+                    String parentName = studentNode.get("parent_name").asText();
+                    String phoneNumber = studentNode.get("parent_phone").asText();
+                    String studentClass = studentNode.get("class").get("name").asText();
+                    String classFee = studentNode.get("class").get("fee").asText();
+                    String registered = "false";
+                    String installment1 = "0";
+                    String installment2 = "0";
+                    String installment3 = "0";
+                    String installment4 = "0";
+                    String installment5 = "0";
+
+                    int installementIndex = 1;
+                    if (studentNode.get("cash_ins") != null) {
+                        for (JsonNode cashInNode : studentNode.get("cash_ins")) {
+                            if (cashInNode.get("purpose").asText().equals("registration")) {
+                                registered = "true";
+                            } 
+                            else if (cashInNode.get("purpose").asText().equals("installement")
+                                    && installementIndex < 6) {
+                                switch (installementIndex) {
+                                    case 1: {
+                                        installment1 = cashInNode.get("amount").asText();
+                                        installementIndex++;
+                                        break;
+                                    }
+                                    case 2: {
+                                        installment2 = cashInNode.get("amount").asText();
+                                        installementIndex++;
+                                        break;
+                                    }
+                                    case 3: {
+                                        installment3 = cashInNode.get("amount").asText();
+                                        installementIndex++;
+                                        break;
+                                    }
+                                    case 4: {
+                                        installment4 = cashInNode.get("amount").asText();
+                                        installementIndex++;
+                                        break;
+                                    }
+                                    case 5: {
+                                        installment5 = cashInNode.get("amount").asText();
+                                        installementIndex++;
+                                        break;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+                    Student toBeReturned = new Student(id, pupilName, studentClass, classFee, parentName,
+                    phoneNumber, registered, installment1, installment2, installment3,
+                    installment4, installment5);
+                    return toBeReturned;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return new Student();
+            }
+        };
+    }
+
+
+    static ArrayList<String> getAttributes(){
+        ArrayList<String> attributes = new ArrayList<>();
+        attributes.add("name");
+        return attributes;
     }
 }

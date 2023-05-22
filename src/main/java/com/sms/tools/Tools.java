@@ -1,18 +1,26 @@
 package com.sms.tools;
 
 import java.lang.reflect.Constructor;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sms.controllers.LoadingIconController;
+import com.sms.models.Response;
 
+import javafx.concurrent.Service;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,7 +33,7 @@ public class Tools {
         try {
             return objectMapper.readTree(str);
         } catch (Exception e) {
-            System.out.println("Could not convert menu items to json");
+            System.out.println("Could not convert "+str+" items to json");
             e.printStackTrace();
             return null;
         }
@@ -50,24 +58,40 @@ public class Tools {
     }
 
     public static Pane getPaneFromLeftMenuNode(JsonNode node) {
-        Initializable controller = getControllerFromNode(node);
-        return getPaneFromControllerAndFxmlPath(controller, node.get("view").asText());
+        // Initializable controller = getControllerFromNode(node);
+        String viewPath = node.get("view").asText();
+        String controllerPath = node.get("controller").asText();
+        Class[] classArgs = { JsonNode.class };
+        Initializable controller = Tools.getControllerFromPath(controllerPath, classArgs,
+                node);
+        return getPaneFromControllerAndFxmlPath(controller, viewPath);
     }
 
-    static Initializable getControllerFromNode(JsonNode node) {
+    public static Pane getPaneFromPathsOfControllerAndView(String controllerPath, String viewPath){
+        Initializable controller = getControllerFromPath(controllerPath, null);
+        return getPaneFromControllerAndFxmlPath(controller, viewPath);
+    }
+
+    public static Initializable getControllerFromPath(String controllerPath, Class[] objectArgs, Object... args){
         try {
-            String className = node.get("controller").asText();
+            String className = controllerPath;
             Class<?> clazz = Class.forName(className);
-            Constructor<?> constructor = clazz.getDeclaredConstructor();
-            Object obj = constructor.newInstance();
+
+            Constructor<?> constructor = clazz.getDeclaredConstructor(objectArgs);
+            Object obj = constructor.newInstance(args);
             Initializable controller = (Initializable) obj;
 
             return controller;
+
         } catch (Exception e) {
-            System.out.println("Could not load controller " + node.get("controller").asText());
+            System.out.println("Could not load controller " + controllerPath);
             e.printStackTrace();
             return null;
         }
+    }
+
+    static Initializable getControllerFromNode(JsonNode node) {
+        return getControllerFromPath(node.get("controller").asText(), null);
     }
 
     public static ArrayList<String> listToArrayList(List list) {
@@ -153,4 +177,56 @@ public class Tools {
         Stage stage = (Stage) node.getScene().getWindow();
         stage.close();
     }
+
+    public static Node getLoadingIcon(Service service){
+        return getPaneFromControllerAndFxmlPath(new LoadingIconController(service), "/components/LoadingIcon.fxml");
+    }
+
+    public static Stage getStageFromNode(Node node){
+        return (Stage)node.getScene().getWindow();
+    }
+
+    public static boolean simpleValidation(TextInputControl field, Text errorText){
+        errorText.setText("This field is required");
+        if(!field.getText().isEmpty()){
+            errorText.setVisible(false);
+            return true;
+        }
+        else{
+            errorText.setVisible(true);
+            return false;
+        }
+    }
+
+    public static boolean simpleValidation(ButtonBase field, Text errorText){
+        errorText.setText("This field is required");
+        if(!field.getText().isEmpty()){
+            errorText.setVisible(false);
+            return true;
+        }
+        else{
+            errorText.setVisible(true);
+            return false;
+        }
+    }
+
+    public static boolean digitValidation(TextInputControl field, Text errorText){
+        try {
+            Integer.parseInt(field.getText());
+            errorText.setVisible(false);
+            return true;
+        } catch (Exception e) {
+            errorText.setText("Please fill only digits");
+            errorText.setVisible(true);
+            return false;
+        }
+    }
+
+    public static Response getCustomResponseFromResponse(HttpResponse<String> response){
+        Response customResponse = new Response();
+        customResponse.setCode(response.statusCode());
+        customResponse.setData(getJsonNodeFromString(response.body()));
+        return customResponse;
+    }
+    
 }

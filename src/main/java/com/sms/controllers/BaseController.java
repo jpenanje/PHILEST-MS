@@ -103,7 +103,6 @@ public class BaseController implements Initializable {
     }
 
     void loadMainPane(String title) {
-
         Pane mainPane = Tools.getPaneFromControllerAndFxmlPath(new MainPaneController(currentItemIndex, title),
                 "/sections/MainPane.fxml");
         // mainPane.setStyle("-fx-background-color: " + Config.whiteColor + ";");

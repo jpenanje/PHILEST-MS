@@ -1,0 +1,7 @@
+.context-menu{
+    -fx-effect:null;
+}
+
+.popup-content-no-shadow {
+    -fx-inner-border: none;
+}

@@ -2,6 +2,9 @@ package com.sms.tools;
 
 import java.lang.reflect.Constructor;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBase;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -202,6 +206,19 @@ public class Tools {
         }
     }
 
+    public static boolean simpleValidation(DatePicker field, Text errorText){
+        errorText.setText("This field is required");
+        if(field.getValue() != null){
+
+            errorText.setVisible(false);
+            return true;
+        }
+        else{
+            errorText.setVisible(true);
+            return false;
+        }
+    }
+
     public static boolean simpleValidation(ButtonBase field, Text errorText){
         errorText.setText("This field is required");
         if(!field.getText().isEmpty()){
@@ -234,7 +251,7 @@ public class Tools {
         try {
             Integer.parseInt(field.getText());
             errorText.setVisible(false);
-            return true;
+            return simpleValidation(field, errorText);
         } catch (Exception e) {
             errorText.setText("Please fill only digits");
             errorText.setVisible(true);
@@ -276,6 +293,14 @@ public class Tools {
         });
 
         return toBeReturned;
+    }
+
+    public static String getUtcDateStringFromLocalDate(LocalDate localDate){
+        LocalDateTime utcDateTime = LocalDateTime.of(localDate, LocalDateTime.now().toLocalTime())
+        .atOffset(ZoneOffset.UTC)
+        .toLocalDateTime();
+
+        return utcDateTime.toString();
     }
     
 }

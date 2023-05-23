@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sms.interfaces.ISearchBar;
 import com.sms.interfaces.TableRowable;
+import com.sms.models.CashIn;
 import com.sms.models.CustomTableCell;
 import com.sms.models.Response;
 import com.sms.models.Student;
@@ -192,7 +193,7 @@ public class TableSectionController implements Initializable {
 
         String addFormViewPath = currentNode.get("form_view").asText();
         String addControllerPath = currentNode.get("form_controller").asText();
-        Class[] classArgs = { Student.class, ArrayList.class, ArrayList.class, Function.class };
+        Class[] classArgs = { getCurrentClass(), ArrayList.class, ArrayList.class, Function.class };
         Initializable addFormController = Tools.getControllerFromPath(addControllerPath, classArgs,
                 toBeEdited, formDisplayDropDownLists, formDropDownLists, getRefreshFunction());
         Tools.showModal(addFormController, addFormViewPath, Tools.getStageFromNode(basePane));
@@ -512,6 +513,7 @@ public class TableSectionController implements Initializable {
                                     }
                                 } catch (Exception e) {
                                     System.out.println("error");
+                                    e.printStackTrace();
                                     items = null;
                                     updateProgress(100, 100);
                                 }
@@ -604,6 +606,7 @@ public class TableSectionController implements Initializable {
         formDropDownLists = new ArrayList();
         formDisplayDropDownLists = new ArrayList<>();
         int index = 0;
+        System.out.println(response.getData());
         for (JsonNode dropDownItemsList : response.getData()) {
 
             ArrayList<JsonNode> dropDownItems = new ArrayList<>();
@@ -721,5 +724,14 @@ public class TableSectionController implements Initializable {
 
     void initializeSearchUrl() {
         searchUrl = "";
+    }
+
+    Class getCurrentClass(){
+        try {
+            return Class.forName(currentNode.get("class_path").asText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

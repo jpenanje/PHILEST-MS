@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="addItemModal" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox fx:id="mainPanePupil" alignment="TOP_CENTER">
+         <children>
+            <HBox alignment="CENTER" spacing="10.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+               <children>
+                  <ImageView fitHeight="23.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/cash_in_icon.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="title" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash In">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
+            <VBox fx:id="formPane">
+               <children>
+                  <VBox>
+                     <children>
+                        <HBox>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount" />
+                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
+                           </children>
+                        </HBox>
+                        <TextField fx:id="amount" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="amount" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
+                        <Text fx:id="amountErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox prefHeight="20.0" prefWidth="286.0">
+                     <children>
+                        <HBox>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Pupil" />
+                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
+                           </children>
+                        </HBox>
+                        <MenuButton fx:id="pupil" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Select Pupil">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </MenuButton>
+                        <Text fx:id="pupilErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox prefHeight="20.0" prefWidth="286.0">
+                     <children>
+                        <HBox>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Purpose" />
+                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
+                           </children>
+                        </HBox>
+                        <MenuButton fx:id="purpose" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Select Purpose">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </MenuButton>
+                        <Text fx:id="purposeErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="79.0" prefHeight="20.0" prefWidth="286.0">
+                     <children>
+                        <HBox>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Academic year" />
+                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
+                           </children>
+                        </HBox>
+                        <MenuButton fx:id="academicYear" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Academic year">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </MenuButton>
+                        <Text fx:id="academicYearErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <HBox>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
+                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
+                           </children>
+                        </HBox>
+                        <DatePicker fx:id="date" focusTraversable="false" prefHeight="29.0" prefWidth="286.0" promptText="date" style="-fx-background-color: transparent; -fx-border-radius: 2; -fx-border-width: 1; -fx-border-color: A6A6A6;" stylesheets="@../styles/datePickerStyle.css" />
+                        <Text fx:id="dateErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </VBox>
+            <HBox fx:id="buttonsPane" alignment="CENTER" prefHeight="30.0" prefWidth="286.0" spacing="15.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #7CFF7C;" text="Save">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: FF2020;" text="Cancel" textFill="WHITE">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="46.0" left="37.0" right="37.0" top="30.0" />
+   </padding>
+</StackPane>

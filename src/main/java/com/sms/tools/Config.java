@@ -16,4 +16,5 @@ public class Config {
     public static int saveItemTimeout = 30;
     public static double numItemsRequestLoadingIncrement = 10;
     public static double dropDownRequestLoadingIncrement = 5;
+    public static int deleteItemTimeout = 30;
 }

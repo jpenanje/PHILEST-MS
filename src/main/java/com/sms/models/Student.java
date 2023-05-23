@@ -5,12 +5,14 @@ import com.sms.tools.Config;
 import com.sms.tools.Tools;
 
 public class Student implements TableRowable {
-    private String id = "PuPh01";
+    private String id = "";
     private String pupilName = "Ade Divine Precious";
     private String studentClass = "Class 1";
     private String classFee = "70000";
+    private int classId = 1;
     private String parentName = "Ade Fru Maeva";
     private String phoneNumber = "654370303";
+    private String currentYear = "hoho";
     private String registered = "false";
     private String installment1 = "0";
     private String installment2 = "0";
@@ -27,25 +29,26 @@ public class Student implements TableRowable {
         concatPaymentFields();
     }
     // public Student(String classs) {
-    //     super();
-    //     this.studentClass = classs;
-    //     initTotalPaid();
-    //     initFeesOwed();
-    //     concatPaymentFields();
+    // super();
+    // this.studentClass = classs;
+    // initTotalPaid();
+    // initFeesOwed();
+    // concatPaymentFields();
     // }
 
-    public Student(String id, String pupilName, String studentClass, String classFee, String parentName,
-            String phoneNumber, String registered, String installment1, String installment2, String installment3,
+    public Student(String id, String pupilName, String studentClass, String classFee, int classId, String parentName,
+            String phoneNumber,String currentYear, String registered, String installment1, String installment2, String installment3,
             String installment4, String installment5) {
         super();
-        
 
         this.id = id;
         this.pupilName = pupilName;
         this.studentClass = studentClass;
         this.classFee = classFee;
+        this.classId = classId;
         this.phoneNumber = phoneNumber;
         this.parentName = parentName;
+        this.currentYear = currentYear;
         this.registered = registered;
         this.installment1 = installment1;
         this.installment2 = installment2;
@@ -174,9 +177,26 @@ public class Student implements TableRowable {
         this.totalPaid = totalPaid;
     }
 
+    public int getClassId() {
+        return classId;
+    }
+
+    public void setClassId(int classId) {
+        this.classId = classId;
+    }
+
+    public String getCurrentYear() {
+        return currentYear;
+    }
+
+    public void setCurrentYear(String currentYear) {
+        this.currentYear = currentYear;
+    }
+
     void initTotalPaid() {
         try {
-            totalPaid = ""+(Float.valueOf(installment1) + Float.valueOf(installment2) + Float.valueOf(installment3) + Float.valueOf(installment4) + Float.valueOf(installment5));
+            totalPaid = "" + (Float.valueOf(installment1) + Float.valueOf(installment2) + Float.valueOf(installment3)
+                    + Float.valueOf(installment4) + Float.valueOf(installment5));
         } catch (Exception e) {
             totalPaid = "0";
         }
@@ -184,14 +204,14 @@ public class Student implements TableRowable {
 
     void initFeesOwed() {
         try {
-            feesOwed = ""+(Float.valueOf(classFee) - Float.valueOf(totalPaid));
+            feesOwed = "" + (Float.valueOf(classFee) - Float.valueOf(totalPaid));
             feesOwed = Tools.addCommasToStringValue(feesOwed);
         } catch (Exception e) {
             feesOwed = "0";
         }
     }
 
-    void concatPaymentFields(){
+    void concatPaymentFields() {
         installment1 = installment1 + Config.valueDelimiter + classFee;
         installment2 = installment2 + Config.valueDelimiter + classFee;
         installment3 = installment3 + Config.valueDelimiter + classFee;
@@ -199,4 +219,18 @@ public class Student implements TableRowable {
         installment5 = installment5 + Config.valueDelimiter + classFee;
         totalPaid = totalPaid + Config.valueDelimiter + classFee;
     }
+
+    @Override
+    public String toJson() {
+        return "{\"full_name\": \"" + pupilName + "\", \"parent_name\": \"" + parentName + "\", \"parent_phone\": \""
+                + phoneNumber + "\", \"student_class\": " + classId + ", \"current_year\": \""+currentYear+"\"}";
+    }
+
+    @Override
+    public TableRowable fromJson(String json) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    
 }

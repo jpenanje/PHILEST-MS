@@ -20,31 +20,24 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 
-public class SearchStudentController implements Initializable, ISearchBar{
+public class CashInSearchController implements Initializable, ISearchBar{
 
-    @FXML
-    private MenuButton owing;
 
     @FXML
     private MenuButton year;
 
     @FXML
-    private MenuButton registered;
-
-    @FXML
-    private MenuButton searchClass;
+    private MenuButton searchPurpose;
 
     @FXML
     private TextField searchId;
 
     @FXML
-    private TextField searchName;
+    private TextField searchStudent;
 
     @FXML
-    private TextField searchParent;
+    private TextField searchAmount;
 
-    @FXML
-    private TextField searchPhone;
 
     Function<String, NullType> changeUrl;
 
@@ -63,7 +56,7 @@ public class SearchStudentController implements Initializable, ISearchBar{
     
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        initMenusItems();
+        // initMenusItems();
     }
 
     public void setChangeUrl(Function<String, NullType> changeUrl){
@@ -73,21 +66,21 @@ public class SearchStudentController implements Initializable, ISearchBar{
     @Override
     public void setDropDownItems(ArrayList<ArrayList> dropDownItems) {
         System.out.println(dropDownItems);
-        this.classDropDownItems = (ArrayList<String>)(dropDownItems.get(0)).clone();
+        this.classDropDownItems = (ArrayList<String>)(dropDownItems.get(2)).clone();
         this.yearDropDownItems = (ArrayList<String>)(dropDownItems.get(1)).clone();
         initSearchClass();
         initSearchYear();
     }
 
-    void initMenusItems(){
-        initRegistered();
-        initOwing();
-    }
+    // void initMenusItems(){
+    //     initRegistered();
+    //     initOwing();
+    // }
 
     void initSearchClass(){
-        searchClass.getItems().clear();
-        classDropDownItems.add(0,"Search Class");
-        Tools.addDropDownItemsFromFieldAndItems(searchClass, classDropDownItems);
+        searchPurpose.getItems().clear();
+        classDropDownItems.add(0,"Purpose");
+        Tools.addDropDownItemsFromFieldAndItems(searchPurpose, classDropDownItems);
     }
 
     void initSearchYear(){
@@ -96,39 +89,39 @@ public class SearchStudentController implements Initializable, ISearchBar{
         Tools.addDropDownItemsFromFieldAndItems(year, yearDropDownItems);
     }
 
-    void initRegistered(){
-        registered.getItems().clear();
-        registeredDropDownItems = new ArrayList();
-        registeredDropDownItems.add("Registered");
-        registeredDropDownItems.add("Yes");
-        registeredDropDownItems.add("No");
-        Tools.addDropDownItemsFromFieldAndItems(registered, registeredDropDownItems);
-    }
+    // void initRegistered(){
+    //     registered.getItems().clear();
+    //     registeredDropDownItems = new ArrayList();
+    //     registeredDropDownItems.add("Registered");
+    //     registeredDropDownItems.add("Yes");
+    //     registeredDropDownItems.add("No");
+    //     Tools.addDropDownItemsFromFieldAndItems(registered, registeredDropDownItems);
+    // }
 
-    void initOwing(){
-        owing.getItems().clear();
-        owingDropDownItems = new ArrayList();
-        owingDropDownItems.add("Owing");
-        owingDropDownItems.add("Yes");
-        owingDropDownItems.add("No");
-        Tools.addDropDownItemsFromFieldAndItems(owing, owingDropDownItems);
-    }
+    // void initOwing(){
+    //     owing.getItems().clear();
+    //     owingDropDownItems = new ArrayList();
+    //     owingDropDownItems.add("Owing");
+    //     owingDropDownItems.add("Yes");
+    //     owingDropDownItems.add("No");
+    //     Tools.addDropDownItemsFromFieldAndItems(owing, owingDropDownItems);
+    // }
 
     String getCurrentUrl(){
 
         String idParam = getParamFromFieldAndAttribute(searchId, "id");
 
-        String nameParam = getParamFromFieldAndAttribute(searchName, "pupil_name");
+        String nameParam = getParamFromFieldAndAttribute(searchStudent, "student");
 
-        String classParam = getParamFromFieldAndAttribute(searchClass, "class_name");
+        String classParam = getParamFromFieldAndAttribute(searchPurpose, "purpose");
 
-        String parentNameParam = getParamFromFieldAndAttribute(searchParent, "parent_name");
+        String parentNameParam = getParamFromFieldAndAttribute(searchAmount, "amount");
 
-        String parentPhoneParam = getParamFromFieldAndAttribute(searchPhone, "parent_phone");
+        // String parentPhoneParam = getParamFromFieldAndAttribute(searchPhone, "parent_phone");
 
-        String registeredParam = getParamFromFieldAndAttribute(registered, "registered");
+        // String registeredParam = getParamFromFieldAndAttribute(registered, "registered");
 
-        String owingParam = getParamFromFieldAndAttribute(owing, "owing");
+        // String owingParam = getParamFromFieldAndAttribute(owing, "owing");
 
         String yearParam = getParamFromFieldAndAttribute(year, "year");
 
@@ -140,7 +133,7 @@ public class SearchStudentController implements Initializable, ISearchBar{
         if(nameParam.length() > 0){
             currentUrl += nameParam + "&";
         }
-        if(classParam.length() > 0 && !classDropDownItems.get(0).equals(searchClass.getText())){
+        if(classParam.length() > 0 && !classDropDownItems.get(0).equals(searchPurpose.getText())){
             currentUrl += classParam + "&";
         }
         if(yearParam.length() > 0 && !yearDropDownItems.get(0).equals(year.getText())){
@@ -149,15 +142,15 @@ public class SearchStudentController implements Initializable, ISearchBar{
         if(parentNameParam.length() > 0){
             currentUrl += parentNameParam + "&";
         }
-        if(parentPhoneParam.length() > 0){
-            currentUrl += parentPhoneParam + "&";
-        }
-        if(registeredParam.length() > 0 && !registeredDropDownItems.get(0).equals(registered.getText())){
-            currentUrl += registeredParam + "&";
-        }
-        if(owingParam.length() > 0 && !owingDropDownItems.get(0).equals(owing.getText())){
-            currentUrl += owingParam + "&";
-        }
+        // if(parentPhoneParam.length() > 0){
+        //     currentUrl += parentPhoneParam + "&";
+        // }
+        // if(registeredParam.length() > 0 && !registeredDropDownItems.get(0).equals(registered.getText())){
+        //     currentUrl += registeredParam + "&";
+        // }
+        // if(owingParam.length() > 0 && !owingDropDownItems.get(0).equals(owing.getText())){
+        //     currentUrl += owingParam + "&";
+        // }
 
         if(currentUrl.length() > 1){
             return currentUrl.substring(0, currentUrl.length()-1);

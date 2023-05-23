@@ -14,7 +14,9 @@ import javax.lang.model.type.NullType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sms.interfaces.ISearchBar;
 import com.sms.interfaces.TableRowable;
+import com.sms.models.CashIn;
 import com.sms.models.CustomTableCell;
 import com.sms.models.Response;
 import com.sms.models.Student;
@@ -65,7 +67,8 @@ public class TableSectionController implements Initializable {
     ArrayList<String> titles;
     JsonNode currentNode;
     Service fetchItemsService;
-    String url;
+    String baseUrl;
+    String searchUrl;
     Function<JsonNode, TableRowable> getItemFromNode;
     ArrayList<String> formDropDownAttributes;
     ArrayList<TableRowable> items = new ArrayList<>();
@@ -78,14 +81,15 @@ public class TableSectionController implements Initializable {
     ArrayList<ArrayList> formDisplayDropDownLists = new ArrayList();
 
     public TableSectionController(Initializable searchBarController, String searchBarFXMLPath, JsonNode currentNode,
-            Function<JsonNode, TableRowable> getItemfromNode, String url, ArrayList<String> formDropDownAttributes) {
+            Function<JsonNode, TableRowable> getItemfromNode, String baseUrl,
+            ArrayList<String> formDropDownAttributes) {
         super();
         this.getItemFromNode = getItemfromNode;
         this.searchBarController = searchBarController;
         this.searchBarFXMLPath = searchBarFXMLPath;
         this.currentNode = currentNode;
         this.formDropDownAttributes = formDropDownAttributes;
-        this.url = url;
+        this.baseUrl = baseUrl;
     }
 
     @FXML
@@ -147,6 +151,8 @@ public class TableSectionController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         System.out.println("init");
+        initializeSearchUrl();
+        bindSearchBarWithSearchUrl();
         initializeTitle();
         initializeAddButton();
         showLoadingIcon();
@@ -155,7 +161,7 @@ public class TableSectionController implements Initializable {
         bindTablePaneWithNumberOfDisplayItems();
         bindTableRowsWithEditAction();
         loadSearchPane();
-        loadMockItems();
+        // loadMockItems();
 
         // refreshRows();
     }
@@ -187,9 +193,9 @@ public class TableSectionController implements Initializable {
 
         String addFormViewPath = currentNode.get("form_view").asText();
         String addControllerPath = currentNode.get("form_controller").asText();
-        Class[] classArgs = { Student.class, ArrayList.class };
+        Class[] classArgs = { getCurrentClass(), ArrayList.class, ArrayList.class, Function.class };
         Initializable addFormController = Tools.getControllerFromPath(addControllerPath, classArgs,
-                toBeEdited, formDisplayDropDownLists);
+                toBeEdited, formDisplayDropDownLists, formDropDownLists, getRefreshFunction());
         Tools.showModal(addFormController, addFormViewPath, Tools.getStageFromNode(basePane));
     }
 
@@ -206,25 +212,20 @@ public class TableSectionController implements Initializable {
     }
 
     void refreshDisplayItems() {
-        // displayItems.addListener(new ListChangeListener<TableRowable>() {
-        // @Override
-        // public void onChanged(Change<? extends TableRowable> newValue) {
-        if (itemsAreNotEmpty()) {
+        // if (itemsAreNotEmpty()) {
             removeLoadingIcon();
             setMaxPages();
             setDisplayItems();
             refreshRows();
             refreshMaxPages();
             refreshCurrentPage();
-        } else {
-            showLoadingIcon();
-        }
+        // } else {
+        //     showLoadingIcon();
         // }
-        // });
     }
 
     void setDisplayItems() {
-
+        System.out.println("items: " + items);
         if (currentPage > maxPages) {
             currentPage = maxPages;
         }
@@ -333,17 +334,19 @@ public class TableSectionController implements Initializable {
                 return getPrimaryStage();
             }
         };
+        Function onDelete = getDeleteFunctionFromIndex(paneIndex);
         // Stage primaryStage = getPrimaryStage();
         deleteIconPane.setPrefHeight(Config.iconHeight);
         deleteIconPane.setMinHeight(Config.iconHeight);
         deleteIconPane.setMaxHeight(Config.iconHeight);
         deleteIconPane.getChildren().add(Tools.getPaneFromControllerAndFxmlPath(
-                new DeleteIconController(getPrimaryStage), "/components/deleteIcon.fxml"));
+                new DeleteIconController(getPrimaryStage, onDelete, getRefreshFunction()),
+                "/components/deleteIcon.fxml"));
         deleteIconPane.setCursor(Cursor.HAND);
         deleteIconPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent arg0) {
-                System.out.println("delete " + paneIndex);
+                System.out.println("confirm deletion of item at index " + paneIndex);
             }
         });
         return deleteIconPane;
@@ -367,8 +370,9 @@ public class TableSectionController implements Initializable {
         items.add(new Student());
         items.add(new Student());
         items.add(new Student());
-        items.add(new Student("kkk", "Luna", "Class 1", "20000", "Luna parent", "654370303", "true", "15000", "0", "0",
-                "0", "0"));
+        // items.add(
+        //         new Student("kkk", "Luna", "Class 1", "20000", 1, "Luna parent", "654370303", "true", "15000", "0", "0",
+        //                 "0", "0"));
 
         // ArrayList<String> classes = new ArrayList<>();
         // classes.add("class 1");
@@ -391,9 +395,12 @@ public class TableSectionController implements Initializable {
     }
 
     void showLoadingIcon() {
-        cachedBasePane = basePane.getChildren().get(0);
+        if (cachedBasePane == null) {
+            cachedBasePane = basePane.getChildren().get(0);
+        }
         Service fetchItemsService = getFetchItemsService();
         this.fetchItemsService = fetchItemsService;
+
         bindServiceWithDisplay(fetchItemsService);
         basePane.getChildren().set(0, getLoadingIcon(fetchItemsService));
         System.out.println("Loading icon...");
@@ -447,6 +454,7 @@ public class TableSectionController implements Initializable {
                                 try {
                                     Function<Double, NullType> incrementProgress = new Function<Double, NullType>() {
                                         public NullType apply(Double increment) {
+
                                             try {
                                                 Platform.runLater(() -> {
                                                     double newValue = (getProgress() * 100) + increment;
@@ -462,8 +470,9 @@ public class TableSectionController implements Initializable {
                                             return null;
                                         }
                                     };
-                                    // Response numOfItemsresponse = RequestManager.fetchNumberOfItems(url);
-                                    HttpResponse<String> numberOfItemsResponse = RequestManager.fetchNumberOfItems(url)
+                                    // Response numOfItemsresponse = RequestManager.fetchNumberOfItems(searchUrl);
+                                    HttpResponse<String> numberOfItemsResponse = RequestManager
+                                            .fetchNumberOfItems(baseUrl, searchUrl)
                                             .get();
                                     Response numberOfItemsCustomResponse = Tools
                                             .getCustomResponseFromResponse(numberOfItemsResponse);
@@ -474,20 +483,23 @@ public class TableSectionController implements Initializable {
                                         int numberOfItems = getNumberOfItemsFromResponse(
                                                 numberOfItemsCustomResponse);
                                         System.out.println(numberOfItems);
-
-                                        ArrayList<Response> itemsResponses = RequestManager.fetchItems(url,
+                                        ArrayList<Response> itemsResponses = RequestManager.fetchItems(baseUrl,
+                                                searchUrl,
                                                 incrementProgress, numberOfItems,
                                                 computeItemRequestLoadingIncrement(numberOfItems));
+                                        initializeItems();
                                         for (Response itemResponse : itemsResponses) {
                                             addItemFromResponse(itemResponse);
                                         }
 
                                         HttpResponse<String> dropDownListsResponse = RequestManager
-                                                .fetchDropDownLists(url, incrementProgress,
+                                                .fetchDropDownLists(baseUrl, incrementProgress,
                                                         Config.dropDownRequestLoadingIncrement)
                                                 .get();
+
                                         Response dropDownListCustomResponse = Tools
                                                 .getCustomResponseFromResponse(dropDownListsResponse);
+
                                         if (dropDownListCustomResponse.getCode() == 200) {
                                             addDropDownItemsFromResponse(dropDownListCustomResponse);
                                             incrementProgress.apply(Config.dropDownRequestLoadingIncrement);
@@ -499,74 +511,9 @@ public class TableSectionController implements Initializable {
                                         items = null;
                                         updateProgress(100, 100);
                                     }
-                                    // RequestManager.fetchNumberOfItems(url).thenApply((numberOfItemsResponse) -> {
-                                    // Response numberOfItemsCustomResponse = Tools
-                                    // .getCustomResponseFromResponse(numberOfItemsResponse);
-                                    // if (numberOfItemsCustomResponse.getCode() == 200) {
-                                    // updateProgress(Config.numItemsRequestLoadingIncrement + 0.0, 100);
-                                    // int numberOfItems = getNumberOfItemsFromResponse(
-                                    // numberOfItemsCustomResponse);
-                                    // System.out.println(numberOfItems);
-                                    // RequestManager.fetchItems(url, incrementProgress, numberOfItems,
-                                    // computeItemRequestLoadingIncrement(numberOfItems));
-                                    // // RequestManager.fetchDropDownLists(url, incrementProgress,
-                                    // // Config.dropDownRequestLoadingIncrement);
-                                    // } else {
-                                    // items = null;
-                                    // updateProgress(100, 100);
-
-                                    // }
-                                    // return numberOfItemsResponse.body();
-                                    // }).thenAccept((body) -> {
-                                    // JsonNode jsonBody = Tools.getJsonNodeFromString(body);
-                                    // }).join();
-
-                                    // for(int i = 0; i < numberOfItems && getProgress() < 100; i++){
-                                    // Response response = new Response();
-                                    // response.setCode(200);
-                                    // // Response response = fetchItemFromIndex(i);
-                                    // //valid response
-                                    // if(response.getCode() == 200){
-                                    // updateProgress((i/numberOfItems) * Config.totalItemsProgressPercent, 100);
-                                    // addItemFromResponse(response);
-                                    // }
-
-                                    // // item does not exist in back
-                                    // else if(response.getCode() == 410){
-                                    // updateProgress((i/numberOfItems) * Config.totalItemsProgressPercent, 100);
-                                    // }
-                                    // // error occured
-                                    // else if(response.getCode() == 500){
-                                    // System.out.println("error occured while loading the items");
-                                    // items = null;
-                                    // updateProgress(100, 100);
-                                    // }
-                                    // }
-
-                                    // if(getProgress() < 100){
-                                    // Response response = new Response();
-                                    // response.setCode(200);
-                                    // // Response response = getDropDownItems();
-                                    // if(response.getCode() == 200){
-                                    // addDropDownItemsFromResponse(response);
-                                    // }
-                                    // else{
-                                    // System.out.println("error occured while loading drop down items");
-                                    // items = null;
-                                    // }
-                                    // updateProgress(100, 100);
-                                    // }
-
-                                    // for (int i = 0; i <= 100; i++) {
-                                    // updateProgress(i, 100);
-                                    // try {
-                                    // Thread.sleep(50);
-                                    // } catch (InterruptedException e) {
-                                    // e.printStackTrace();
-                                    // }
-                                    // }
                                 } catch (Exception e) {
                                     System.out.println("error");
+                                    e.printStackTrace();
                                     items = null;
                                     updateProgress(100, 100);
                                 }
@@ -596,6 +543,7 @@ public class TableSectionController implements Initializable {
                 if (Math.abs(((Double) newValue - 1.0)) < Math.pow(10, -15)) {
                     if (items != null) {
                         refreshDisplayItems();
+                        setSearchBarDropDownItems();
                         loadCachedPane();
                     } else {
                         displayErrorPane();
@@ -620,7 +568,7 @@ public class TableSectionController implements Initializable {
         Function<NullType, NullType> refresh = new Function<NullType, NullType>() {
             @Override
             public NullType apply(NullType t) {
-                initialize(null, null);
+                refresh();
                 return null;
             }
         };
@@ -642,9 +590,9 @@ public class TableSectionController implements Initializable {
             public void handle(ActionEvent arg0) {
                 String addFormViewPath = currentNode.get("form_view").asText();
                 String addControllerPath = currentNode.get("form_controller").asText();
-                Class[] classArgs = { ArrayList.class };
+                Class[] classArgs = { ArrayList.class, ArrayList.class, Function.class };
                 Initializable addFormController = Tools.getControllerFromPath(addControllerPath, classArgs,
-                formDisplayDropDownLists);
+                        formDisplayDropDownLists, formDropDownLists, getRefreshFunction());
                 Tools.showModal(addFormController, addFormViewPath, Tools.getStageFromNode(addButton));
             }
         };
@@ -655,24 +603,45 @@ public class TableSectionController implements Initializable {
     }
 
     void addDropDownItemsFromResponse(Response response) {
+        formDropDownLists = new ArrayList();
+        formDisplayDropDownLists = new ArrayList<>();
         int index = 0;
+        System.out.println(response.getData());
         for (JsonNode dropDownItemsList : response.getData()) {
-        
+
             ArrayList<JsonNode> dropDownItems = new ArrayList<>();
             ArrayList<String> displayDropDownItems = new ArrayList<>();
 
             for (JsonNode dropDownItem : dropDownItemsList) {
                 dropDownItems.add(dropDownItem);
-                displayDropDownItems.add(getDisplayDropDownFromItemAndIndex(dropDownItem,index));
+                displayDropDownItems.add(getDisplayDropDownFromItemAndIndex(dropDownItem, index));
             }
             formDropDownLists.add(dropDownItems);
             formDisplayDropDownLists.add(displayDropDownItems);
-            index ++;
+            index++;
         }
         System.out.println(formDisplayDropDownLists);
     }
 
-    String getDisplayDropDownFromItemAndIndex(JsonNode dropDownItem, int index){
+    Function getRefreshFunction() {
+        return new Function<NullType, NullType>() {
+            @Override
+            public NullType apply(NullType t) {
+                System.out.println("refresh");
+                try {
+                    Platform.runLater(() -> {
+                        refresh();
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+        };
+    }
+
+    String getDisplayDropDownFromItemAndIndex(JsonNode dropDownItem, int index) {
         return dropDownItem.get(formDropDownAttributes.get(index)).asText();
     }
 
@@ -683,6 +652,86 @@ public class TableSectionController implements Initializable {
     double computeItemRequestLoadingIncrement(int numberOfItems) {
         double itemsRequestLoadingIncrement = 100
                 - (Config.dropDownRequestLoadingIncrement + Config.numItemsRequestLoadingIncrement);
-        return itemsRequestLoadingIncrement / numberOfItems;
+        if (numberOfItems != 0) {
+            return itemsRequestLoadingIncrement / numberOfItems;
+        } else {
+            return itemsRequestLoadingIncrement;
+        }
+
+    }
+
+    Function getDeleteFunctionFromIndex(int itemIndex) {
+        return new Function<NullType, CompletableFuture<HttpResponse<String>>>() {
+            @Override
+            public CompletableFuture<HttpResponse<String>> apply(NullType t) {
+                String itemId = getItemIdByIndex(itemIndex);
+                return RequestManager.deleteItem(baseUrl, itemId);
+            }
+        };
+    }
+
+    String getItemIdByIndex(int itemIndex) {
+        TableRowable item = items.get(itemIndex);
+        return item.getId();
+    }
+
+    void refresh() {
+        items = null;
+
+        showLoadingIcon();
+        fetchItems(fetchItemsService);
+        initializeTable();
+
+        bindTablePaneWithNumberOfDisplayItems();
+        bindTableRowsWithEditAction();
+
+        table.refresh();
+    }
+
+    void initializeItems() {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+
+    void clearBasePane() {
+        basePane.getChildren().clear();
+    }
+
+    void bindSearchBarWithSearchUrl() {
+        ((ISearchBar) searchBarController).setChangeUrl(getChangeUrlFunction());
+    }
+
+    Function<String, NullType> getChangeUrlFunction() {
+        return new Function<String, NullType>() {
+            @Override
+            public NullType apply(String newSearchUrl) {
+                setSearchUrl(newSearchUrl);
+                return null;
+            }
+        };
+    }
+
+    void setSearchUrl(String newSearchUrl) {
+        System.out.println("new search url :" + newSearchUrl);
+        this.searchUrl = newSearchUrl;
+        refresh();
+    }
+
+    void setSearchBarDropDownItems() {
+        ((ISearchBar) searchBarController).setDropDownItems(formDisplayDropDownLists);
+    }
+
+    void initializeSearchUrl() {
+        searchUrl = "";
+    }
+
+    Class getCurrentClass(){
+        try {
+            return Class.forName(currentNode.get("class_path").asText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

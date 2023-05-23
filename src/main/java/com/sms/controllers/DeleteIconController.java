@@ -14,15 +14,19 @@ import javafx.stage.Stage;
 
 public class DeleteIconController implements Initializable{
     Function<NullType, Stage> getPrimaryStage;
+    Function delete;
+    Function refresh;
 
-    public DeleteIconController(Function<NullType, Stage> getPrimaryStage) {
+    public DeleteIconController(Function<NullType, Stage> getPrimaryStage, Function delete, Function refresh) {
         super();
         this.getPrimaryStage = getPrimaryStage;
+        this.delete = delete;
+        this.refresh = refresh;
     }
 
     @FXML
     void onDelete(){
-        Tools.showModal(new DeleteValidationController(getPrimaryStage.apply(null)), "/pages/DeleteValidationPane.fxml", getPrimaryStage.apply(null));
+        Tools.showModal(new DeleteValidationController(getPrimaryStage.apply(null), delete, refresh), "/pages/DeleteValidationPane.fxml", getPrimaryStage.apply(null));
     }
     
     @Override

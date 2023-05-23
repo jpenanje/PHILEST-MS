@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="addStudentModal" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="addItemModal" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox fx:id="mainPanePupil" alignment="TOP_CENTER">
          <children>
@@ -25,10 +26,10 @@
                <children>
                   <ImageView fitHeight="23.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/form_student_icon.png" />
+                        <Image url="@../images/cash_in_icon.png" />
                      </image>
                   </ImageView>
-                  <Text fx:id="title" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Add a pupil">
+                  <Text fx:id="title" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash In">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -44,12 +45,12 @@
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
                            <children>
-                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Pupil's full name" />
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount" />
                               <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
                            </children>
                         </HBox>
-                        <TextField fx:id="pupilName" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="name" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
-                        <Text fx:id="pupilNameErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                        <TextField fx:id="amount" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="amount" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
+                        <Text fx:id="amountErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />
                            </font>
@@ -66,61 +67,17 @@
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
                            <children>
-                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Class" />
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Pupil" />
                               <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
                            </children>
                         </HBox>
-                        <MenuButton fx:id="pupilClass" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Class">
+                        <MenuButton fx:id="pupil" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Select Pupil">
                            <items>
                               <MenuItem mnemonicParsing="false" text="Action 1" />
                               <MenuItem mnemonicParsing="false" text="Action 2" />
                            </items>
                         </MenuButton>
-                        <Text fx:id="pupilClassErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </VBox>
-                  <VBox>
-                     <children>
-                        <HBox>
-                           <VBox.margin>
-                              <Insets bottom="1.0" left="5.0" />
-                           </VBox.margin>
-                           <children>
-                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Parent's name" />
-                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
-                           </children>
-                        </HBox>
-                        <TextField fx:id="parentName" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="parent's name" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
-                        <Text fx:id="pupilParentNameErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </VBox>
-                  <VBox>
-                     <children>
-                        <HBox>
-                           <VBox.margin>
-                              <Insets bottom="1.0" left="5.0" />
-                           </VBox.margin>
-                           <children>
-                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Parent's phone number" />
-                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
-                           </children>
-                        </HBox>
-                        <TextField fx:id="phoneNumber" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="phone number" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
-                        <Text fx:id="pupilParentPhoneErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                        <Text fx:id="pupilErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />
                            </font>
@@ -137,17 +94,66 @@
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
                            <children>
-                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Year" />
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Purpose" />
                               <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
                            </children>
                         </HBox>
-                        <MenuButton fx:id="currentYear" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Current Year">
+                        <MenuButton fx:id="purpose" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Select Purpose">
                            <items>
                               <MenuItem mnemonicParsing="false" text="Action 1" />
                               <MenuItem mnemonicParsing="false" text="Action 2" />
                            </items>
                         </MenuButton>
-                        <Text fx:id="currentYearErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                        <Text fx:id="purposeErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="79.0" prefHeight="20.0" prefWidth="286.0">
+                     <children>
+                        <HBox>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Academic year" />
+                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
+                           </children>
+                        </HBox>
+                        <MenuButton fx:id="academicYear" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Academic year">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </MenuButton>
+                        <Text fx:id="academicYearErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <HBox>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
+                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
+                           </children>
+                        </HBox>
+                        <DatePicker fx:id="date" focusTraversable="false" prefHeight="29.0" prefWidth="286.0" promptText="date" style="-fx-background-color: transparent; -fx-border-radius: 2; -fx-border-width: 1; -fx-border-color: A6A6A6;" stylesheets="@../styles/datePickerStyle.css" />
+                        <Text fx:id="dateErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />
                            </font>

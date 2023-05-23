@@ -2,6 +2,9 @@ package com.sms.controllers;
 
 import java.net.URL;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -11,6 +14,7 @@ import java.util.function.Function;
 import javax.lang.model.type.NullType;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sms.models.CashIn;
 import com.sms.models.Response;
 import com.sms.models.Student;
 import com.sms.tools.Config;
@@ -28,6 +32,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -37,10 +42,31 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class StudentFormController implements Initializable {
+public class CashInFormController implements Initializable {
 
     @FXML
-    private StackPane addStudentModal;
+    private MenuButton academicYear;
+
+    @FXML
+    private Text academicYearErrorMessage;
+
+    @FXML
+    private StackPane addItemModal;
+
+    @FXML
+    private TextField amount;
+
+    @FXML
+    private Text amountErrorMessage;
+
+    @FXML
+    private HBox buttonsPane;
+
+    @FXML
+    private DatePicker date;
+
+    @FXML
+    private Text dateErrorMessage;
 
     @FXML
     private VBox formPane;
@@ -49,56 +75,37 @@ public class StudentFormController implements Initializable {
     private VBox mainPanePupil;
 
     @FXML
-    private TextField parentName;
+    private MenuButton pupil;
 
     @FXML
-    private TextField phoneNumber;
+    private Text pupilErrorMessage;
 
     @FXML
-    private MenuButton pupilClass;
+    private MenuButton purpose;
 
     @FXML
-    private Text pupilClassErrorMessage;
-
-    @FXML
-    private MenuButton currentYear;
-
-    @FXML
-    private Text currentYearErrorMessage;
-
-    @FXML
-    private TextField pupilName;
-
-    @FXML
-    private Text pupilNameErrorMessage;
-
-    @FXML
-    private Text pupilParentNameErrorMessage;
-
-    @FXML
-    private Text pupilParentPhoneErrorMessage;
+    private Text purposeErrorMessage;
 
     @FXML
     private Text title;
-
-    @FXML
-    private HBox buttonsPane;
 
     private Pane loadingIcon;
 
     ObservableList<Node> buttons;
 
-    private Student student;
+    private CashIn cashIn;
 
     private boolean saved;
 
     Function<NullType, NullType> refresh;
 
-    private ArrayList<String> classes;
+    private ArrayList<String> students;
+
+    private ArrayList<String> purposes;
 
     private ArrayList<String> academicYears;
 
-    private ArrayList<JsonNode> classesObjs;
+    private ArrayList<JsonNode> studentsObjs;
 
     @FXML
     void cancel(ActionEvent event) {
@@ -116,37 +123,39 @@ public class StudentFormController implements Initializable {
         }
     }
 
-    public StudentFormController() {
+    public CashInFormController() {
         super();
     }
 
-    public StudentFormController(ArrayList<ArrayList> dropDownLists, ArrayList<ArrayList> dropDownListsObjects,
+    public CashInFormController(ArrayList<ArrayList> dropDownLists, ArrayList<ArrayList> dropDownListsObjects,
             Function refresh) {
         super();
         if (dropDownLists != null) {
-            this.classes = (ArrayList<String>) dropDownLists.get(0);
-            this.classesObjs = (ArrayList<JsonNode>) dropDownListsObjects.get(0);
+            this.students = (ArrayList<String>) dropDownLists.get(0);
+            this.studentsObjs = (ArrayList<JsonNode>) dropDownListsObjects.get(0);
             this.academicYears = (ArrayList<String>) dropDownLists.get(1);
+            this.purposes = (ArrayList<String>) dropDownLists.get(2);
         }
         this.refresh = refresh;
     }
 
-    public StudentFormController(Student student, ArrayList<ArrayList> dropDownLists,
+    public CashInFormController(CashIn cashIn, ArrayList<ArrayList> dropDownLists,
             ArrayList<ArrayList> dropDownListsObjects, Function refresh) {
         super();
-        if (student != null) {
-            this.student = student;
+        if (cashIn != null) {
+            this.cashIn = cashIn;
         }
         if (dropDownLists != null) {
-            this.classes = (ArrayList<String>) dropDownLists.get(0);
-            this.classesObjs = (ArrayList<JsonNode>) dropDownListsObjects.get(0);
+            this.students = (ArrayList<String>) dropDownLists.get(0);
+            this.studentsObjs = (ArrayList<JsonNode>) dropDownListsObjects.get(0);
             this.academicYears = (ArrayList<String>) dropDownLists.get(1);
+            this.purposes = (ArrayList<String>) dropDownLists.get(2);
         }
         this.refresh = refresh;
     }
 
     void showLoadingIcon() {
-        System.out.println("Show student form loading icon");
+        System.out.println("Show cash in form loading icon");
         buttons = FXCollections.observableArrayList(buttonsPane.getChildren());
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().add(loadingIcon);
@@ -163,7 +172,7 @@ public class StudentFormController implements Initializable {
         Initializable errorInSavingPageController = new ErrorPageController(
                 "There was an issue while trying to save this item. Check your internet connection and try again.");
         Tools.showModal(errorInSavingPageController, "/pages/ErrorPage.fxml",
-                Tools.getStageFromNode(addStudentModal));
+                Tools.getStageFromNode(addItemModal));
     }
 
     void showSuccessIconForSeconds() {
@@ -183,7 +192,7 @@ public class StudentFormController implements Initializable {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
                     Object newValue) {
                 if (Math.abs(((Double) newValue - 1.0)) < Math.pow(10, -15)) {
-                    Tools.closeStageFromNode(addStudentModal);
+                    Tools.closeStageFromNode(addItemModal);
                 }
             };
         });
@@ -260,7 +269,7 @@ public class StudentFormController implements Initializable {
     }
 
     Service getSaveService() {
-        System.out.println("get Save Student Service");
+        System.out.println("get Save Cash In Service");
         Service service = new Service() {
             @Override
             protected Task createTask() {
@@ -271,13 +280,13 @@ public class StudentFormController implements Initializable {
                             @Override
                             public void run() {
                                 try {
-                                    String currentStudentRequestBody = getCurrentStudent().toJson();
+                                    String currentStudentRequestBody = getCurrentCashIn().toJson();
 
                                     HttpResponse<String> saveResponse;
-                                    if (student.getId() != null && student.getId().length() > 0) {
-                                        saveResponse = updateStudent(currentStudentRequestBody);
+                                    if (cashIn.getId() != null && cashIn.getId().length() > 0) {
+                                        saveResponse = updateCashIn(currentStudentRequestBody);
                                     } else {
-                                        saveResponse = addStudent(currentStudentRequestBody);
+                                        saveResponse = addCashIn(currentStudentRequestBody);
                                     }
                                     Response customResponse = Tools.getCustomResponseFromResponse(saveResponse);
 
@@ -316,49 +325,50 @@ public class StudentFormController implements Initializable {
         return service;
     }
 
-    HttpResponse<String> addStudent(String requestBody) throws Exception {
-        return RequestManager.postItem("students/", requestBody).get();
+    HttpResponse<String> addCashIn(String requestBody) throws Exception {
+        return RequestManager.postItem("cashin/", requestBody).get();
     }
 
-    HttpResponse<String> updateStudent(String requestBody) throws Exception {
-        return RequestManager.updateItem("students/" + student.getId() + "/", requestBody).get();
+    HttpResponse<String> updateCashIn(String requestBody) throws Exception {
+        return RequestManager.updateItem("cashin/" + cashIn.getId() + "/", requestBody).get();
     }
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        if (student != null) {
+        if (cashIn != null) {
             changeTitle();
             initializeFormFields();
         }
-        if (classes != null) {
-            setClassesOptions();
+        if (students != null) {
+            setStudentsOptions();
         }
-        if(student != null && classes != null){
-            initializeClass();
+        if(cashIn != null && students != null){
+            initializeStudent();
         }
         if(academicYears != null){
             setYearsOptions();
         }
-        if(student != null && academicYears != null){
+        if(cashIn != null && academicYears != null){
             initializeYear();
+        }
+        if(purposes != null){
+            setPurposesOptions();
+        }
+        if(cashIn != null && purposes != null){
+            initializePurpose();
         }
         loadingIcon = getLoadingIcon();
     }
 
-    void setClassesOptions() {
-        System.out.println("init student classes");
-        ArrayList<MenuItem> menuItems = new ArrayList<>();
-        for (String clazz : classes) {
-            menuItems.add(getMenuItem(clazz));
-        }
-        pupilClass.getItems().clear();
-        pupilClass.getItems().addAll(menuItems);
+    void setStudentsOptions() {
+        System.out.println("init cashIn students");
+        Tools.addDropDownItemsFromFieldAndItems(pupil, students);
     }
 
     void setYearsOptions() {
-        System.out.println("init student years");
-        currentYear.getItems().clear();
-        Tools.addDropDownItemsFromFieldAndItems(currentYear, academicYears);
+        System.out.println("init cashIn years");
+        academicYear.getItems().clear();
+        Tools.addDropDownItemsFromFieldAndItems(academicYear, academicYears);
         // ArrayList<MenuItem> menuItems = new ArrayList<>();
         // for (String academicYear : academicYears) {
         //     menuItems.add(getMenuItem(clazz));
@@ -366,8 +376,25 @@ public class StudentFormController implements Initializable {
         // pupilClass.getItems().addAll(menuItems);
     }
 
+    void setPurposesOptions() {
+        System.out.println("init cash in purposes");
+        purpose.getItems().clear();
+        Tools.addDropDownItemsFromFieldAndItems(purpose, purposes);
+    }
+
+    void initializePurpose() {
+        String initialPurpose = purposes.get(0);
+        for(String p : purposes){
+            if(p.equals(cashIn.getPurpose())){
+                initialPurpose = p;
+                purpose.setText(initialPurpose);
+                return;
+            }
+        }
+    }
+
     void changeTitle() {
-        title.setText("Edit pupil");
+        title.setText("Edit Cash In");
     }
 
     MenuItem getMenuItem(String text) {
@@ -377,7 +404,7 @@ public class StudentFormController implements Initializable {
         toBeReturned.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                pupilClass.setText(finalText);
+                pupil.setText(finalText);
             }
         });
 
@@ -385,23 +412,21 @@ public class StudentFormController implements Initializable {
     }
 
     void initializeFormFields() {
-        if (student.getPupilName() != null) {
-            pupilName.setText(student.getPupilName());
+        if(cashIn.getAmount() != null){
+            amount.setText(cashIn.getAmount());
         }
-        if (student.getParentName() != null) {
-            parentName.setText(student.getParentName());
-        }
-        if (student.getPhoneNumber() != null) {
-            phoneNumber.setText(student.getPhoneNumber());
+        if(cashIn.getDate() != null){
+            LocalDate localDate = LocalDate.now();
+            date.setValue(localDate);
         }
     }
 
-    void initializeClass() {
-        String initialClass = classes.get(0);
-        for(JsonNode clazz : classesObjs){
-            if(clazz.get("id").asInt() == student.getClassId()){
-                initialClass = clazz.get("name").asText();
-                pupilClass.setText(initialClass);
+    void initializeStudent() {
+        String initialStudent = students.get(0);
+        for(JsonNode student : studentsObjs){
+            if(student.get("id").asInt() == cashIn.getStudentId()){
+                initialStudent = student.get("full_name").asText();
+                pupil.setText(initialStudent);
                 return;
             }
         }
@@ -410,58 +435,63 @@ public class StudentFormController implements Initializable {
 
     void initializeYear() {
         String initialYear = academicYears.get(0);
-        for(String academicYear : academicYears){
-            if(academicYear.equals(student.getCurrentYear())){
-                initialYear = academicYear;
-                currentYear.setText(initialYear);
+        for(String ay : academicYears){
+            if(ay.equals(cashIn.getAcademicYear())){
+                initialYear = ay;
+                academicYear.setText(initialYear);
                 return;
             }
         }
     }
 
     boolean validateForm() {
-        return (validatePupilNameField() &
-                validateClassField() &
-                validateParentNameField() &
-                validateParentPhoneField()&
-                validateYearField());
+        return ( validateAmountField() &
+                validatePupilField() &
+                validatePurposeField() &
+                validateAcademicYearField() &
+                validateDateField());
     }
 
-    boolean validatePupilNameField() {
-        return Tools.simpleValidation(pupilName, pupilNameErrorMessage);
+    boolean validateAmountField(){
+        return Tools.digitValidation(amount, amountErrorMessage);
     }
 
-    boolean validateClassField() {
-        return Tools.dropDownValidation(pupilClass,"Class", pupilClassErrorMessage);
+    boolean validatePupilField(){
+        return Tools.dropDownValidation(pupil,"Select Pupil", pupilErrorMessage);
     }
 
-    boolean validateParentNameField() {
-        return Tools.simpleValidation(parentName, pupilParentNameErrorMessage);
+    boolean validatePurposeField(){
+        return Tools.dropDownValidation(purpose,"Select Purpose", purposeErrorMessage);
     }
 
-    boolean validateParentPhoneField() {
-        return Tools.digitValidation(phoneNumber, pupilParentPhoneErrorMessage);
+    boolean validateAcademicYearField(){
+        return Tools.dropDownValidation(academicYear,"Academic year", academicYearErrorMessage);
     }
 
-    boolean validateYearField() {
-        return Tools.dropDownValidation(currentYear,"Current Year", currentYearErrorMessage);
+    boolean validateDateField(){
+        return Tools.simpleValidation(date, dateErrorMessage);
     }
 
-    Student getCurrentStudent() {
-        if (student == null) {
-            student = new Student();
+    CashIn getCurrentCashIn() {
+        if (cashIn == null) {
+            cashIn = new CashIn();
         }
-        student.setPupilName(pupilName.getText());
-        student.setParentName(parentName.getText());
-        student.setPhoneNumber(phoneNumber.getText());
-        student.setClassId(getClassIdFromName(pupilClass.getText()));
-        student.setCurrentYear(currentYear.getText());
-        return student;
+        cashIn.setAmount(amount.getText());
+        cashIn.setAcademicYear(academicYear.getText());
+        cashIn.setDate(Tools.getUtcDateStringFromLocalDate(date.getValue()));
+        cashIn.setPurpose(purpose.getText());
+        cashIn.setStudentId(getPupilIdFromName(pupil.getText()));
+        // student.setPupilName(pupilName.getText());
+        // student.setParentName(parentName.getText());
+        // student.setPhoneNumber(phoneNumber.getText());
+        // student.setClassId(getClassIdFromName(pupilClass.getText()));
+        // student.setCurrentYear(currentYear.getText());
+        return cashIn;
     }
 
-    int getClassIdFromName(String className) {
-        for (JsonNode node : this.classesObjs) {
-            if ((node.get("name").asText()).equals(className)) {
+    int getPupilIdFromName(String studentName) {
+        for (JsonNode node : this.studentsObjs) {
+            if ((node.get("full_name").asText()).equals(studentName)) {
                 return node.get("id").asInt();
             }
         }

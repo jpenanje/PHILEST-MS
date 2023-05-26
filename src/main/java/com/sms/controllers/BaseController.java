@@ -45,7 +45,7 @@ public class BaseController implements Initializable {
 
     private Function<Integer, NullType> onChange;
 
-    private Function<NullType, NullType> showProfileModal;
+    private Function<Initializable, NullType> showProfileModal;
 
     private int currentItemIndex = 0;
 
@@ -87,11 +87,11 @@ public class BaseController implements Initializable {
     }
 
     void loadHeader() {
-        this.showProfileModal = new Function<NullType, NullType>() {
+        this.showProfileModal = new Function<Initializable, NullType>() {
             @Override
-            public NullType apply(NullType item) {
+            public NullType apply(Initializable controller) {
                 blurBasePane();
-                showProfileModal();
+                showProfileModal(controller);
                 return null;
             }
         };
@@ -114,14 +114,14 @@ public class BaseController implements Initializable {
 
     }
 
-    void showProfileModal() {
+    void showProfileModal(Initializable profileSectionController) {
         // create a new modal stage
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.initOwner(primaryStage);
 
         // create a pane with some content
-        ViewProfilePaneController viewProfilePaneController = new ViewProfilePaneController();
+        ViewProfilePaneController viewProfilePaneController = new ViewProfilePaneController(profileSectionController);
         Pane modalPane = Tools.getPaneFromControllerAndFxmlPath(viewProfilePaneController,
                 "/pages/ViewProfilePane.fxml");
         Scene modalScene = new Scene(modalPane);

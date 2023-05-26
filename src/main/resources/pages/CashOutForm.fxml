@@ -29,7 +29,7 @@
                         <Image url="@../images/cash_in_icon.png" />
                      </image>
                   </ImageView>
-                  <Text fx:id="title" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash In">
+                  <Text fx:id="title" fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash Out">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -60,24 +60,19 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </VBox>
-                  <VBox prefHeight="20.0" prefWidth="286.0">
+                  <VBox layoutX="10.0" layoutY="20.0">
                      <children>
                         <HBox>
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
                            <children>
-                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Pupil" />
+                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Name of receiver" />
                               <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
                            </children>
                         </HBox>
-                        <MenuButton fx:id="pupil" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Select Pupil">
-                           <items>
-                              <MenuItem mnemonicParsing="false" text="Action 1" />
-                              <MenuItem mnemonicParsing="false" text="Action 2" />
-                           </items>
-                        </MenuButton>
-                        <Text fx:id="pupilErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
+                        <TextField fx:id="nameOfReceiver" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="name of receiver" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
+                        <Text fx:id="nameOfReceiverErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />
                            </font>
@@ -114,33 +109,6 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </VBox>
-                  <VBox layoutX="10.0" layoutY="79.0" prefHeight="20.0" prefWidth="286.0">
-                     <children>
-                        <HBox>
-                           <VBox.margin>
-                              <Insets bottom="1.0" left="5.0" />
-                           </VBox.margin>
-                           <children>
-                              <Text fill="#4a0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Academic year" />
-                              <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
-                           </children>
-                        </HBox>
-                        <MenuButton fx:id="academicYear" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="29.0" prefWidth="341.0" style="-fx-background-color: transparent; -fx-border-color: A6A6A6; -fx-border-radius: 2;" text="Academic year">
-                           <items>
-                              <MenuItem mnemonicParsing="false" text="Action 1" />
-                              <MenuItem mnemonicParsing="false" text="Action 2" />
-                           </items>
-                        </MenuButton>
-                        <Text fx:id="academicYearErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
-                           <font>
-                              <Font size="9.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </VBox>
                   <VBox>
                      <children>
                         <HBox>
@@ -152,7 +120,7 @@
                               <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="*" />
                            </children>
                         </HBox>
-                        <DatePicker fx:id="date" focusTraversable="false" prefHeight="29.0" prefWidth="286.0" promptText="date" style="-fx-background-color: white; -fx-border-radius: 2; -fx-border-width: 1; -fx-border-color: A6A6A6; -fx-control-inner-background: white;" stylesheets="@../styles/datePickerStyle.css" />
+                        <DatePicker fx:id="date" focusTraversable="false" prefHeight="29.0" prefWidth="286.0" promptText="date" style="-fx-background-color: white; -fx-border-radius: 2; -fx-border-width: 1; -fx-border-color: A6A6A6; -fx-control-inner-background: white; -fx-effect: null;" stylesheets="@../styles/datePickerStyle.css" />
                         <Text fx:id="dateErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />

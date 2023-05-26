@@ -6,6 +6,9 @@ import java.util.function.Function;
 
 import javax.lang.model.type.NullType;
 
+import com.sms.tools.Config;
+import com.sms.tools.Tools;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
@@ -14,9 +17,9 @@ import javafx.scene.text.Text;
 
 public class ProfilePaneController implements Initializable {
 
-    Function<NullType, NullType> showProfileModal;
+    Function<Initializable, NullType> showProfileModal;
 
-    public ProfilePaneController(Function<NullType, NullType> showProfileModal) {
+    public ProfilePaneController(Function<Initializable, NullType> showProfileModal) {
         super();
         this.showProfileModal = showProfileModal;
     }
@@ -32,13 +35,22 @@ public class ProfilePaneController implements Initializable {
 
     @FXML
     void showProfileModal(MouseEvent event) {
-        showProfileModal.apply(null);
+        showProfileModal.apply(this);
     }
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+        refresh();
+    }
+
+    void refresh(){
+        if(Config.currentUserName != null && !Config.currentUserName.isEmpty()){
+            userName.setText(Config.currentUserName);
+        }
+        if(Config.currentUserPic != null && !Config.currentUserPic.isEmpty()){
+            pic.setImage(Tools.getImageFromBase64(Config.currentUserPic));
+        }
         role.setText("admin");
-        userName.setText("Username");
     }
 
 }

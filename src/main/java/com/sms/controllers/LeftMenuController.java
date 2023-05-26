@@ -11,8 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sms.tools.Config;
 import com.sms.tools.Tools;
 
 public class LeftMenuController implements Initializable {
@@ -41,6 +43,29 @@ public class LeftMenuController implements Initializable {
     }
 
     Pane getItemPaneFromJsonNode(JsonNode menuItem, int index, boolean selected) {
+        Initializable controller;
+        if(menuItem.get("title").asText().equals("logout")){
+            controller = getLogoutController(menuItem, index, selected);
+        }
+        else{
+            controller = getPageMenuItemController(menuItem, index, selected);
+        }
+        
+        return Tools.getPaneFromControllerAndFxmlPath(controller, "/components/MenuItem.fxml");
+    }
+
+    Initializable getLogoutController(JsonNode menuItem, int index, boolean selected){
+        Function<Integer, NullType> onMenuItemClick = new Function<Integer, NullType>() {
+            @Override
+            public NullType apply(Integer newIndex) {
+                logout();
+                return null;
+            }
+        };
+        return new MenuItemController(menuItem, selected, onMenuItemClick, index);
+    }
+
+    Initializable getPageMenuItemController(JsonNode menuItem, int index, boolean selected){
         Function<Integer, NullType> onMenuItemClick = new Function<Integer, NullType>() {
             @Override
             public NullType apply(Integer newIndex) {
@@ -52,8 +77,7 @@ public class LeftMenuController implements Initializable {
                 return null;
             }
         };
-        Initializable controller = new MenuItemController(menuItem, selected, onMenuItemClick, index);
-        return Tools.getPaneFromControllerAndFxmlPath(controller, "/components/MenuItem.fxml");
+        return new MenuItemController(menuItem, selected, onMenuItemClick, index);
     }
 
     String getNewTitleFromMenuItems(int newIndex){
@@ -74,5 +98,24 @@ public class LeftMenuController implements Initializable {
         JsonNode selectedMenuItemNode = menuItems.get(selectedItemIndex);
         Pane selectedMenuItem = getItemPaneFromJsonNode(selectedMenuItemNode, selectedItemIndex, true);
         menuItemsPane.getChildren().add(selectedItemIndex, selectedMenuItem);
+    }
+
+    void logout(){
+        removeToken();
+        clearCurrentUser();
+        Stage stage = new Stage();
+        Tools.openStage(new LoginController(), "/pages/Login.fxml", stage, false);
+        Tools.closeStageFromNode(menuItemsPane);
+    }
+
+    void removeToken(){
+        Config.token = null;
+    }
+
+    void clearCurrentUser(){
+        Config.currentUserFullName = null;
+        Config.currentUserName = null;
+        Config.currentUserPhone = null;
+        Config.currentUserPic = null;
     }
 }

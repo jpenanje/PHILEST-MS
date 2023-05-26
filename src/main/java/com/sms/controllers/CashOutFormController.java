@@ -5,6 +5,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -15,6 +16,7 @@ import javax.lang.model.type.NullType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.models.CashIn;
+import com.sms.models.CashOut;
 import com.sms.models.Response;
 import com.sms.models.Student;
 import com.sms.tools.Config;
@@ -43,13 +45,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
-public class CashInFormController implements Initializable {
-
-    @FXML
-    private MenuButton academicYear;
-
-    @FXML
-    private Text academicYearErrorMessage;
+public class CashOutFormController implements Initializable {
 
     @FXML
     private StackPane addItemModal;
@@ -76,12 +72,6 @@ public class CashInFormController implements Initializable {
     private VBox mainPanePupil;
 
     @FXML
-    private MenuButton pupil;
-
-    @FXML
-    private Text pupilErrorMessage;
-
-    @FXML
     private MenuButton purpose;
 
     @FXML
@@ -90,21 +80,23 @@ public class CashInFormController implements Initializable {
     @FXML
     private Text title;
 
+    @FXML
+    private TextField nameOfReceiver;
+
+    @FXML
+    private Text nameOfReceiverErrorMessage;
+
     private Pane loadingIcon;
 
     ObservableList<Node> buttons;
 
-    private CashIn cashIn;
+    private CashOut cashOut;
 
     private boolean saved;
 
     Function<NullType, NullType> refresh;
 
-    private ArrayList<String> students;
-
     private ArrayList<String> purposes;
-
-    private ArrayList<String> academicYears;
 
     private ArrayList<JsonNode> studentsObjs;
 
@@ -124,33 +116,27 @@ public class CashInFormController implements Initializable {
         }
     }
 
-    public CashInFormController() {
+    public CashOutFormController() {
         super();
     }
 
-    public CashInFormController(ArrayList<ArrayList> dropDownLists, ArrayList<ArrayList> dropDownListsObjects,
+    public CashOutFormController(ArrayList<ArrayList> dropDownLists, ArrayList<ArrayList> dropDownListsObjects,
             Function refresh) {
         super();
         if (dropDownLists != null) {
-            this.students = (ArrayList<String>) dropDownLists.get(0);
-            this.studentsObjs = (ArrayList<JsonNode>) dropDownListsObjects.get(0);
-            this.academicYears = (ArrayList<String>) dropDownLists.get(1);
-            this.purposes = (ArrayList<String>) dropDownLists.get(2);
+            this.purposes = (ArrayList<String>) dropDownLists.get(0);
         }
         this.refresh = refresh;
     }
 
-    public CashInFormController(CashIn cashIn, ArrayList<ArrayList> dropDownLists,
+    public CashOutFormController(CashOut cashOut, ArrayList<ArrayList> dropDownLists,
             ArrayList<ArrayList> dropDownListsObjects, Function refresh) {
         super();
-        if (cashIn != null) {
-            this.cashIn = cashIn;
+        if (cashOut != null) {
+            this.cashOut = cashOut;
         }
         if (dropDownLists != null) {
-            this.students = (ArrayList<String>) dropDownLists.get(0);
-            this.studentsObjs = (ArrayList<JsonNode>) dropDownListsObjects.get(0);
-            this.academicYears = (ArrayList<String>) dropDownLists.get(1);
-            this.purposes = (ArrayList<String>) dropDownLists.get(2);
+            this.purposes = (ArrayList<String>) dropDownLists.get(0);
         }
         this.refresh = refresh;
     }
@@ -281,10 +267,11 @@ public class CashInFormController implements Initializable {
                             @Override
                             public void run() {
                                 try {
-                                    String currentStudentRequestBody = getCurrentCashIn().toJson();
+                                    String currentStudentRequestBody = getCurrentCashOut().toJson();
+                                    System.out.println(currentStudentRequestBody);
 
                                     HttpResponse<String> saveResponse;
-                                    if (cashIn.getId() != null && cashIn.getId().length() > 0) {
+                                    if (cashOut.getId() != null && cashOut.getId().length() > 0) {
                                         saveResponse = updateCashIn(currentStudentRequestBody);
                                     } else {
                                         saveResponse = addCashIn(currentStudentRequestBody);
@@ -327,61 +314,33 @@ public class CashInFormController implements Initializable {
     }
 
     HttpResponse<String> addCashIn(String requestBody) throws Exception {
-        return RequestManager.postItem("cashin/", requestBody).get();
+        return RequestManager.postItem("cashout/", requestBody).get();
     }
 
     HttpResponse<String> updateCashIn(String requestBody) throws Exception {
-        return RequestManager.updateItem("cashin/" + cashIn.getId() + "/", requestBody).get();
+        return RequestManager.updateItem("cashout/" + cashOut.getId() + "/", requestBody).get();
     }
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        initializeDateFieldFormat();
-        
-        if (cashIn != null) {
+        if (cashOut != null) {
             changeTitle();
             initializeFormFields();
-        }
-        if (students != null) {
-            setStudentsOptions();
-        }
-        if(cashIn != null && students != null){
-            initializeStudent();
-        }
-        if(academicYears != null){
-            setYearsOptions();
-        }
-        if(cashIn != null && academicYears != null){
-            initializeYear();
         }
         if(purposes != null){
             setPurposesOptions();
         }
-        if(cashIn != null && purposes != null){
+        if(cashOut != null && purposes != null){
             initializePurpose();
         }
+        initializeDateFieldFormat();
         loadingIcon = getLoadingIcon();
     }
 
-    void setStudentsOptions() {
-        System.out.println("init cashIn students");
-        pupil.getItems().clear();
-        Tools.addDropDownItemsFromFieldAndItems(pupil, students);
-    }
 
-    void setYearsOptions() {
-        System.out.println("init cashIn years");
-        academicYear.getItems().clear();
-        Tools.addDropDownItemsFromFieldAndItems(academicYear, academicYears);
-        // ArrayList<MenuItem> menuItems = new ArrayList<>();
-        // for (String academicYear : academicYears) {
-        //     menuItems.add(getMenuItem(clazz));
-        // }
-        // pupilClass.getItems().addAll(menuItems);
-    }
 
     void setPurposesOptions() {
-        System.out.println("init cash in purposes");
+        System.out.println("init cash out purposes");
         purpose.getItems().clear();
         Tools.addDropDownItemsFromFieldAndItems(purpose, purposes);
     }
@@ -389,7 +348,7 @@ public class CashInFormController implements Initializable {
     void initializePurpose() {
         String initialPurpose = purposes.get(0);
         for(String p : purposes){
-            if(p.equals(cashIn.getPurpose())){
+            if(p.equals(cashOut.getPurpose())){
                 initialPurpose = p;
                 purpose.setText(initialPurpose);
                 return;
@@ -398,63 +357,28 @@ public class CashInFormController implements Initializable {
     }
 
     void changeTitle() {
-        title.setText("Edit Cash In");
-    }
-
-    MenuItem getMenuItem(String text) {
-        MenuItem toBeReturned = new MenuItem();
-        toBeReturned.setText(text);
-        final String finalText = text;
-        toBeReturned.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent arg0) {
-                pupil.setText(finalText);
-            }
-        });
-
-        return toBeReturned;
+        title.setText("Edit Cash Out");
     }
 
     void initializeFormFields() {
-        
-        if(cashIn.getAmount() != null){
-            amount.setText(cashIn.getAmount());
+        if(cashOut.getAmount() != null){
+            amount.setText(cashOut.getAmount());
         }
-        if(cashIn.getDate() != null){
-            
-            LocalDate localDate = Tools.getLocalDateFromString(cashIn.getDate());
+        if(cashOut.getDate() != null){
+            System.out.println("date at start");
+            System.out.println(cashOut.getDate());
+            LocalDate localDate = Tools.getLocalDateFromString(cashOut.getDate());
             date.setValue(localDate);
         }
-    }
-
-    void initializeStudent() {
-        String initialStudent = students.get(0);
-        for(JsonNode student : studentsObjs){
-            if(student.get("id").asInt() == cashIn.getStudentId()){
-                initialStudent = student.get("full_name").asText();
-                pupil.setText(initialStudent);
-                return;
-            }
-        }
-        
-    }
-
-    void initializeYear() {
-        String initialYear = academicYears.get(0);
-        for(String ay : academicYears){
-            if(ay.equals(cashIn.getAcademicYear())){
-                initialYear = ay;
-                academicYear.setText(initialYear);
-                return;
-            }
+        if(cashOut.getReceiverName() != null){
+            nameOfReceiver.setText(cashOut.getReceiverName());
         }
     }
 
     boolean validateForm() {
         return ( validateAmountField() &
-                validatePupilField() &
+                validateReceiverField() &
                 validatePurposeField() &
-                validateAcademicYearField() &
                 validateDateField());
     }
 
@@ -462,46 +386,32 @@ public class CashInFormController implements Initializable {
         return Tools.digitValidation(amount, amountErrorMessage);
     }
 
-    boolean validatePupilField(){
-        return Tools.dropDownValidation(pupil,"Select Pupil", pupilErrorMessage);
-    }
-
     boolean validatePurposeField(){
         return Tools.dropDownValidation(purpose,"Select Purpose", purposeErrorMessage);
-    }
-
-    boolean validateAcademicYearField(){
-        return Tools.dropDownValidation(academicYear,"Academic year", academicYearErrorMessage);
     }
 
     boolean validateDateField(){
         return Tools.simpleValidation(date, dateErrorMessage);
     }
 
-    CashIn getCurrentCashIn() {
-        if (cashIn == null) {
-            cashIn = new CashIn();
+    boolean validateReceiverField(){
+        return Tools.simpleValidation(nameOfReceiver, nameOfReceiverErrorMessage);
+    }
+
+    CashOut getCurrentCashOut() {
+        if (cashOut == null) {
+            cashOut = new CashOut();
         }
-        cashIn.setAmount(amount.getText());
-        cashIn.setAcademicYear(academicYear.getText());
-        cashIn.setDate(Tools.getUtcDateStringFromLocalDate(date.getValue()));
-        cashIn.setPurpose(purpose.getText());
-        cashIn.setStudentId(getPupilIdFromName(pupil.getText()));
+        cashOut.setAmount(amount.getText());
+        cashOut.setReceiverName(nameOfReceiver.getText());
+        cashOut.setDate(Tools.getUtcDateStringFromLocalDate(date.getValue()));
+        cashOut.setPurpose(purpose.getText());
         // student.setPupilName(pupilName.getText());
         // student.setParentName(parentName.getText());
         // student.setPhoneNumber(phoneNumber.getText());
         // student.setClassId(getClassIdFromName(pupilClass.getText()));
         // student.setCurrentYear(currentYear.getText());
-        return cashIn;
-    }
-
-    int getPupilIdFromName(String studentName) {
-        for (JsonNode node : this.studentsObjs) {
-            if ((node.get("full_name").asText()).equals(studentName)) {
-                return node.get("id").asInt();
-            }
-        }
-        return 1;
+        return cashOut;
     }
 
     void initializeDateFieldFormat(){

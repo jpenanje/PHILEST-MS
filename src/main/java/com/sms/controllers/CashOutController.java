@@ -10,6 +10,7 @@ import java.util.function.Function;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.interfaces.TableRowable;
 import com.sms.models.CashIn;
+import com.sms.models.CashOut;
 import com.sms.models.CustomTableCell;
 import com.sms.models.RowTypes;
 import com.sms.models.Student;
@@ -20,14 +21,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import javafx.scene.layout.Region;
 
-public class CashInController extends TableSectionController {
+public class CashOutController extends TableSectionController {
 
-    public CashInController() {
+    public CashOutController() {
         super(null, null, null, null, null, null);
     }
 
-    public CashInController(JsonNode node) {
-        super(new CashInSearchController(), "/sections/CashInSearch.fxml", node, itemFromNodeFunction(), "cashin/", getAttributes());
+    public CashOutController(JsonNode node) {
+        super(new CashOutSearchController(), "/sections/CashOutSearch.fxml", node, itemFromNodeFunction(), "cashout/", getAttributes());
         super.setColumns(getColumns());
         // requires the search controller and the fxml path
     }
@@ -53,8 +54,8 @@ public class CashInController extends TableSectionController {
             }
         });
 
-        TableColumn<TableRowable, String> column2 = new TableColumn<>("Student");
-        column2.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("studentName"));
+        TableColumn<TableRowable, String> column2 = new TableColumn<>("Receiver");
+        column2.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("receiverName"));
         column2.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
             @Override
             public TableCell<TableRowable, String> call(TableColumn<TableRowable, String> column) {
@@ -80,15 +81,6 @@ public class CashInController extends TableSectionController {
             }
         });
 
-        TableColumn<TableRowable, String> column5 = new TableColumn<>("Academic Year");
-        column5.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("academicYear"));
-        column5.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
-            @Override
-            public TableCell<TableRowable, String> call(TableColumn<TableRowable, String> column) {
-                return new CustomTableCell(RowTypes.TEXT);
-            }
-        });
-
         TableColumn<TableRowable, String> column6 = new TableColumn<>("Date");
         column6.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("date"));
         column6.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
@@ -98,7 +90,7 @@ public class CashInController extends TableSectionController {
             }
         });
 
-        columns.addAll(Arrays.asList(column1, column2,column3, column4, column5, column6));
+        columns.addAll(Arrays.asList(column1, column2,column3, column4, column6));
 
         makeColumnsNotSortable(columns);
         return columns;
@@ -112,10 +104,8 @@ public class CashInController extends TableSectionController {
                     System.out.println(node);
                     JsonNode itemNode = node.get(0);
                     String id = itemNode.get("id").asInt() + "";
-                    int studentId = itemNode.get("student_data").get("id").asInt(0);
-                    String studentName = itemNode.get("student_data").get("full_name").asText();
+                    String receiver = itemNode.get("name_of_receiver").asText();
                     String purpose = itemNode.get("purpose").asText();
-                    String academicYear = itemNode.get("academic_year").asText();
                     String amount = itemNode.get("amount").asText();
                     String date = itemNode.get("date").asText();
                     
@@ -167,14 +157,14 @@ public class CashInController extends TableSectionController {
                     //     }
                     // }
 
-                    CashIn toBeReturned = new CashIn(id, studentId, studentName, purpose, academicYear, amount, date);
+                    CashOut toBeReturned = new CashOut(id, receiver, purpose, amount, date);
                     // CashIn toBeReturned = new CashIn(id, studentId, studentName, purpose, academicYear, amount, date);
                     return toBeReturned;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("default cash in");
-                return new CashIn();
+                System.out.println("default cash out");
+                return new CashOut();
             }
         };
     }
@@ -182,8 +172,6 @@ public class CashInController extends TableSectionController {
 
     static ArrayList<String> getAttributes(){
         ArrayList<String> attributes = new ArrayList<>();
-        attributes.add("full_name");
-        attributes.add("year");
         attributes.add("purpose");
         return attributes;
     }

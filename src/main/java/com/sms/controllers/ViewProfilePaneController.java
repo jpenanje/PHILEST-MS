@@ -109,6 +109,8 @@ public class ViewProfilePaneController implements Initializable {
 
     private boolean duplicateUserName;
 
+    private boolean invalidPassword;
+
     private File currentImageFile;
 
     private Stage stage;
@@ -362,6 +364,13 @@ public class ViewProfilePaneController implements Initializable {
 
                                     }
 
+                                    else if (customResponse.getCode() == 412) {
+                                        saved = false;
+                                        invalidPassword = true;
+                                        updateProgress(100, 100);
+
+                                    }
+
                                     else {
                                         updateProgress(100, 100);
                                     }
@@ -446,8 +455,12 @@ public class ViewProfilePaneController implements Initializable {
                         System.out.println("not saved");
                         removeLoadingIcon();
                         if(duplicateUserName){
-                            String duplicateUserNameErrorMessage ="The username is already taken. Please change this username";
-                            showError(duplicateUserNameErrorMessage);
+                            // String duplicateUserNameErrorMessage ="The username is already taken. Please change this username";
+                            // showError(duplicateUserNameErrorMessage);
+                            showDuplicateUserNameErrorMessage();
+                        }
+                        else if(invalidPassword){
+                            showInvalidPasswordErrorMessage();
                         }
                         else{
                             showErrorMessage();
@@ -489,7 +502,7 @@ public class ViewProfilePaneController implements Initializable {
     }
 
     boolean validateProfilePic(){
-        if(Tools.getKBImageSize(profilePic.getImage()) > 100){
+        if(Tools.getKBImageSize(profilePic.getImage()) > 20){
             showError("The size of the image is too large pick an image with size around 100kb");
             return false;
         }
@@ -592,4 +605,15 @@ public class ViewProfilePaneController implements Initializable {
     void refreshProfilePane(){
         ((ProfilePaneController)profileSectionController).refresh();
     }
+
+    void showInvalidPasswordErrorMessage(){
+        previousPasswordErrorMessage.setText("This password is not valid");
+        previousPasswordErrorMessage.setVisible(true);
+    }
+
+    void showDuplicateUserNameErrorMessage(){
+        usernameErrorMessage.setText("This username is already taken");
+        usernameErrorMessage.setVisible(true);
+    }
+
 }

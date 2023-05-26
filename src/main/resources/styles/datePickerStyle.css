@@ -1,7 +1,33 @@
-.context-menu{
-    -fx-effect:null;
+.date-picker {
+    -fx-focus-color: transparent; /* Replace with your desired color */
+    -fx-effect: null;
+    -fx-background-color:transparent;
+    /* -fx-focus-color: transparent */
 }
 
-.popup-content-no-shadow {
-    -fx-inner-border: none;
+.date-picker .text-field{
+    -fx-focus-color: transparent; /* Replace with your desired color */
+    -fx-effect: null;
+    -fx-background-color:transparent;
+    -fx-border-color: #E6E6E6;
+    /* -fx-focus-color: transparent */
+}
+
+.date-picker .arrow-button {
+	-fx-background-color:  #F2EDED;
+    -fx-border-color: #E6E6E6;
+	-fx-background-radius: 0;
+}
+
+.form-date-picker .text-field{
+    -fx-border-color: #A6A6A6;
+    -fx-border-width: 1 0 1 1;
+    -fx-border-radius: 2 0 0 2;
+    /* -fx-focus-color: transparent */
+}
+
+.form-date-picker .arrow-button {
+    -fx-border-color: #A6A6A6;
+    -fx-border-width: 1 1 1 0;
+    -fx-border-radius: 0 2 2 0;
 }

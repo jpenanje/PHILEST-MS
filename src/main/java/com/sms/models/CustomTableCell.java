@@ -56,6 +56,10 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
                 loadValueItem(item, empty);
                 break;
             }
+            case DATE: {
+                loadDateItem(item, empty);
+                break;
+            }
             default: {
                 loadTextItem(item, empty);
             }
@@ -70,6 +74,17 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
             label.setText("");
         } else {
             label.setText(item);
+        }
+    }
+
+    void loadDateItem(String item, boolean empty) {
+        pane.getChildren().clear();
+        pane.getChildren().add(label);
+        if (item == null || empty) {
+            label.setText("");
+        } else {
+            String text = Tools.getDateTextFromUtcStr(item);
+            label.setText(text);
         }
     }
 

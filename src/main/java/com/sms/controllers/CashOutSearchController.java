@@ -25,7 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalDateStringConverter;
 
-public class CashInSearchController implements Initializable, ISearchBar{
+public class CashOutSearchController implements Initializable, ISearchBar{
 
 
     @FXML
@@ -38,7 +38,7 @@ public class CashInSearchController implements Initializable, ISearchBar{
     private TextField searchId;
 
     @FXML
-    private TextField searchStudent;
+    private TextField searchReceiver;
 
     @FXML
     private TextField searchAmount;
@@ -77,11 +77,11 @@ public class CashInSearchController implements Initializable, ISearchBar{
 
     @Override
     public void setDropDownItems(ArrayList<ArrayList> dropDownItems) {
-        System.out.println(dropDownItems);
-        this.classDropDownItems = (ArrayList<String>)(dropDownItems.get(2)).clone();
-        this.yearDropDownItems = (ArrayList<String>)(dropDownItems.get(1)).clone();
+        // System.out.println(dropDownItems);
+        this.classDropDownItems = (ArrayList<String>)(dropDownItems.get(0)).clone();
+        // this.yearDropDownItems = (ArrayList<String>)(dropDownItems.get(1)).clone();
         initSearchClass();
-        initSearchYear();
+        // initSearchYear();
     }
 
     // void initMenusItems(){
@@ -123,7 +123,7 @@ public class CashInSearchController implements Initializable, ISearchBar{
 
         String idParam = getParamFromFieldAndAttribute(searchId, "id");
 
-        String nameParam = getParamFromFieldAndAttribute(searchStudent, "student");
+        String nameParam = getParamFromFieldAndAttribute(searchReceiver, "name_of_receiver");
 
         String classParam = getParamFromFieldAndAttribute(searchPurpose, "purpose");
 
@@ -137,7 +137,7 @@ public class CashInSearchController implements Initializable, ISearchBar{
 
         // String owingParam = getParamFromFieldAndAttribute(owing, "owing");
 
-        String yearParam = getParamFromFieldAndAttribute(year, "year");
+        // String yearParam = getParamFromFieldAndAttribute(year, "year");
 
 
         String currentUrl = "?";
@@ -150,9 +150,9 @@ public class CashInSearchController implements Initializable, ISearchBar{
         if(classParam.length() > 0 && !classDropDownItems.get(0).equals(searchPurpose.getText())){
             currentUrl += classParam + "&";
         }
-        if(yearParam.length() > 0 && !yearDropDownItems.get(0).equals(year.getText())){
-            currentUrl += yearParam + "&";
-        }
+        // if(yearParam.length() > 0 && !yearDropDownItems.get(0).equals(year.getText())){
+        //     currentUrl += yearParam + "&";
+        // }
         if(parentNameParam.length() > 0){
             currentUrl += parentNameParam + "&";
         }

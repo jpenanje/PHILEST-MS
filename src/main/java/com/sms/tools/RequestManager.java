@@ -21,9 +21,9 @@ public class RequestManager {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8000/" + baseUrl + "count/" + searchUrl))
+                .uri(URI.create(Config.baseUrl+"/" + baseUrl + "count/" + searchUrl))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Token 5644029f942e815732679b78054e39997d767d94")
+                .header("Authorization", "Token " + Config.token)
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request,
@@ -76,9 +76,9 @@ public class RequestManager {
         }
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8000/" + endUrl + filterStr))
+                .uri(URI.create(Config.baseUrl + "/" + endUrl + filterStr))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Token 5644029f942e815732679b78054e39997d767d94")
+                .header("Authorization", "Token "+Config.token)
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request,
@@ -94,9 +94,9 @@ public class RequestManager {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8000/" + endUrl + "lists/"))
+                .uri(URI.create(Config.baseUrl+"/" + endUrl + "lists/"))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Token 5644029f942e815732679b78054e39997d767d94")
+                .header("Authorization", "Token "+Config.token)
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request,
@@ -108,14 +108,25 @@ public class RequestManager {
     public static CompletableFuture<HttpResponse<String>> postItem(String endUrl, String body){
         // Create an instance of HttpClient
         HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request;
 
-        // Create an instance of HttpRequest
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8000/"+endUrl))
+        if(Config.token != null){
+            request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.baseUrl+"/"+endUrl))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Token 5644029f942e815732679b78054e39997d767d94")
+                .header("Authorization", "Token "+Config.token)
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
+        }
+
+        else{
+            request = HttpRequest.newBuilder()
+            .uri(URI.create(Config.baseUrl+"/"+endUrl))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+            .build(); 
+        }
+        
 
         // Send the request asynchronously
         CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
@@ -129,9 +140,9 @@ public class RequestManager {
 
         // Create an instance of HttpRequest
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8000/"+endUrl))
+                .uri(URI.create(Config.baseUrl+"/"+endUrl))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Token 5644029f942e815732679b78054e39997d767d94")
+                .header("Authorization", "Token "+Config.token)
                 .PUT(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
 
@@ -147,9 +158,9 @@ public class RequestManager {
 
         // Create an instance of HttpRequest
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8000/"+endUrl+id+"/"))
+                .uri(URI.create(Config.baseUrl+"/"+endUrl+id+"/"))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Token 5644029f942e815732679b78054e39997d767d94")
+                .header("Authorization", "Token "+Config.token)
                 .DELETE()
                 .build();
 

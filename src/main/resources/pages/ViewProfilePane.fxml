@@ -55,11 +55,8 @@
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
                         </Text>
-                        <TextField focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="full name" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
+                        <TextField fx:id="fullnameField" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="full name" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
                         <Text fx:id="fullNameErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />
@@ -76,11 +73,8 @@
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
                         </Text>
-                        <TextField focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="username" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
+                        <TextField fx:id="usernameField" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="username" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
                         <Text fx:id="usernameErrorMessage" fill="RED" layoutX="10.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />
@@ -97,11 +91,8 @@
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
                         </Text>
-                        <TextField focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="phone number" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
+                        <TextField fx:id="phoneField" focusTraversable="false" prefHeight="29.0" prefWidth="267.0" promptText="phone number" style="-fx-border-color: A6A6A6; -fx-border-radius: 2; -fx-border-width: 1; -fx-background-color: transparent;" />
                         <Text fx:id="phoneNumberErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="This field is required" visible="false">
                            <font>
                               <Font size="9.0" />
@@ -118,9 +109,6 @@
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
                         </Text>
                         <StackPane alignment="CENTER_RIGHT">
                            <children>
@@ -155,9 +143,6 @@
                            <VBox.margin>
                               <Insets bottom="1.0" left="5.0" />
                            </VBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
                         </Text>
                         <StackPane alignment="CENTER_RIGHT">
                            <children>
@@ -210,7 +195,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <HBox alignment="CENTER" spacing="15.0">
+            <HBox fx:id="buttonsPane" alignment="CENTER" spacing="15.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #7CFF7C;" text="Save">
                      <cursor>

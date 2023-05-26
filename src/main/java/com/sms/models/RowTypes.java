@@ -1,5 +1,5 @@
 package com.sms.models;
 
 public enum RowTypes {
-    TEXT, TICK, ID, VALUE
+    TEXT, TICK, ID, VALUE, DATE
 }

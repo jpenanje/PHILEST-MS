@@ -15,9 +15,9 @@ import javafx.scene.layout.StackPane;
 
 public class HeaderController implements Initializable {
 
-    Function<NullType, NullType> showProfileModal;
+    Function<Initializable, NullType> showProfileModal;
 
-    public HeaderController(Function<NullType, NullType> showProfileModal) {
+    public HeaderController(Function<Initializable, NullType> showProfileModal) {
         super();
         this.showProfileModal = showProfileModal;
     }
@@ -38,7 +38,7 @@ public class HeaderController implements Initializable {
         return Tools.getPaneFromControllerAndFxmlPath(new BrandPaneController(), "/components/BrandPane.fxml");
     }
 
-    Pane getProfilePane(Function<NullType, NullType> showProfileModal) {
+    Pane getProfilePane(Function<Initializable, NullType> showProfileModal) {
         Initializable profilePaneController = new ProfilePaneController(showProfileModal);
         return Tools.getPaneFromControllerAndFxmlPath(profilePaneController, "/components/ProfilePane.fxml");
     }

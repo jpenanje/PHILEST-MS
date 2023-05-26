@@ -12,7 +12,7 @@
 <FlowPane hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextField fx:id="searchId" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" promptText="Search Id" style="-fx-border-color: E6E6E6; -fx-background-color: transparent;" />
-      <TextField fx:id="searchStudent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" promptText="Search Student" style="-fx-border-color: E6E6E6; -fx-background-color: transparent;" />
+      <TextField fx:id="searchReceiver" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" promptText="Search Receiver" style="-fx-border-color: E6E6E6; -fx-background-color: transparent;" />
       <MenuButton fx:id="searchPurpose" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="110.0" style="-fx-background-color: transparent; -fx-border-color: E6E6E6;" text="Purpose">
          <items>
             <MenuItem mnemonicParsing="false" text="Action 1" />
@@ -20,12 +20,6 @@
          </items>
       </MenuButton>
       <TextField fx:id="searchAmount" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" promptText="Search Amount" style="-fx-border-color: E6E6E6; -fx-background-color: transparent;" />
-      <MenuButton fx:id="year" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="110.0" style="-fx-background-color: transparent; -fx-border-color: E6E6E6;" text="Year">
-         <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-         </items>
-      </MenuButton>
       <DatePicker fx:id="startDate" layoutX="260.0" layoutY="59.0" prefHeight="27.0" prefWidth="110.0" promptText="Start Date" />
       <DatePicker fx:id="endDate" prefHeight="27.0" prefWidth="110.0" promptText="End Date" />
       <Button focusTraversable="false" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#search" prefWidth="80.0" style="-fx-background-color: #F2EDED; -fx-border-radius: 2;" text="Search" textFill="#4a0000">

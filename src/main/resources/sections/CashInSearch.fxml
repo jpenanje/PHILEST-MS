@@ -26,8 +26,8 @@
             <MenuItem mnemonicParsing="false" text="Action 2" />
          </items>
       </MenuButton>
-      <DatePicker fx:id="startDate" layoutX="260.0" layoutY="59.0" prefHeight="27.0" prefWidth="110.0" promptText="Start Date" />
-      <DatePicker fx:id="endDate" prefHeight="27.0" prefWidth="110.0" promptText="End Date" />
+      <DatePicker fx:id="startDate" layoutX="260.0" layoutY="59.0" prefHeight="27.0" prefWidth="110.0" promptText="Start Date" stylesheets="@../styles/datePickerStyle.css" />
+      <DatePicker fx:id="endDate" prefHeight="10.0" prefWidth="110.0" promptText="End Date" stylesheets="@../styles/datePickerStyle.css" />
       <Button focusTraversable="false" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#search" prefWidth="80.0" style="-fx-background-color: #F2EDED; -fx-border-radius: 2;" text="Search" textFill="#4a0000">
          <cursor>
             <Cursor fx:constant="HAND" />

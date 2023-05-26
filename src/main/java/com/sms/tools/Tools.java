@@ -167,9 +167,13 @@ public class Tools {
     }
 
     public static void showModal(Initializable controller, String fxmlPath, Stage primaryStage) {
-        System.out.println("Show delete confirmation modal");
+
+        System.out.println("show modal");
+        
         // create a new modal stage
         Stage modalStage = new Stage();
+        addIconToStage(modalStage);
+        
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.initOwner(primaryStage);
 
@@ -390,6 +394,7 @@ public class Tools {
 
     public static void openStage(Initializable controller, String fxmlPath, Stage primaryStage, boolean fullScreen) {
         try {
+            
             FXMLLoader loader = new FXMLLoader(Tools.class.getResource(fxmlPath));
             // BaseController controller = new BaseController(primaryStage);
             loader.setController(controller);
@@ -398,6 +403,7 @@ public class Tools {
             if (fullScreen) {
                 primaryStage.setMaximized(true);
             }
+            addIconToStage(primaryStage);
             primaryStage.setScene(sc);
             primaryStage.show();
         } catch (Exception e) {
@@ -454,6 +460,11 @@ public class Tools {
 
     static boolean isEmptyString(String toBeChecked){
         return toBeChecked.equals(null) || toBeChecked.isEmpty();
+    }
+
+    public static void addIconToStage(Stage stage){
+        Image icon = new Image(Tools.class.getResourceAsStream("/images/logo.png"));
+        stage.getIcons().add(icon);
     }
 
 }

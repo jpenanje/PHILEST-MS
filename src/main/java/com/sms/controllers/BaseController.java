@@ -130,6 +130,7 @@ public class BaseController implements Initializable {
         // set the scene and show the stage
         modalStage.setScene(modalScene);
         modalStage.setResizable(false);
+        Tools.addIconToStage(modalStage);
         modalStage.showAndWait();
     }
 

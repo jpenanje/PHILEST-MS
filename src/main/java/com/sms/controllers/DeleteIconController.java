@@ -17,6 +17,7 @@ public class DeleteIconController implements Initializable{
     Function delete;
     Function refresh;
 
+    // controller for delete icon at the right of every item in the table
     public DeleteIconController(Function<NullType, Stage> getPrimaryStage, Function delete, Function refresh) {
         super();
         this.getPrimaryStage = getPrimaryStage;
@@ -24,6 +25,7 @@ public class DeleteIconController implements Initializable{
         this.refresh = refresh;
     }
 
+    // shows validation popup
     @FXML
     void onDelete(){
         Tools.showModal(new DeleteValidationController(getPrimaryStage.apply(null), delete, refresh), "/pages/DeleteValidationPane.fxml", getPrimaryStage.apply(null));

@@ -29,6 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+// Controller for login page
 public class LoginController implements Initializable {
 
     @FXML
@@ -63,6 +64,7 @@ public class LoginController implements Initializable {
 
     boolean invalidCredentials;
 
+    // validates user info locally then remotely.
     @FXML
     void login(ActionEvent event) {
         boolean isValidForm = validateForm();
@@ -79,6 +81,7 @@ public class LoginController implements Initializable {
         loadingIcon = getLoadingIcon();
     }
 
+    // shows the loading icon
     void showLoadingIcon() {
         System.out.println("Show student form loading icon");
         buttons = FXCollections.observableArrayList(buttonsPane.getChildren());
@@ -86,6 +89,7 @@ public class LoginController implements Initializable {
         buttonsPane.getChildren().add(loadingIcon);
     }
 
+    // validates the fields in the form
     boolean validateForm() {
         return (validateUsernameField() &
                 validatePasswordField());
@@ -99,10 +103,12 @@ public class LoginController implements Initializable {
         return Tools.simpleValidation(password, passwordErrorMessage);
     }
 
+    // returns the loading icon
     Pane getLoadingIcon() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/CircleLoadingIcon.fxml");
     }
 
+    // return a service for logging the user into the application
     Service getLoginService() {
         System.out.println("get Save Student Service");
         invalidCredentials = false;
@@ -160,14 +166,18 @@ public class LoginController implements Initializable {
         return service;
     }
 
+    // returns the user json string form information in json
     String getCurrentUserJson() {
         return "{\"username\":\""+username.getText()+"\",\"password\":\""+password.getText()+"\"}";
     }
 
+    // a request for logging the user
     HttpResponse<String> login(String requestBody) throws Exception {
         return RequestManager.postItem("api-token-auth/", requestBody).get();
     }
 
+    // ensures that the display shows information about login status, 
+    // like when it is loading or when there is an error
     void bindLoginServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -191,12 +201,14 @@ public class LoginController implements Initializable {
         });
     }
 
+    // removes the loading icon
     void removeLoadingIcon() {
         System.out.println("Remove loading icon");
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().addAll(buttons);
     }
 
+    // shows an error message
     void showErrorMessage() {
         System.out.println("show error message");
         Initializable errorInSavingPageController = new ErrorPageController(
@@ -205,22 +217,26 @@ public class LoginController implements Initializable {
                 Tools.getStageFromNode(username));
     }
 
+    // shows success icon for seconds
     void showSuccessIconForSeconds() {
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().add(getSuccessPane());
         waitAndLogin();
     }
 
+    // returns the success pane
     Pane getSuccessPane() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/SuccessPane.fxml");
     }
 
+    // waits sometime before logging the user into the application
     void waitAndLogin() {
         Service service = getWaitService();
         bindWaitServiceWithDisplay(service);
         service.start();
     }
 
+    // returns a service for waiting sometime before loggin the user into the app
     Service getWaitService() {
         Service service = new Service() {
             @Override
@@ -263,6 +279,7 @@ public class LoginController implements Initializable {
         return service;
     }
 
+    // ensures that after waiting, the user is logged in
     void bindWaitServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -276,11 +293,13 @@ public class LoginController implements Initializable {
         });
     }
 
+    // displays wrong credentials when the backend denies the access
     void showWrongCredentialsErrorMessage(){
         Tools.showWrongCredentials(usernameErrorMessage);
         Tools.showWrongCredentials(passwordErrorMessage);
     }
 
+    // saves the response information of the current user
     void saveUserInfoFromResponse(Response response){
         JsonNode responseNode = response.getData();
         Config.token = responseNode.get("token").asText();

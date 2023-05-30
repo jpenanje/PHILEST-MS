@@ -3,9 +3,6 @@ package com.sms.controllers;
 import java.net.URL;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -15,10 +12,8 @@ import java.util.function.Function;
 import javax.lang.model.type.NullType;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sms.models.CashIn;
 import com.sms.models.CashOut;
 import com.sms.models.Response;
-import com.sms.models.Student;
 import com.sms.tools.Config;
 import com.sms.tools.RequestManager;
 import com.sms.tools.Tools;
@@ -30,13 +25,11 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -45,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
+// Controller for the popup form for adding or editing a Cashout item
 public class CashOutFormController implements Initializable {
 
     @FXML
@@ -100,11 +94,13 @@ public class CashOutFormController implements Initializable {
 
     private ArrayList<JsonNode> studentsObjs;
 
+    // cancels the addition or editing of an item
     @FXML
     void cancel(ActionEvent event) {
         Tools.closeStageFromNode(formPane);
     }
 
+    // confirms the addition or editing of an item
     @FXML
     void save(ActionEvent event) {
         boolean isValidForm = validateForm();
@@ -120,6 +116,7 @@ public class CashOutFormController implements Initializable {
         super();
     }
 
+    // constructor with drop down strings for drop down fields
     public CashOutFormController(ArrayList<ArrayList> dropDownLists, ArrayList<ArrayList> dropDownListsObjects,
             Function refresh) {
         super();
@@ -129,6 +126,7 @@ public class CashOutFormController implements Initializable {
         this.refresh = refresh;
     }
 
+    // constructor with cashOut item and with drop down strings for drop down fields
     public CashOutFormController(CashOut cashOut, ArrayList<ArrayList> dropDownLists,
             ArrayList<ArrayList> dropDownListsObjects, Function refresh) {
         super();
@@ -141,6 +139,7 @@ public class CashOutFormController implements Initializable {
         this.refresh = refresh;
     }
 
+    // shows a loading icon when waiting for a response from db
     void showLoadingIcon() {
         System.out.println("Show cash in form loading icon");
         buttons = FXCollections.observableArrayList(buttonsPane.getChildren());
@@ -148,12 +147,14 @@ public class CashOutFormController implements Initializable {
         buttonsPane.getChildren().add(loadingIcon);
     }
 
+    // removes the loading icon
     void removeLoadingIcon() {
         System.out.println("Remove loading icon");
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().addAll(buttons);
     }
 
+    // shows a dialogue error message
     void showErrorMessage() {
         System.out.println("show error message");
         Initializable errorInSavingPageController = new ErrorPageController(
@@ -162,18 +163,21 @@ public class CashOutFormController implements Initializable {
                 Tools.getStageFromNode(addItemModal));
     }
 
+    // shows the success icon for a few seconds
     void showSuccessIconForSeconds() {
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().add(getSuccessPane());
         waitAndGoBack();
     }
 
+    // freezes the app for some time before closing the popup
     void waitAndGoBack() {
         Service service = getWaitService();
         bindWaitServiceWithDisplay(service);
         service.start();
     }
 
+    // ensures that after waiting, the popup is closed
     void bindWaitServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -185,6 +189,7 @@ public class CashOutFormController implements Initializable {
         });
     }
 
+    // ensures that after saving the loading icon is removed and appropriate action is taken
     void bindSaveServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -205,6 +210,7 @@ public class CashOutFormController implements Initializable {
         });
     }
 
+    // a service for freezing the popup for sometime
     Service getWaitService() {
         Service service = new Service() {
             @Override
@@ -247,14 +253,18 @@ public class CashOutFormController implements Initializable {
         return service;
     }
 
+    // returns a success pane
     Pane getSuccessPane() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/SuccessPane.fxml");
     }
 
+    // returns a loading icon
     Pane getLoadingIcon() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/CircleLoadingIcon.fxml");
     }
 
+    // returns a service for saving the item information in the remote db
+    // in an asynchronous way(without blocking the whole app)
     Service getSaveService() {
         System.out.println("get Save Cash In Service");
         Service service = new Service() {
@@ -313,10 +323,12 @@ public class CashOutFormController implements Initializable {
         return service;
     }
 
+    // saves a new cashOut object in the remote db
     HttpResponse<String> addCashIn(String requestBody) throws Exception {
         return RequestManager.postItem("cashout/", requestBody).get();
     }
 
+    // updates the cashOut object in the remote db
     HttpResponse<String> updateCashIn(String requestBody) throws Exception {
         return RequestManager.updateItem("cashout/" + cashOut.getId() + "/", requestBody).get();
     }
@@ -338,13 +350,14 @@ public class CashOutFormController implements Initializable {
     }
 
 
-
+    // sets the names of the purposes in the purpose dropdown field
     void setPurposesOptions() {
         System.out.println("init cash out purposes");
         purpose.getItems().clear();
         Tools.addDropDownItemsFromFieldAndItems(purpose, purposes);
     }
 
+    // sets an initial value for purpose if required
     void initializePurpose() {
         String initialPurpose = purposes.get(0);
         for(String p : purposes){
@@ -356,10 +369,12 @@ public class CashOutFormController implements Initializable {
         }
     }
 
+    // sets a new title
     void changeTitle() {
         title.setText("Edit Cash Out");
     }
 
+    // sets an initial value for form fields except drop downs
     void initializeFormFields() {
         if(cashOut.getAmount() != null){
             amount.setText(cashOut.getAmount());
@@ -375,6 +390,7 @@ public class CashOutFormController implements Initializable {
         }
     }
 
+    // validates the cashOut form fields and shows error messages if required
     boolean validateForm() {
         return ( validateAmountField() &
                 validateReceiverField() &
@@ -398,6 +414,7 @@ public class CashOutFormController implements Initializable {
         return Tools.simpleValidation(nameOfReceiver, nameOfReceiverErrorMessage);
     }
 
+    // returns the current cashOut objects from the form information
     CashOut getCurrentCashOut() {
         if (cashOut == null) {
             cashOut = new CashOut();
@@ -406,14 +423,10 @@ public class CashOutFormController implements Initializable {
         cashOut.setReceiverName(nameOfReceiver.getText());
         cashOut.setDate(Tools.getUtcDateStringFromLocalDate(date.getValue()));
         cashOut.setPurpose(purpose.getText());
-        // student.setPupilName(pupilName.getText());
-        // student.setParentName(parentName.getText());
-        // student.setPhoneNumber(phoneNumber.getText());
-        // student.setClassId(getClassIdFromName(pupilClass.getText()));
-        // student.setCurrentYear(currentYear.getText());
         return cashOut;
     }
 
+    // sets the format for the date field to DD/MM/YYYY
     void initializeDateFieldFormat(){
         StringConverter<LocalDate> converter = Tools.getDateConverter();
         date.setConverter(converter);

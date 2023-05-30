@@ -17,6 +17,7 @@ public class HeaderController implements Initializable {
 
     Function<Initializable, NullType> showProfileModal;
 
+    // The controller for the header section of the app
     public HeaderController(Function<Initializable, NullType> showProfileModal) {
         super();
         this.showProfileModal = showProfileModal;
@@ -34,10 +35,12 @@ public class HeaderController implements Initializable {
         profilePane.getChildren().add(getProfilePane(showProfileModal));
     }
 
+    // returns the brand section
     Pane getBrandPane() {
         return Tools.getPaneFromControllerAndFxmlPath(new BrandPaneController(), "/components/BrandPane.fxml");
     }
 
+    // returns the profile section
     Pane getProfilePane(Function<Initializable, NullType> showProfileModal) {
         Initializable profilePaneController = new ProfilePaneController(showProfileModal);
         return Tools.getPaneFromControllerAndFxmlPath(profilePaneController, "/components/ProfilePane.fxml");

@@ -29,6 +29,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+// The base controller loads the different sections that form the whole application.
+// It has a set of panes in it and calls appropriate controllers and fxml documents to
+// fill them.
 public class BaseController implements Initializable {
 
     @FXML
@@ -53,6 +56,7 @@ public class BaseController implements Initializable {
 
     private JsonNode menuItems = Repository.getMenuItems();
 
+    // Costructor
     public BaseController(Stage primaryStage) {
         super();
         this.primaryStage = primaryStage;
@@ -65,6 +69,7 @@ public class BaseController implements Initializable {
         loadMainPane("Dashboard");
     }
 
+    // loads the left drawer with appropriate actions for the menu buttons.
     void loadLeftMenu() {
         this.onChange = new Function<Integer, NullType>() {
             @Override
@@ -81,11 +86,13 @@ public class BaseController implements Initializable {
         menuPane.getChildren().add(menuPaneChild);
     }
 
-    String getTitleFromIndex(int index){
+    // returns a title corresponding to the left menu item.
+    String getTitleFromIndex(int index) {
         JsonNode newMenuItem = menuItems.get(index);
         return newMenuItem.get("title").asText();
     }
 
+    // loads the header item with appropriate actions of it's components
     void loadHeader() {
         this.showProfileModal = new Function<Initializable, NullType>() {
             @Override
@@ -102,18 +109,20 @@ public class BaseController implements Initializable {
         topBarPane.getChildren().add(headerPane);
     }
 
+    // Loads the central pane
     void loadMainPane(String title) {
         Pane mainPane = Tools.getPaneFromControllerAndFxmlPath(new MainPaneController(currentItemIndex, title),
                 "/sections/MainPane.fxml");
-        // mainPane.setStyle("-fx-background-color: " + Config.whiteColor + ";");
         this.mainPane.getChildren().clear();
         this.mainPane.getChildren().add(mainPane);
     }
 
+    // blurs the Base pane when showing a popup
     void blurBasePane() {
-
+        // non functional
     }
 
+    // a function for showing the profile popup
     void showProfileModal(Initializable profileSectionController) {
         // create a new modal stage
         Stage modalStage = new Stage();

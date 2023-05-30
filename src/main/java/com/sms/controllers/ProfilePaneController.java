@@ -15,10 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
+// Controller of profile section in top bar
 public class ProfilePaneController implements Initializable {
 
     Function<Initializable, NullType> showProfileModal;
 
+    // constructor with function for showing the edit profile modal
     public ProfilePaneController(Function<Initializable, NullType> showProfileModal) {
         super();
         this.showProfileModal = showProfileModal;
@@ -33,6 +35,7 @@ public class ProfilePaneController implements Initializable {
     @FXML
     private Text userName;
 
+    // shows the view/edit profile modal
     @FXML
     void showProfileModal(MouseEvent event) {
         showProfileModal.apply(this);
@@ -43,6 +46,7 @@ public class ProfilePaneController implements Initializable {
         refresh();
     }
 
+    // refreshes the profile section on the right of the top bar
     void refresh(){
         if(Config.currentUserName != null && !Config.currentUserName.isEmpty()){
             userName.setText(Config.currentUserName);

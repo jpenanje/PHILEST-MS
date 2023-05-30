@@ -4,6 +4,7 @@ import com.sms.interfaces.TableRowable;
 import com.sms.tools.Config;
 import com.sms.tools.Tools;
 
+// Student class
 public class Student implements TableRowable {
     private String id = "";
     private String pupilName = "Ade Divine Precious";
@@ -22,6 +23,7 @@ public class Student implements TableRowable {
     private String feesOwed = "500";
     private String totalPaid = "100";
 
+    // no arg constructor
     public Student() {
         super();
         initTotalPaid();
@@ -36,6 +38,7 @@ public class Student implements TableRowable {
     // concatPaymentFields();
     // }
 
+    // constructor with an initial value for all fields
     public Student(String id, String pupilName, String studentClass, String classFee, int classId, String parentName,
             String phoneNumber,String currentYear, String registered, String installment1, String installment2, String installment3,
             String installment4, String installment5) {
@@ -61,6 +64,8 @@ public class Student implements TableRowable {
         concatPaymentFields();
     }
 
+
+    // getters and setters
     public String getId() {
         return id;
     }
@@ -193,6 +198,7 @@ public class Student implements TableRowable {
         this.currentYear = currentYear;
     }
 
+    // initializes the value of total paid
     void initTotalPaid() {
         try {
             totalPaid = "" + (Float.valueOf(installment1) + Float.valueOf(installment2) + Float.valueOf(installment3)
@@ -202,6 +208,7 @@ public class Student implements TableRowable {
         }
     }
 
+    // initializes the value of fees owed
     void initFeesOwed() {
         try {
             feesOwed = "" + (Float.valueOf(classFee) - Float.valueOf(totalPaid));
@@ -211,6 +218,8 @@ public class Student implements TableRowable {
         }
     }
 
+    // concats the payment values with class fee. These are to be separated
+    // for comparism
     void concatPaymentFields() {
         installment1 = installment1 + Config.valueDelimiter + classFee;
         installment2 = installment2 + Config.valueDelimiter + classFee;
@@ -220,15 +229,16 @@ public class Student implements TableRowable {
         totalPaid = totalPaid + Config.valueDelimiter + classFee;
     }
 
+    // returns the json representation of an object of this class
     @Override
     public String toJson() {
         return "{\"full_name\": \"" + pupilName + "\", \"parent_name\": \"" + parentName + "\", \"parent_phone\": \""
                 + phoneNumber + "\", \"student_class\": " + classId + ", \"current_year\": \""+currentYear+"\"}";
     }
 
+    // converts a json string to an object of this class
     @Override
     public TableRowable fromJson(String json) {
-        // TODO Auto-generated method stub
         return null;
     }
 

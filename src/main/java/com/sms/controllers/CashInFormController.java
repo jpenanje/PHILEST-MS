@@ -3,8 +3,6 @@ package com.sms.controllers;
 import java.net.URL;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -16,7 +14,6 @@ import javax.lang.model.type.NullType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.models.CashIn;
 import com.sms.models.Response;
-import com.sms.models.Student;
 import com.sms.tools.Config;
 import com.sms.tools.RequestManager;
 import com.sms.tools.Tools;
@@ -28,13 +25,11 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -43,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
+// Controller for the popup form for adding or editing a CashIn item
 public class CashInFormController implements Initializable {
 
     @FXML
@@ -108,11 +104,13 @@ public class CashInFormController implements Initializable {
 
     private ArrayList<JsonNode> studentsObjs;
 
+    // cancels the addition or editing of an item
     @FXML
     void cancel(ActionEvent event) {
         Tools.closeStageFromNode(formPane);
     }
 
+    // confirms the addition or editing of an item
     @FXML
     void save(ActionEvent event) {
         boolean isValidForm = validateForm();
@@ -124,10 +122,12 @@ public class CashInFormController implements Initializable {
         }
     }
 
+
     public CashInFormController() {
         super();
     }
 
+    // constructor with drop down strings for drop down fields
     public CashInFormController(ArrayList<ArrayList> dropDownLists, ArrayList<ArrayList> dropDownListsObjects,
             Function refresh) {
         super();
@@ -140,6 +140,7 @@ public class CashInFormController implements Initializable {
         this.refresh = refresh;
     }
 
+    // constructor with cashIn item and with drop down strings for drop down fields
     public CashInFormController(CashIn cashIn, ArrayList<ArrayList> dropDownLists,
             ArrayList<ArrayList> dropDownListsObjects, Function refresh) {
         super();
@@ -155,6 +156,7 @@ public class CashInFormController implements Initializable {
         this.refresh = refresh;
     }
 
+    // shows a loading icon when waiting for a response from db
     void showLoadingIcon() {
         System.out.println("Show cash in form loading icon");
         buttons = FXCollections.observableArrayList(buttonsPane.getChildren());
@@ -162,12 +164,14 @@ public class CashInFormController implements Initializable {
         buttonsPane.getChildren().add(loadingIcon);
     }
 
+    // removes the loading icon
     void removeLoadingIcon() {
         System.out.println("Remove loading icon");
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().addAll(buttons);
     }
 
+    // shows a dialogue error message
     void showErrorMessage() {
         System.out.println("show error message");
         Initializable errorInSavingPageController = new ErrorPageController(
@@ -176,18 +180,21 @@ public class CashInFormController implements Initializable {
                 Tools.getStageFromNode(addItemModal));
     }
 
+    // shows the success icon for a few seconds
     void showSuccessIconForSeconds() {
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().add(getSuccessPane());
         waitAndGoBack();
     }
 
+    // freezes the app for some time before closing the popup
     void waitAndGoBack() {
         Service service = getWaitService();
         bindWaitServiceWithDisplay(service);
         service.start();
     }
 
+    // ensures that after waiting, the popup is closed
     void bindWaitServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -199,6 +206,7 @@ public class CashInFormController implements Initializable {
         });
     }
 
+    // ensures that after saving the loading icon is removed and appropriate action is taken
     void bindSaveServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -219,6 +227,7 @@ public class CashInFormController implements Initializable {
         });
     }
 
+    // a service for freezing the popup for sometime
     Service getWaitService() {
         Service service = new Service() {
             @Override
@@ -261,14 +270,18 @@ public class CashInFormController implements Initializable {
         return service;
     }
 
+    // returns a success pane
     Pane getSuccessPane() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/SuccessPane.fxml");
     }
 
+    // returns a loading icon
     Pane getLoadingIcon() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/CircleLoadingIcon.fxml");
     }
 
+    // returns a service for saving the item information in the remote db
+    // in an asynchronous way(without blocking the whole app)
     Service getSaveService() {
         System.out.println("get Save Cash In Service");
         Service service = new Service() {
@@ -326,10 +339,12 @@ public class CashInFormController implements Initializable {
         return service;
     }
 
+    // saves a new cashin object in the remote db
     HttpResponse<String> addCashIn(String requestBody) throws Exception {
         return RequestManager.postItem("cashin/", requestBody).get();
     }
 
+    // updates the cashin object in the remote db
     HttpResponse<String> updateCashIn(String requestBody) throws Exception {
         return RequestManager.updateItem("cashin/" + cashIn.getId() + "/", requestBody).get();
     }
@@ -337,7 +352,7 @@ public class CashInFormController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         initializeDateFieldFormat();
-        
+
         if (cashIn != null) {
             changeTitle();
             initializeFormFields();
@@ -345,51 +360,50 @@ public class CashInFormController implements Initializable {
         if (students != null) {
             setStudentsOptions();
         }
-        if(cashIn != null && students != null){
+        if (cashIn != null && students != null) {
             initializeStudent();
         }
-        if(academicYears != null){
+        if (academicYears != null) {
             setYearsOptions();
         }
-        if(cashIn != null && academicYears != null){
+        if (cashIn != null && academicYears != null) {
             initializeYear();
         }
-        if(purposes != null){
+        if (purposes != null) {
             setPurposesOptions();
         }
-        if(cashIn != null && purposes != null){
+        if (cashIn != null && purposes != null) {
             initializePurpose();
         }
         loadingIcon = getLoadingIcon();
     }
 
+    // sets the names of the students in the student dropdown field
     void setStudentsOptions() {
         System.out.println("init cashIn students");
         pupil.getItems().clear();
         Tools.addDropDownItemsFromFieldAndItems(pupil, students);
     }
 
+    // sets the years in the academic year dropdown field
     void setYearsOptions() {
         System.out.println("init cashIn years");
         academicYear.getItems().clear();
         Tools.addDropDownItemsFromFieldAndItems(academicYear, academicYears);
-        // ArrayList<MenuItem> menuItems = new ArrayList<>();
-        // for (String academicYear : academicYears) {
-        //     menuItems.add(getMenuItem(clazz));
-        // }
-        // pupilClass.getItems().addAll(menuItems);
     }
 
+    // sets the purposes in the purpose dropdown field
     void setPurposesOptions() {
         System.out.println("init cash in purposes");
         purpose.getItems().clear();
         Tools.addDropDownItemsFromFieldAndItems(purpose, purposes);
     }
 
+    // sets an initial value for purpose if required
     void initializePurpose() {
         String initialPurpose = purposes.get(0);
-        for(String p : purposes){
-            if(p.equals(cashIn.getPurpose())){
+        for (String p : purposes) {
+            if (p.equals(cashIn.getPurpose())) {
                 initialPurpose = p;
                 purpose.setText(initialPurpose);
                 return;
@@ -397,52 +411,44 @@ public class CashInFormController implements Initializable {
         }
     }
 
+    // sets a new title
     void changeTitle() {
         title.setText("Edit Cash In");
     }
 
-    MenuItem getMenuItem(String text) {
-        MenuItem toBeReturned = new MenuItem();
-        toBeReturned.setText(text);
-        final String finalText = text;
-        toBeReturned.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent arg0) {
-                pupil.setText(finalText);
-            }
-        });
-
-        return toBeReturned;
-    }
-
+    // sets an initial value for form fields except drop downs
     void initializeFormFields() {
-        
-        if(cashIn.getAmount() != null){
+
+        if (cashIn.getAmount() != null) {
             amount.setText(cashIn.getAmount());
         }
-        if(cashIn.getDate() != null){
-            
+        if (cashIn.getDate() != null) {
+
             LocalDate localDate = Tools.getLocalDateFromString(cashIn.getDate());
             date.setValue(localDate);
         }
     }
 
+    // sets an initial value for the student drop down field
+    // if required.
     void initializeStudent() {
         String initialStudent = students.get(0);
-        for(JsonNode student : studentsObjs){
-            if(student.get("id").asInt() == cashIn.getStudentId()){
+        for (JsonNode student : studentsObjs) {
+            if (student.get("id").asInt() == cashIn.getStudentId()) {
                 initialStudent = student.get("full_name").asText();
                 pupil.setText(initialStudent);
                 return;
             }
         }
-        
+
     }
 
+    // sets an initial value for the year drop down field
+    // if required.
     void initializeYear() {
         String initialYear = academicYears.get(0);
-        for(String ay : academicYears){
-            if(ay.equals(cashIn.getAcademicYear())){
+        for (String ay : academicYears) {
+            if (ay.equals(cashIn.getAcademicYear())) {
                 initialYear = ay;
                 academicYear.setText(initialYear);
                 return;
@@ -450,34 +456,36 @@ public class CashInFormController implements Initializable {
         }
     }
 
+    // validates the cashIn form fields and shows error messages if required
     boolean validateForm() {
-        return ( validateAmountField() &
+        return (validateAmountField() &
                 validatePupilField() &
                 validatePurposeField() &
                 validateAcademicYearField() &
                 validateDateField());
     }
 
-    boolean validateAmountField(){
+    boolean validateAmountField() {
         return Tools.digitValidation(amount, amountErrorMessage);
     }
 
-    boolean validatePupilField(){
-        return Tools.dropDownValidation(pupil,"Select Pupil", pupilErrorMessage);
+    boolean validatePupilField() {
+        return Tools.dropDownValidation(pupil, "Select Pupil", pupilErrorMessage);
     }
 
-    boolean validatePurposeField(){
-        return Tools.dropDownValidation(purpose,"Select Purpose", purposeErrorMessage);
+    boolean validatePurposeField() {
+        return Tools.dropDownValidation(purpose, "Select Purpose", purposeErrorMessage);
     }
 
-    boolean validateAcademicYearField(){
-        return Tools.dropDownValidation(academicYear,"Academic year", academicYearErrorMessage);
+    boolean validateAcademicYearField() {
+        return Tools.dropDownValidation(academicYear, "Academic year", academicYearErrorMessage);
     }
 
-    boolean validateDateField(){
+    boolean validateDateField() {
         return Tools.simpleValidation(date, dateErrorMessage);
     }
 
+    // returns the current cashIn objects from the form information
     CashIn getCurrentCashIn() {
         if (cashIn == null) {
             cashIn = new CashIn();
@@ -487,14 +495,10 @@ public class CashInFormController implements Initializable {
         cashIn.setDate(Tools.getUtcDateStringFromLocalDate(date.getValue()));
         cashIn.setPurpose(purpose.getText());
         cashIn.setStudentId(getPupilIdFromName(pupil.getText()));
-        // student.setPupilName(pupilName.getText());
-        // student.setParentName(parentName.getText());
-        // student.setPhoneNumber(phoneNumber.getText());
-        // student.setClassId(getClassIdFromName(pupilClass.getText()));
-        // student.setCurrentYear(currentYear.getText());
         return cashIn;
     }
 
+    // returns the student id from his/her name
     int getPupilIdFromName(String studentName) {
         for (JsonNode node : this.studentsObjs) {
             if ((node.get("full_name").asText()).equals(studentName)) {
@@ -504,7 +508,8 @@ public class CashInFormController implements Initializable {
         return 1;
     }
 
-    void initializeDateFieldFormat(){
+    // sets the format for the date field to DD/MM/YYYY
+    void initializeDateFieldFormat() {
         StringConverter<LocalDate> converter = Tools.getDateConverter();
         date.setConverter(converter);
     }

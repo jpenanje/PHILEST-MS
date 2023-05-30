@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.ProgressBar;
 
+// Controller for the loading icon
 public class LoadingIconController implements Initializable{
 
     Service service;
@@ -26,6 +27,7 @@ public class LoadingIconController implements Initializable{
         progressBar.progressProperty().bind(service.progressProperty());
     }
 
+    // styles the progress bar
     void styleProgressBar(){
         progressBar.setStyle("-fx-box-border: goldenrod;");
     }

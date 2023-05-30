@@ -11,10 +11,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 
+// Controller for managing an error popup
 public class ErrorPageController implements Initializable {
 
     String errorMessage;
 
+    // builds an error popup from an error message
     public ErrorPageController(String errorMessage) {
         super();
         this.errorMessage = errorMessage;
@@ -26,6 +28,7 @@ public class ErrorPageController implements Initializable {
     @FXML
     private Text message;
 
+    // closes the popup
     @FXML
     void validate(ActionEvent event) {
         Tools.closeStageFromNode(okButton);

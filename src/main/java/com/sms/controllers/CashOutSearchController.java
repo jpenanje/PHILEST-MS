@@ -4,7 +4,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.function.Function;
@@ -15,16 +14,14 @@ import com.sms.interfaces.ISearchBar;
 import com.sms.tools.Tools;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
-import javafx.util.converter.LocalDateStringConverter;
 
+// A controller for the search bar of the section CashOut
 public class CashOutSearchController implements Initializable, ISearchBar{
 
 
@@ -60,6 +57,7 @@ public class CashOutSearchController implements Initializable, ISearchBar{
 
     ArrayList<String> owingDropDownItems;
 
+    // filters the cashOut table using the current attributes in all the fields
     @FXML
     void search(ActionEvent event) {
         changeUrl.apply(getCurrentUrl());
@@ -68,57 +66,36 @@ public class CashOutSearchController implements Initializable, ISearchBar{
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         initDateFields();
-        // initMenusItems();
     }
 
+    // sets the function for changing the url used to fetch items for 
+    // the cashOut table
     public void setChangeUrl(Function<String, NullType> changeUrl){
         this.changeUrl = changeUrl;
     }
 
+    // sets the lists of items to be used in drop down fields
     @Override
     public void setDropDownItems(ArrayList<ArrayList> dropDownItems) {
-        // System.out.println(dropDownItems);
         this.classDropDownItems = (ArrayList<String>)(dropDownItems.get(0)).clone();
-        // this.yearDropDownItems = (ArrayList<String>)(dropDownItems.get(1)).clone();
         initSearchClass();
-        // initSearchYear();
     }
 
-    // void initMenusItems(){
-    //     initRegistered();
-    //     initOwing();
-    // }
-
+    // initializes the purpose field as required
     void initSearchClass(){
         searchPurpose.getItems().clear();
         classDropDownItems.add(0,"Purpose");
         Tools.addDropDownItemsFromFieldAndItems(searchPurpose, classDropDownItems);
     }
 
+    // initializes the year field as required
     void initSearchYear(){
         year.getItems().clear();
         yearDropDownItems.add(0,"Year");
         Tools.addDropDownItemsFromFieldAndItems(year, yearDropDownItems);
     }
 
-    // void initRegistered(){
-    //     registered.getItems().clear();
-    //     registeredDropDownItems = new ArrayList();
-    //     registeredDropDownItems.add("Registered");
-    //     registeredDropDownItems.add("Yes");
-    //     registeredDropDownItems.add("No");
-    //     Tools.addDropDownItemsFromFieldAndItems(registered, registeredDropDownItems);
-    // }
-
-    // void initOwing(){
-    //     owing.getItems().clear();
-    //     owingDropDownItems = new ArrayList();
-    //     owingDropDownItems.add("Owing");
-    //     owingDropDownItems.add("Yes");
-    //     owingDropDownItems.add("No");
-    //     Tools.addDropDownItemsFromFieldAndItems(owing, owingDropDownItems);
-    // }
-
+    // gets the current search url from the search fields
     String getCurrentUrl(){
 
         String idParam = getParamFromFieldAndAttribute(searchId, "id");
@@ -133,13 +110,6 @@ public class CashOutSearchController implements Initializable, ISearchBar{
 
         String endDateParam = getParamFromFieldAndAttribute(endDate, "end_date");
 
-        // String registeredParam = getParamFromFieldAndAttribute(registered, "registered");
-
-        // String owingParam = getParamFromFieldAndAttribute(owing, "owing");
-
-        // String yearParam = getParamFromFieldAndAttribute(year, "year");
-
-
         String currentUrl = "?";
         if(idParam.length() > 0){
             currentUrl += idParam + "&";
@@ -150,9 +120,6 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         if(classParam.length() > 0 && !classDropDownItems.get(0).equals(searchPurpose.getText())){
             currentUrl += classParam + "&";
         }
-        // if(yearParam.length() > 0 && !yearDropDownItems.get(0).equals(year.getText())){
-        //     currentUrl += yearParam + "&";
-        // }
         if(parentNameParam.length() > 0){
             currentUrl += parentNameParam + "&";
         }
@@ -164,15 +131,6 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         if(endDateParam.length() > 0){
             currentUrl += endDateParam + "&";
         }
-        // if(parentPhoneParam.length() > 0){
-        //     currentUrl += parentPhoneParam + "&";
-        // }
-        // if(registeredParam.length() > 0 && !registeredDropDownItems.get(0).equals(registered.getText())){
-        //     currentUrl += registeredParam + "&";
-        // }
-        // if(owingParam.length() > 0 && !owingDropDownItems.get(0).equals(owing.getText())){
-        //     currentUrl += owingParam + "&";
-        // }
 
         if(currentUrl.length() > 1){
             return currentUrl.substring(0, currentUrl.length()-1);
@@ -182,6 +140,8 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         }
     }
 
+    // returns a valid encoded url parameter to be appended to the
+    // search url
     String getParamFromFieldAndAttribute(TextField field, String attribute){
         String param = "";
         if(field.getText().length() > 0 ){
@@ -190,6 +150,7 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         return param;
     }
 
+    // overloads the getParamFromFieldAndAttribute for menubutton fields
     String getParamFromFieldAndAttribute(MenuButton field, String attribute){
         String param = "";
         if(field.getText().length() > 0 ){
@@ -198,6 +159,7 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         return param;
     }
 
+    // overloads the getParamFromFieldAndAttribute for date picker fields
     String getParamFromFieldAndAttribute(DatePicker field, String attribute){
         String param = "";
         if(field.getValue() != null ){
@@ -207,6 +169,7 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         return param;
     }
 
+    // encodes the url paramter to escape special characters
     public static String encodeUrlParameter(String text) {
         try {
             return URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
@@ -216,6 +179,7 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         }
     }
 
+    //  initializes the date fields formats as DD/MM/YYYY
     void initDateFields(){
         StringConverter<LocalDate> converter = Tools.getDateConverter();
 

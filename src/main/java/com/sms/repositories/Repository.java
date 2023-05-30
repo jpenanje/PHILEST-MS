@@ -3,7 +3,9 @@ package com.sms.repositories;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.tools.Tools;
 
+// static data of the application
 public class Repository {
+    // returns the menu items
     public static JsonNode getMenuItems() {
         String menuString = '['+
         "{\"title\": \"Dashboard\",\"selectedImgPath\": \"/images/dashboard_icon_light.png\", \"unselectedImgPath\": \"/images/dashboard_icon_dark.png\", \"controller\":\"com.sms.controllers.DashboardController\",\"view\":\"/sections/Dashboard.fxml\"},"+

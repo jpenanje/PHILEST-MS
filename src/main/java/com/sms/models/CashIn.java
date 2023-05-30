@@ -2,6 +2,7 @@ package com.sms.models;
 
 import com.sms.interfaces.TableRowable;
 
+// Class representing entries of money
 public class CashIn implements TableRowable{
 
     private String id;
@@ -12,10 +13,12 @@ public class CashIn implements TableRowable{
     private String amount = "30000";
     private String date = "today";
 
+    // no arg constructor
     public CashIn() {
         super();
     }
 
+    // constructor with initial values for every field
     public CashIn(String id, int studentId, String studentName, String purpose, String academicYear, String amount, String date) {
         super();
         this.id = id;
@@ -27,6 +30,8 @@ public class CashIn implements TableRowable{
         this.date = date;
         
     }
+
+    //  getters and setters
 
     public int getStudentId() {
         return studentId;
@@ -71,20 +76,17 @@ public class CashIn implements TableRowable{
         this.id = id;
     }
 
+    // returns a json representation of an object of this class
     @Override
     public String toJson() {
-        // return null;
-        // return {"id":11,"date":"2023-22-05 12:23:06","amount":"10000","student":11,"purpose":"registration","academic_year":"2023/2024"}
-        // return "{\"date\": \"" + "05/23/2023" + "\", \"amount\": \"" + "20000" + "\", \"purpose\": \""
-        //         + "installement" + "\", \"student\": " + 11 + ", \"academic_year\": \""+"2022/2023"+"\"}";
         System.out.println(studentId);
         return "{\"date\": \"" + date + "\", \"amount\": \"" + amount + "\", \"purpose\": \""
                 + purpose + "\", \"student\": " + studentId + ", \"academic_year\": \""+academicYear+"\"}";
     }
 
+    // converts a json string to an object of this class
     @Override
     public TableRowable fromJson(String json) {
-        // TODO Auto-generated method stub
         return null;
     }
 }

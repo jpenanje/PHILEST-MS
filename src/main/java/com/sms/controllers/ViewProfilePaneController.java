@@ -37,6 +37,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+// Controller for the profile popup
 public class ViewProfilePaneController implements Initializable {
 
     @FXML
@@ -124,16 +125,19 @@ public class ViewProfilePaneController implements Initializable {
     double viewWidth = 82;
     double viewHeight = 79.5;
 
+    // constructor with the profile section controller for refreshing it
     public ViewProfilePaneController(Initializable profileSectionController) {
         super();
         this.profileSectionController = profileSectionController;
     }
 
+    // cancels the editing of the profile
     @FXML
     void cancel(ActionEvent event) {
         Tools.closeStageFromNode(basePane);
     }
 
+    // saves changes made
     @FXML
     void save(ActionEvent event) {
         boolean isValidForm = validateForm();
@@ -145,6 +149,7 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+    // selects a profile picture from file system
     @FXML
     void selectProfilePic(MouseEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -163,6 +168,7 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+    // hides the two password fields if they are visibile and vice versa
     @FXML
     void toggleEditPasswordFields(ActionEvent event) {
         ObservableList<Node> children = formPane.getChildren();
@@ -175,6 +181,7 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+    // sets the new password field visible if it is not visible and vice versa
     @FXML
     void toggleNewPasswordHidden(MouseEvent event) {
         if (newPasswordField.isVisible()) {
@@ -188,6 +195,7 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+    // sets the previous password field visible if it is not visible and vice versa
     @FXML
     void togglePreviousPasswordHidden(MouseEvent event) {
         if (previousPasswordField.isVisible()) {
@@ -201,6 +209,7 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+// shows the loading icon
     void showLoadingIcon() {
         System.out.println("Show student form loading icon");
         buttons = FXCollections.observableArrayList(buttonsPane.getChildren());
@@ -208,16 +217,19 @@ public class ViewProfilePaneController implements Initializable {
         buttonsPane.getChildren().add(loadingIcon);
     }
 
+    // designs the button for hiding the password
     void showHidePasswordButton() {
         showPasswordBtn.setText("Hide password");
         showPasswordIcon.setRotate(180);
     }
 
+    // designs the button for editing the password
     void showShowPasswordButton() {
         showPasswordBtn.setText("Edit password");
         showPasswordIcon.setRotate(0);
     }
 
+    // updates the current image in the popup
     void updateCurrentImageFile() {
         if (currentImageFile != null) {
             profilePic.setImage(new Image(currentImageFile.getAbsolutePath()));
@@ -225,10 +237,12 @@ public class ViewProfilePaneController implements Initializable {
 
     }
 
+    // sets the stage
     void setStage(Stage newStage) {
         this.stage = newStage;
     }
 
+    // ensures that even after changing its height, the popup is still centered
     void bindStageHeight() {
         formPane.heightProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -239,6 +253,7 @@ public class ViewProfilePaneController implements Initializable {
         });
     }
 
+    // clips the profile pic to a circular shape
     void clipProfilePicPane() {
 
         Circle clipShape = new Circle(40);
@@ -249,6 +264,7 @@ public class ViewProfilePaneController implements Initializable {
         centerProfilePic();
     }
 
+    // centeres the profile pic in the space available for it
     void centerProfilePic() {
         profilePic.setPreserveRatio(true);
 
@@ -271,6 +287,7 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+    // sets the size of the profile pic
     void setProfilePicPaneSize() {
         profilePicPane.setPrefWidth(viewWidth);
         profilePicPane.setMinWidth(viewWidth);
@@ -290,6 +307,7 @@ public class ViewProfilePaneController implements Initializable {
         loadingIcon = getLoadingIcon();
     }
 
+    // validates the fields of this popup and shows error messages
     boolean validateForm() {
         return (validateUsernameField() &
                 validateProfilePic() &
@@ -297,6 +315,7 @@ public class ViewProfilePaneController implements Initializable {
                 validatePasswordFields());
     }
 
+    // fields validations
     boolean validatePhoneNumberField(){
         return Tools.digitValidation(phoneField, phoneNumberErrorMessage);
     }
@@ -311,6 +330,7 @@ public class ViewProfilePaneController implements Initializable {
         newPasswordField, newPasswordTextField, newPasswordErrorMessage);
     }
 
+    // loads initial values to the form fields
     void initializeFormFields(){
         if(Config.currentUserName != null){
             usernameField.setText(Config.currentUserName);
@@ -329,10 +349,12 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+    // returns the loading icon
     Pane getLoadingIcon() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/CircleLoadingIcon.fxml");
     }
 
+    // returns a service for saving the profile information
     Service getSaveService() {
         System.out.println("get Save user Service");
         Service service = new Service() {
@@ -396,7 +418,7 @@ public class ViewProfilePaneController implements Initializable {
         return service;
     }
 
-
+// returns the user from the forms in json format
     String getCurrentUser(){
         if(Tools.isEmptyPasswordField(previousPasswordField, previousPasswordTextField) || 
         Tools.isEmptyPasswordField(newPasswordTextField, newPasswordField)){
@@ -420,6 +442,7 @@ public class ViewProfilePaneController implements Initializable {
         }
     }
 
+    // returns the new password the user entered
     String getNewPassword(){
         if(newPasswordField.isVisible()){
             return newPasswordField.getText();
@@ -427,6 +450,7 @@ public class ViewProfilePaneController implements Initializable {
         return newPasswordTextField.getText();
     }
 
+    // returns the previous password the user entered
     String getOldPassword(){
         if(previousPasswordField.isVisible()){
             return previousPasswordField.getText();
@@ -434,11 +458,14 @@ public class ViewProfilePaneController implements Initializable {
         return previousPasswordTextField.getText();
     }
 
+    // attempts to save the user to db and returns the response
     HttpResponse<String> saveUser(String requestBody) throws Exception {
         System.out.println(requestBody);
         return RequestManager.updateItem("custom_user/", requestBody).get();
     }
 
+    // ensures that the display shows information about the progress and
+    // the outcome of attempting to save
     void bindSaveServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -472,12 +499,14 @@ public class ViewProfilePaneController implements Initializable {
         });
     }
 
+    // freezes the app for some time before closing the popup
     void waitAndGoBack() {
         Service service = getWaitService();
         bindWaitServiceWithDisplay(service);
         service.start();
     }
 
+    // ensures the display shows appropriate information after waiting
     void bindWaitServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -489,18 +518,21 @@ public class ViewProfilePaneController implements Initializable {
         });
     }
 
+    // shows the success icon for some time bofore closing the popup
     void showSuccessIconForSeconds() {
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().add(getSuccessPane());
         waitAndGoBack();
     }
 
+    // removes the loading icon
     void removeLoadingIcon() {
         System.out.println("Remove loading icon");
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().addAll(buttons);
     }
 
+    // validates the profile pic size
     boolean validateProfilePic(){
         if(Tools.getKBImageSize(profilePic.getImage()) > 20){
             showError("The size of the image is too large pick an image with size around 100kb");
@@ -510,7 +542,7 @@ public class ViewProfilePaneController implements Initializable {
     }
 
 
-
+// returns a service used to freeze the UI for some time
     Service getWaitService() {
         Service service = new Service() {
             @Override
@@ -553,6 +585,7 @@ public class ViewProfilePaneController implements Initializable {
         return service;
     }
 
+    // shows an error message in a new popup
     void showErrorMessage() {
         System.out.println("show error message");
         Initializable errorInSavingPageController = new ErrorPageController(
@@ -561,6 +594,7 @@ public class ViewProfilePaneController implements Initializable {
                 Tools.getStageFromNode(formPane));
     }
 
+    // shows a custom error in a new popup
     void showError(String error) {
         System.out.println("show error message");
         Initializable errorInSavingPageController = new ErrorPageController(error);
@@ -568,14 +602,17 @@ public class ViewProfilePaneController implements Initializable {
                 Tools.getStageFromNode(formPane));
     }
 
+// returns the success pane
     Pane getSuccessPane() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/SuccessPane.fxml");
     }
 
+    // returns the full name of the user which was entered in the form
     String getUserFullName(){
         return fullnameField.getText();
     }
 
+    // returns the base64 representation of the image entered in the form
     String getUserPic(){
         if(profilePic.getImage() != null){
             System.out.println(Tools.imageToBase64(profilePic.getImage()));
@@ -587,14 +624,17 @@ public class ViewProfilePaneController implements Initializable {
         
     }
 
+    // returns the username of the user entered in the form
     String getUserUserName(){
         return usernameField.getText();
     }
 
+    // returns the phone number of the user entered in the form
     String getPhoneNumber(){
         return phoneField.getText();
     }
 
+    // saves the current user information in variables
     void saveCurrentUserLocally(){
         Config.currentUserFullName = getUserFullName();
         Config.currentUserPic = getUserPic();
@@ -602,15 +642,19 @@ public class ViewProfilePaneController implements Initializable {
         Config.currentUserPhone = getPhoneNumber();
     }
 
+    // refreshes the profile pane in the top right menu of the 
+    // application
     void refreshProfilePane(){
         ((ProfilePaneController)profileSectionController).refresh();
     }
 
+    // shows invalid password message
     void showInvalidPasswordErrorMessage(){
         previousPasswordErrorMessage.setText("This password is not valid");
         previousPasswordErrorMessage.setVisible(true);
     }
 
+    // shows duplicate username message
     void showDuplicateUserNameErrorMessage(){
         usernameErrorMessage.setText("This username is already taken");
         usernameErrorMessage.setVisible(true);

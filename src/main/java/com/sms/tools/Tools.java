@@ -33,7 +33,6 @@ import javafx.scene.control.ButtonBase;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -46,7 +45,11 @@ import javafx.util.StringConverter;
 /**
  * Tools
  */
+
+// Class containing methods reused a lot through out the project
 public class Tools {
+
+    // casts a string to a json object and returns it
     public static JsonNode getJsonNodeFromString(String str) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -58,6 +61,7 @@ public class Tools {
         }
     }
 
+    // returns a pane from a controller and the fxml path to its view
     public static Pane getPaneFromControllerAndFxmlPath(Initializable controller, String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(Tools.class.getResource(fxmlPath));
@@ -72,10 +76,7 @@ public class Tools {
 
     }
 
-    public static Font getRegularFont(int fontSize) {
-        return Font.loadFont(Tools.class.getResource("/fonts/lato/Lato-Regular.ttf").getPath(), fontSize);
-    }
-
+    // returns a pane from the json node of that section
     public static Pane getPaneFromLeftMenuNode(JsonNode node) {
         // Initializable controller = getControllerFromNode(node);
         String viewPath = node.get("view").asText();
@@ -86,11 +87,13 @@ public class Tools {
         return getPaneFromControllerAndFxmlPath(controller, viewPath);
     }
 
+    // returns a pane from the path to the controller and the path to the view
     public static Pane getPaneFromPathsOfControllerAndView(String controllerPath, String viewPath) {
         Initializable controller = getControllerFromPath(controllerPath, null);
         return getPaneFromControllerAndFxmlPath(controller, viewPath);
     }
 
+    // returns a controller from its path
     public static Initializable getControllerFromPath(String controllerPath, Class[] objectArgs, Object... args) {
         try {
             String className = controllerPath;
@@ -109,10 +112,12 @@ public class Tools {
         }
     }
 
+    // returns a controller from the section node
     static Initializable getControllerFromNode(JsonNode node) {
         return getControllerFromPath(node.get("controller").asText(), null);
     }
 
+    // converts a list of objects to an array list of Strings
     public static ArrayList<String> listToArrayList(List list) {
         ArrayList<String> toBeReturned = new ArrayList<String>();
         for (Object item : list) {
@@ -121,6 +126,7 @@ public class Tools {
         return toBeReturned;
     }
 
+    // adds commas after every 3 digits
     public static String addCommasToStringValue(String value) {
         // Remove any existing commas from the number
         value = value.replaceAll(",", "");
@@ -144,10 +150,12 @@ public class Tools {
         return sb.toString() + fractionalPart;
     }
 
+    // returns a percentage from a value and its max
     public static double getPercentage(double value, double max) {
         return (value / max) * 100;
     }
 
+    // returns a color corresponding to a given percentage value
     public static String getColorFromPercentage(int percentage) {
         if (percentage < 10) {
             return "#FF0000";
@@ -166,14 +174,16 @@ public class Tools {
         }
     }
 
+    // show a modal from the primary stage and the controller and fxml path of the
+    // pane
     public static void showModal(Initializable controller, String fxmlPath, Stage primaryStage) {
 
         System.out.println("show modal");
-        
+
         // create a new modal stage
         Stage modalStage = new Stage();
         addIconToStage(modalStage);
-        
+
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.initOwner(primaryStage);
 
@@ -191,19 +201,24 @@ public class Tools {
         modalStage.showAndWait();
     }
 
+    // closes a stage from a node
     public static void closeStageFromNode(Node node) {
         Stage stage = (Stage) node.getScene().getWindow();
         stage.close();
     }
 
+    // returns a loading icon basdd on a service
     public static Node getLoadingIcon(Service service) {
         return getPaneFromControllerAndFxmlPath(new LoadingIconController(service), "/components/LoadingIcon.fxml");
     }
 
+    // returns the stage on which a node is
     public static Stage getStageFromNode(Node node) {
         return (Stage) node.getScene().getWindow();
     }
 
+    // validates a field and highlights the error message
+    // when the field is empty
     public static boolean simpleValidation(TextInputControl field, Text errorText) {
         errorText.setText("This field is required");
         if (!field.getText().isEmpty()) {
@@ -215,6 +230,7 @@ public class Tools {
         }
     }
 
+    // overloads the previous method for datepicker fields
     public static boolean simpleValidation(DatePicker field, Text errorText) {
         errorText.setText("This field is required");
         if (field.getValue() != null) {
@@ -227,6 +243,7 @@ public class Tools {
         }
     }
 
+    // overloads the previous method for button base field(like combo box)
     public static boolean simpleValidation(ButtonBase field, Text errorText) {
         errorText.setText("This field is required");
         if (!field.getText().isEmpty()) {
@@ -238,10 +255,13 @@ public class Tools {
         }
     }
 
+    // validates the selected item is not the default drop down value
+    // and field is not empty
     public static boolean dropDownValidation(ButtonBase field, String defaultValue, Text errorText) {
         return simpleValidation(field, errorText) && defaultDropDownValidation(field, defaultValue, errorText);
     }
 
+    // validates the selected item is not the default drop down value
     public static boolean defaultDropDownValidation(ButtonBase field, String defaultValue, Text errorText) {
         errorText.setText("Please select a value for this field");
         if (field.getText().equals(defaultValue)) {
@@ -253,6 +273,8 @@ public class Tools {
         }
     }
 
+    // validates digits are entered to the field and it
+    // that the field is not empty
     public static boolean digitValidation(TextInputControl field, Text errorText) {
         try {
             Integer.parseInt(field.getText());
@@ -265,6 +287,7 @@ public class Tools {
         }
     }
 
+    // validates the passwords are not the same
     public static boolean passwordValidation(TextInputControl passwordField1, TextInputControl passwordTextField1,
             Text errorText1,
             TextInputControl passwordField2, TextInputControl passwordTextField2, Text errorText2) {
@@ -300,6 +323,7 @@ public class Tools {
         }
     }
 
+    // casts an HttpResponse to the custom class Response
     public static Response getCustomResponseFromResponse(HttpResponse<String> response) {
         Response customResponse = new Response();
         customResponse.setCode(response.statusCode());
@@ -307,6 +331,7 @@ public class Tools {
         return customResponse;
     }
 
+    // adds the drop down items to be displayed in a drop down field
     public static void addDropDownItemsFromFieldAndItems(MenuButton field, ArrayList<String> itemsStr) {
         if (itemsStr != null) {
             ArrayList menuItems = getMenuItems(itemsStr, field);
@@ -314,6 +339,7 @@ public class Tools {
         }
     }
 
+    // returns a la list of menuItem objects from a list of string
     static ArrayList<MenuItem> getMenuItems(ArrayList<String> itemsStr, MenuButton field) {
         ArrayList<MenuItem> items = new ArrayList<>();
         for (String itemStr : itemsStr) {
@@ -322,6 +348,7 @@ public class Tools {
         return items;
     }
 
+    // returns a menuItem from a text
     static MenuItem getMenuItem(String text, MenuButton field) {
         MenuItem toBeReturned = new MenuItem();
         toBeReturned.setText(text);
@@ -336,6 +363,7 @@ public class Tools {
         return toBeReturned;
     }
 
+    // casts local date to utc date string
     public static String getUtcDateStringFromLocalDate(LocalDate localDate) {
         LocalDateTime utcDateTime = LocalDateTime.of(localDate, LocalDateTime.now().toLocalTime())
                 .atOffset(ZoneOffset.UTC)
@@ -345,6 +373,7 @@ public class Tools {
         return utcDateTime.format(formatter);
     }
 
+    // formats a utc string to a date with the format DD/MM/YYYY
     public static String getDateTextFromUtcStr(String utcString) {
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern(
                 "yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]");
@@ -357,9 +386,9 @@ public class Tools {
         String formattedDate = dateTime.format(outputFormatter);
         // System.out.println(utcString);
         return formattedDate;
-        // return "12/03/2022";
     }
 
+    // returns a StringConverter which can convert a localDate to string
     public static StringConverter<LocalDate> getDateConverter() {
         return new StringConverter<LocalDate>() {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -384,6 +413,7 @@ public class Tools {
         };
     }
 
+    // converts a string date to a localDate object
     public static LocalDate getLocalDateFromString(String dateStr) {
         // Define the formatter for the given date format
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
@@ -392,9 +422,10 @@ public class Tools {
         return LocalDate.parse(dateStr, formatter);
     }
 
+    // Opens a stage from the controller, fxmlPath and the primary stage
     public static void openStage(Initializable controller, String fxmlPath, Stage primaryStage, boolean fullScreen) {
         try {
-            
+
             FXMLLoader loader = new FXMLLoader(Tools.class.getResource(fxmlPath));
             // BaseController controller = new BaseController(primaryStage);
             loader.setController(controller);
@@ -412,11 +443,13 @@ public class Tools {
         }
     }
 
+    // shows an error message for wrong credentials
     public static void showWrongCredentials(Text errorText) {
         errorText.setText("wrong credentials");
         errorText.setVisible(true);
     }
 
+    // converts an image to a base64 string
     public static String imageToBase64(Image image) {
         String base64Image = "";
         try {
@@ -431,6 +464,8 @@ public class Tools {
         return base64Image;
     }
 
+    // returns the kilo byte size of the image
+    // not precise at all
     public static int getKBImageSize(Image image) {
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -445,6 +480,7 @@ public class Tools {
         return imageBytes.length / (1024 * 10);
     }
 
+    // returns an image from a base64 string
     public static Image getImageFromBase64(String base64Image) {
 
         byte[] imageBytes = Base64.getDecoder().decode(base64Image);
@@ -454,15 +490,18 @@ public class Tools {
         return new Image(inputStream);
     }
 
-    public static boolean isEmptyPasswordField(TextInputControl field1, TextInputControl field2){
+    // checks if password fields are empty
+    public static boolean isEmptyPasswordField(TextInputControl field1, TextInputControl field2) {
         return isEmptyString(field1.getText()) && isEmptyString(field2.getText());
     }
 
-    static boolean isEmptyString(String toBeChecked){
+    // checks if a string is null or empty
+    static boolean isEmptyString(String toBeChecked) {
         return toBeChecked.equals(null) || toBeChecked.isEmpty();
     }
 
-    public static void addIconToStage(Stage stage){
+    // adds the logo to a stage
+    public static void addIconToStage(Stage stage) {
         Image icon = new Image(Tools.class.getResourceAsStream("/images/logo.png"));
         stage.getIcons().add(icon);
     }

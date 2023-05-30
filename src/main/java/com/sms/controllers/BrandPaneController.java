@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
+// Controller for the pane containing the brand
 public class BrandPaneController implements Initializable {
 
     @FXML

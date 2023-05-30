@@ -37,12 +37,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
+// Controller for dashboard section
 public class DashboardController implements Initializable {
 
     public DashboardController() {
         super();
     }
 
+    // Dashboard constructor from node containing data and meta data
     public DashboardController(JsonNode node) {
         super();
     }
@@ -71,6 +73,7 @@ public class DashboardController implements Initializable {
     @FXML
     private BarChart<String, Double> barChart;
 
+    // changes the year of the graph and refreshed the data
     @FXML
     void changeYear(ActionEvent event) {
 
@@ -78,9 +81,12 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        String[] years = {"2020", "2021", "2022", "2023"};
-        ArrayList<String> yearsList = new ArrayList<>(Arrays.asList(years));
-        year.getItems().setAll(getYearsMenuItems(yearsList));
+        initYearsField();
+        initBarChart();
+    }
+
+    // initializes the bar chart information and appearance
+    void initBarChart(){
         ValueAxis<Double> yAxis = (ValueAxis<Double>) barChart.getYAxis();
         yAxis.setTickLabelFormatter(new StringConverter<Double>() {
             @Override
@@ -171,6 +177,14 @@ public class DashboardController implements Initializable {
         barChart.setAnimated(true);
     }
 
+    // initializes the field year
+    void initYearsField(){
+        String[] years = {"2020", "2021", "2022", "2023"};
+        ArrayList<String> yearsList = new ArrayList<>(Arrays.asList(years));
+        year.getItems().setAll(getYearsMenuItems(yearsList));
+    }
+
+    // returns the menuItems for the year field
     ArrayList<MenuItem> getYearsMenuItems(ArrayList<String> yearsString){
         ArrayList<MenuItem> yearsMenuItems = new ArrayList<MenuItem>();
         for (String yearString : yearsString){
@@ -179,6 +193,7 @@ public class DashboardController implements Initializable {
         return yearsMenuItems;
     }
 
+    // returns the year menu item for a given year
     MenuItem getYearMenuItem(String yearString){
         MenuItem toBeReturned = new MenuItem(yearString);
         final String yearstring = yearString;

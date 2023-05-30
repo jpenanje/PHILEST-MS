@@ -12,10 +12,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
+// Controller of the section of the app showing a table
 public class MainPaneController implements Initializable {
 
     int currentItemIndex;
 
+    // contructor with title and drawer index of current main pane
     public MainPaneController(int currentItemIndex, String newTitle) {
         super();
         this.currentItemIndex = currentItemIndex;
@@ -30,13 +32,15 @@ public class MainPaneController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         JsonNode currentNode = getCurrentNodeFromIndex();
-        MainPaneChild.getChildren().add(getCurrentPaneFromIndex(currentNode));
+        MainPaneChild.getChildren().add(getCurrentPane(currentNode));
     }
 
-    Pane getCurrentPaneFromIndex(JsonNode currentNode) {
+    // returns the current table from json node
+    Pane getCurrentPane(JsonNode currentNode) {
         return Tools.getPaneFromLeftMenuNode(currentNode);
     }
 
+    // returns the node of the current item from its index
     JsonNode getCurrentNodeFromIndex() {
         int counter = 0;
         for (JsonNode node : Repository.getMenuItems()) {
@@ -47,24 +51,4 @@ public class MainPaneController implements Initializable {
         }
         return null;
     }
-
-    // EventHandler<ActionEvent> getAddActionFromCurrentNode(JsonNode currentNode) {
-    // final JsonNode node = currentNode;
-    // return new EventHandler<ActionEvent>() {
-    // @Override
-    // public void handle(ActionEvent arg0) {
-    // if (currentItemIndex != 0) {
-    // String addFormViewPath = node.get("form_view").asText();
-    // String addControllerPath = node.get("form_controller").asText();
-    // // Class[] classArgs = { Student.class };
-    // Initializable addFormController =
-    // Tools.getControllerFromPath(addControllerPath, null,
-    // null);
-    // Tools.showModal(addFormController, addFormViewPath,
-    // Tools.getStageFromNode(mainPan));
-    // }
-    // // TODO Auto-generated method stub
-    // }
-    // };
-    // }
 }

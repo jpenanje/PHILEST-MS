@@ -1,6 +1,5 @@
 package com.sms.controllers;
 
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,28 +8,29 @@ import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.interfaces.TableRowable;
-import com.sms.models.CashIn;
 import com.sms.models.CashOut;
 import com.sms.models.CustomTableCell;
 import com.sms.models.RowTypes;
-import com.sms.models.Student;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import javafx.scene.layout.Region;
 
+// Controller for manageing the CashIn table it extends the Table Section Controller 
 public class CashOutController extends TableSectionController {
 
+    // no arguement constructor, even if not used, it is required when loading this
+    // controller simply from it's path
     public CashOutController() {
         super(null, null, null, null, null, null);
     }
 
+    // constructor for cashout from the jsonNode containing data and meta data for
+    // the table
     public CashOutController(JsonNode node) {
         super(new CashOutSearchController(), "/sections/CashOutSearch.fxml", node, itemFromNodeFunction(), "cashout/", getAttributes());
         super.setColumns(getColumns());
-        // requires the search controller and the fxml path
     }
 
     @Override
@@ -38,13 +38,9 @@ public class CashOutController extends TableSectionController {
         super.initialize(arg0, arg1);
     }
 
+    // returns the meta description of how the data will be represented on the table
     ArrayList<TableColumn<TableRowable, String>> getColumns() {
         ArrayList<TableColumn<TableRowable, String>> columns = new ArrayList<>();
-        // { "ID", "Pupil's Name", "Class", "Parent's Name", "Phone Number",
-        // "Registered",
-        // "Installement 1", "Installement 2", "Installement 3", "Installement 4",
-        // "Installement 5", "Total paid",
-        // "Fees owed" };
         TableColumn<TableRowable, String> column1 = new TableColumn<>("ID");
         column1.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("id"));
         column1.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
@@ -96,6 +92,8 @@ public class CashOutController extends TableSectionController {
         return columns;
     }
 
+    // returns a function which describes how a row item is to be constructed
+    // from a given node in the data
     static Function<JsonNode, TableRowable> itemFromNodeFunction() {
         return new Function<JsonNode, TableRowable>() {
             @Override
@@ -108,57 +106,7 @@ public class CashOutController extends TableSectionController {
                     String purpose = itemNode.get("purpose").asText();
                     String amount = itemNode.get("amount").asText();
                     String date = itemNode.get("date").asText();
-                    
-                    // String currentAcademicYear = studentNode.get("current_year").asText();
-                    // String registered = "false";
-                    // String installment1 = "0";
-                    // String installment2 = "0";
-                    // String installment3 = "0";
-                    // String installment4 = "0";
-                    // String installment5 = "0";
-
-                    // int installementIndex = 1;
-                    // if (studentNode.get("cash_ins") != null) {
-                    //     for (JsonNode cashInNode : studentNode.get("cash_ins")) {
-                    //         if (cashInNode.get("purpose").asText().equals("registration")) {
-                    //             registered = "true";
-                    //         } 
-                    //         else if (cashInNode.get("purpose").asText().equals("installement")
-                    //                 && installementIndex < 6) {
-                    //             switch (installementIndex) {
-                    //                 case 1: {
-                    //                     installment1 = cashInNode.get("amount").asText();
-                    //                     installementIndex++;
-                    //                     break;
-                    //                 }
-                    //                 case 2: {
-                    //                     installment2 = cashInNode.get("amount").asText();
-                    //                     installementIndex++;
-                    //                     break;
-                    //                 }
-                    //                 case 3: {
-                    //                     installment3 = cashInNode.get("amount").asText();
-                    //                     installementIndex++;
-                    //                     break;
-                    //                 }
-                    //                 case 4: {
-                    //                     installment4 = cashInNode.get("amount").asText();
-                    //                     installementIndex++;
-                    //                     break;
-                    //                 }
-                    //                 case 5: {
-                    //                     installment5 = cashInNode.get("amount").asText();
-                    //                     installementIndex++;
-                    //                     break;
-                    //                 }
-                    //             }
-
-                    //         }
-                    //     }
-                    // }
-
                     CashOut toBeReturned = new CashOut(id, receiver, purpose, amount, date);
-                    // CashIn toBeReturned = new CashIn(id, studentId, studentName, purpose, academicYear, amount, date);
                     return toBeReturned;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -170,17 +118,18 @@ public class CashOutController extends TableSectionController {
     }
 
 
+    // Returns the attributes of the lists in the data to be used in
+    // form dropdowns
     static ArrayList<String> getAttributes(){
         ArrayList<String> attributes = new ArrayList<>();
         attributes.add("purpose");
         return attributes;
     }
 
+    // Makes the columns not sortable using the default arrows for sorting each column
     static void makeColumnsNotSortable(ArrayList<TableColumn<TableRowable, String>> columns){
         for(TableColumn<TableRowable, String> column : columns){
             column.setSortable(false);
-            // column.setPrefWidth(Region.USE_COMPUTED_SIZE);
-            // column.setMinWidth(100);
             column.setMaxWidth(5000);
         }
     }

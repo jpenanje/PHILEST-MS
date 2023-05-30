@@ -27,6 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+// controller for the popup to validate the deletion of an item in a table
 public class DeleteValidationController implements Initializable {
 
     Stage stage;
@@ -37,6 +38,8 @@ public class DeleteValidationController implements Initializable {
     private Pane loadingIcon;
     private Function refresh;
 
+    // constructor with primary stage, delete function and a function to refresh
+    // after deletion
     public DeleteValidationController(Stage stage, Function delete, Function refresh) {
         super();
         this.stage = stage;
@@ -50,11 +53,13 @@ public class DeleteValidationController implements Initializable {
     @FXML
     private HBox buttonsPane;
 
+    // cancels the deletion
     @FXML
     void cancel(ActionEvent event) {
         Tools.closeStageFromNode(basePane);
     }
 
+    // confirms the deletion
     @FXML
     void delete(ActionEvent event) {
         Function<NullType, CompletableFuture<HttpResponse<String>>> onDelete = (Function<NullType, CompletableFuture<HttpResponse<String>>>) delete;
@@ -64,6 +69,7 @@ public class DeleteValidationController implements Initializable {
         deleteService.start();
     }
 
+    // returns a service for deleting the given item asynchronously
     Service getDeleteService(Function<NullType, CompletableFuture<HttpResponse<String>>> onDelete) {
         System.out.println("get Delete Student Service");
         Service service = new Service() {
@@ -118,19 +124,9 @@ public class DeleteValidationController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         loadingIcon = getLoadingIcon();
-        // bindStageHeight();
     }
 
-    void bindStageHeight() {
-        basePane.heightProperty().addListener(new ChangeListener<Object>() {
-            public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
-                    Object newValue) {
-                stage.sizeToScene();
-                stage.centerOnScreen();
-            };
-        });
-    }
-
+    // ensures that the deletion will remove the loading icon and lead to appropriate actions
     void bindDeleteServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -153,10 +149,12 @@ public class DeleteValidationController implements Initializable {
         });
     }
 
+    // closes the popup
     void closeCurrentWindow() {
         Tools.closeStageFromNode(basePane);
     }
 
+    // shows the loading icon in the position of the buttons
     void showLoadingIcon() {
         System.out.println("Show student form loading icon");
         buttons = FXCollections.observableArrayList(buttonsPane.getChildren());
@@ -164,16 +162,19 @@ public class DeleteValidationController implements Initializable {
         buttonsPane.getChildren().add(loadingIcon);
     }
 
+    // returns the loading icon
     Pane getLoadingIcon() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/CircleLoadingIcon.fxml");
     }
 
+    // removes the loading icon
     void removeLoadingIcon() {
         System.out.println("Remove loading icon");
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().addAll(buttons);
     }
 
+    // shows a popup for an error message
     void showErrorMessage() {
         System.out.println("show error message");
         Initializable errorInSavingPageController = new ErrorPageController(
@@ -182,22 +183,26 @@ public class DeleteValidationController implements Initializable {
                 stage);
     }
 
+    // shows success icon for seconds
     void showSuccessIconForSeconds() {
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().add(getSuccessPane());
         waitAndGoBack();
     }
 
+    // returns the success icon
     Pane getSuccessPane() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/SuccessPane.fxml");
     }
 
+    // freezes the UI for sometime before closing the popup
     void waitAndGoBack() {
         Service service = getWaitService();
         bindWaitServiceWithDisplay(service);
         service.start();
     }
 
+    // returns a service for freezing the UI for sometime
     Service getWaitService() {
         Service service = new Service() {
             @Override
@@ -239,6 +244,7 @@ public class DeleteValidationController implements Initializable {
         return service;
     }
 
+    // creates a relationship between the wait service and the closing of the popup
     void bindWaitServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,

@@ -2,9 +2,12 @@ package com.sms.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+// custom response class
 public class Response {
     int code;
     JsonNode data;
+
+    // getters and setters
     public int getCode() {
         return code;
     }

@@ -17,11 +17,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.tools.Config;
 import com.sms.tools.Tools;
 
+// Controller for the left drawer
 public class LeftMenuController implements Initializable {
     int selectedItemIndex;
     JsonNode menuItems;
     Function<Integer, NullType> onChange;
 
+    // constructor with menuItems, an onchange function and the current selected item index
     LeftMenuController(JsonNode menuItems,Function<Integer, NullType> onChange, int selectedItemIndex) {
         this.selectedItemIndex = selectedItemIndex;
         this.onChange = onChange;
@@ -42,6 +44,7 @@ public class LeftMenuController implements Initializable {
         menuItemsPane.getChildren().addAll(itemsPanes);
     }
 
+    // returns a menu item from a menu item and some meta info
     Pane getItemPaneFromJsonNode(JsonNode menuItem, int index, boolean selected) {
         Initializable controller;
         if(menuItem.get("title").asText().equals("logout")){
@@ -54,6 +57,7 @@ public class LeftMenuController implements Initializable {
         return Tools.getPaneFromControllerAndFxmlPath(controller, "/components/MenuItem.fxml");
     }
 
+    // returns the controller for logout button
     Initializable getLogoutController(JsonNode menuItem, int index, boolean selected){
         Function<Integer, NullType> onMenuItemClick = new Function<Integer, NullType>() {
             @Override
@@ -65,6 +69,7 @@ public class LeftMenuController implements Initializable {
         return new MenuItemController(menuItem, selected, onMenuItemClick, index);
     }
 
+    // returns the controller of a menuItem other than the logout button
     Initializable getPageMenuItemController(JsonNode menuItem, int index, boolean selected){
         Function<Integer, NullType> onMenuItemClick = new Function<Integer, NullType>() {
             @Override
@@ -80,11 +85,13 @@ public class LeftMenuController implements Initializable {
         return new MenuItemController(menuItem, selected, onMenuItemClick, index);
     }
 
+    // returns the title corresponding to the new menu index
     String getNewTitleFromMenuItems(int newIndex){
         JsonNode newMenuItem = menuItems.get(newIndex);
         return newMenuItem.get("title").asText();
     }
 
+    // changes a menuItem to the same menu item with unselected menu styles
     void unselectCurrentMenuItem() {
         menuItemsPane.getChildren().remove(selectedItemIndex);
         JsonNode unselectedMenuItemNode = menuItems.get(selectedItemIndex);
@@ -92,6 +99,7 @@ public class LeftMenuController implements Initializable {
         menuItemsPane.getChildren().add(selectedItemIndex, unselectedMenuItem);
     }
 
+    // changes a menuItem to the same menu item with selected menu styles
     void selectCurrentMenuItem(int newIndex) {
         selectedItemIndex = newIndex;
         menuItemsPane.getChildren().remove(selectedItemIndex);
@@ -100,6 +108,7 @@ public class LeftMenuController implements Initializable {
         menuItemsPane.getChildren().add(selectedItemIndex, selectedMenuItem);
     }
 
+    // redirects to loginPage, and clears session info
     void logout(){
         removeToken();
         clearCurrentUser();
@@ -108,10 +117,12 @@ public class LeftMenuController implements Initializable {
         Tools.closeStageFromNode(menuItemsPane);
     }
 
+    // removes the token from global variables
     void removeToken(){
         Config.token = null;
     }
 
+    // removes the user information from global variables
     void clearCurrentUser(){
         Config.currentUserFullName = null;
         Config.currentUserName = null;

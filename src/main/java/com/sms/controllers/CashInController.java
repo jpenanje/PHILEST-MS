@@ -51,7 +51,7 @@ public class CashInController extends TableSectionController {
             }
         });
 
-        TableColumn<TableRowable, String> column2 = new TableColumn<>("Student");
+        TableColumn<TableRowable, String> column2 = new TableColumn<>("Pupil");
         column2.setCellValueFactory(new PropertyValueFactory<TableRowable, String>("studentName"));
         column2.setCellFactory(new Callback<TableColumn<TableRowable, String>, TableCell<TableRowable, String>>() {
             @Override

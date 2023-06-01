@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.net.URLEncoder;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -33,6 +35,7 @@ import javafx.scene.control.ButtonBase;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -504,6 +507,54 @@ public class Tools {
     public static void addIconToStage(Stage stage) {
         Image icon = new Image(Tools.class.getResourceAsStream("/images/logo.png"));
         stage.getIcons().add(icon);
+    }
+
+    // returns a valid encoded url parameter to be appended to the
+    // search url
+    public static String getParamFromFieldAndAttribute(TextField field, String attribute){
+        String param = "";
+        if(field.getText().length() > 0 ){
+            param = attribute+ "=" + encodeUrlParameter(field.getText());
+        }
+        return param;
+    }
+
+    // overloads the getParamFromFieldAndAttribute for menubutton fields
+    public static String getParamFromFieldAndAttribute(MenuButton field, String attribute){
+        String param = "";
+        if(field.getText().length() > 0 ){
+            param = attribute+ "=" + encodeUrlParameter(field.getText());
+        }
+        return param;
+    }
+
+    // overloads the getParamFromFieldAndAttribute for date picker fields
+    public static String getParamFromFieldAndAttribute(DatePicker field, String attribute){
+        String param = "";
+        if(field.getValue() != null ){
+            String utcDate = Tools.getUtcDateStringFromLocalDate(field.getValue());
+            param = attribute+ "=" + encodeUrlParameter(utcDate);
+        }
+        return param;
+    }
+
+    // overloads the getParamFromFieldAndAttribute for a string
+    public static String getParamFromFieldAndAttribute(String field, String attribute){
+        String param = "";
+        if(field != null ){
+            param = attribute+ "=" + encodeUrlParameter(field);
+        }
+        return param;
+    }
+
+    // encodes the url parameter to escape special characters
+    public static String encodeUrlParameter(String text) {
+        try {
+            return URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 }

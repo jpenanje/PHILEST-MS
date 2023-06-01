@@ -35,6 +35,40 @@ public class RequestManager {
         return responseFuture;
     }
 
+    // fetches the years for the dashboard
+    public static CompletableFuture<HttpResponse<String>> fetchYears(String baseUrl) {
+        System.out.println("fetch years for dashboard");
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.baseUrl+"/" + baseUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Token " + Config.token)
+                .build();
+
+        CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        return responseFuture;
+    }
+
+    // fetches the metrics for the dashboard
+    public static CompletableFuture<HttpResponse<String>> fetchMetrics(String baseUrl, String endUrl) {
+        System.out.println("fetch metrics for dashboard");
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.baseUrl+"/" + baseUrl +endUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Token " + Config.token)
+                .build();
+
+        CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        return responseFuture;
+    }
+
     // fetches the items based on a given url
     public static ArrayList<Response> fetchItems(String baseUrl, String searchUrl,
             Function<Double, NullType> incrementFunction, int numberOfItems, double progress) {

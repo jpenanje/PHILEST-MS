@@ -169,7 +169,7 @@ public class CashOutSearchController implements Initializable, ISearchBar{
         return param;
     }
 
-    // encodes the url paramter to escape special characters
+    // encodes the url parameter to escape special characters
     public static String encodeUrlParameter(String text) {
         try {
             return URLEncoder.encode(text, StandardCharsets.UTF_8.toString());

@@ -20,8 +20,10 @@ public class Config {
     public static int saveItemTimeout = 30;
     public static double numItemsRequestLoadingIncrement = 10;
     public static double dropDownRequestLoadingIncrement = 5;
+    public static double metricsLoadingIncrement = 1/4;
+    public static double yearsLoadingIncrement = 1/4;
     public static int deleteItemTimeout = 30;
-    
+
     public static String token;
     public static String baseUrl = "http://127.0.0.1:8000";
 

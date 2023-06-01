@@ -13,13 +13,12 @@ import com.sms.interfaces.ISearchBar;
 import com.sms.tools.Tools;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 
+// A controller for the search bar of the section Student
 public class SearchStudentController implements Initializable, ISearchBar{
 
     @FXML
@@ -56,6 +55,7 @@ public class SearchStudentController implements Initializable, ISearchBar{
 
     ArrayList<String> owingDropDownItems;
 
+    // filters the student table using the current attributes in all the fields
     @FXML
     void search(ActionEvent event) {
         changeUrl.apply(getCurrentUrl());
@@ -66,10 +66,13 @@ public class SearchStudentController implements Initializable, ISearchBar{
         initMenusItems();
     }
 
+    // sets the function for changing the url used to fetch items for 
+    // the student table
     public void setChangeUrl(Function<String, NullType> changeUrl){
         this.changeUrl = changeUrl;
     }
 
+    // sets the lists of items to be used in drop down fields
     @Override
     public void setDropDownItems(ArrayList<ArrayList> dropDownItems) {
         System.out.println(dropDownItems);
@@ -79,23 +82,27 @@ public class SearchStudentController implements Initializable, ISearchBar{
         initSearchYear();
     }
 
+    // initializes the dropdown fields
     void initMenusItems(){
         initRegistered();
         initOwing();
     }
 
+    // initializes the class field as required
     void initSearchClass(){
         searchClass.getItems().clear();
         classDropDownItems.add(0,"Search Class");
         Tools.addDropDownItemsFromFieldAndItems(searchClass, classDropDownItems);
     }
 
+    // initializes the year field as required
     void initSearchYear(){
         year.getItems().clear();
         yearDropDownItems.add(0,"Year");
         Tools.addDropDownItemsFromFieldAndItems(year, yearDropDownItems);
     }
 
+    // initializes the registered field as required
     void initRegistered(){
         registered.getItems().clear();
         registeredDropDownItems = new ArrayList();
@@ -105,6 +112,7 @@ public class SearchStudentController implements Initializable, ISearchBar{
         Tools.addDropDownItemsFromFieldAndItems(registered, registeredDropDownItems);
     }
 
+    // initializes the owing field as required
     void initOwing(){
         owing.getItems().clear();
         owingDropDownItems = new ArrayList();
@@ -114,6 +122,7 @@ public class SearchStudentController implements Initializable, ISearchBar{
         Tools.addDropDownItemsFromFieldAndItems(owing, owingDropDownItems);
     }
 
+    // gets the current search url from the search fields
     String getCurrentUrl(){
 
         String idParam = getParamFromFieldAndAttribute(searchId, "id");
@@ -167,6 +176,8 @@ public class SearchStudentController implements Initializable, ISearchBar{
         }
     }
 
+    // returns a valid encoded url parameter to be appended to the
+    // search url
     String getParamFromFieldAndAttribute(TextField field, String attribute){
         String param = "";
         if(field.getText().length() > 0 ){
@@ -175,6 +186,7 @@ public class SearchStudentController implements Initializable, ISearchBar{
         return param;
     }
 
+    // overloads the getParamFromFieldAndAttribute for menubutton fields
     String getParamFromFieldAndAttribute(MenuButton field, String attribute){
         String param = "";
         if(field.getText().length() > 0 ){
@@ -183,6 +195,7 @@ public class SearchStudentController implements Initializable, ISearchBar{
         return param;
     }
 
+    // encodes the url paramter to escape special characters
     public static String encodeUrlParameter(String text) {
         try {
             return URLEncoder.encode(text, StandardCharsets.UTF_8.toString());

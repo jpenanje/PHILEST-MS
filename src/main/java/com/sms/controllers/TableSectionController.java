@@ -1,10 +1,8 @@
 package com.sms.controllers;
 
 import java.net.URL;
-import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -13,11 +11,8 @@ import java.util.function.Function;
 import javax.lang.model.type.NullType;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sms.interfaces.ISearchBar;
 import com.sms.interfaces.TableRowable;
-import com.sms.models.CashIn;
-import com.sms.models.CustomTableCell;
 import com.sms.models.Response;
 import com.sms.models.Student;
 import com.sms.tools.Config;
@@ -28,27 +23,20 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -57,6 +45,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+// The generic table which is inherited by any class implementing
 public class TableSectionController implements Initializable {
 
     int currentPage = 0;
@@ -80,6 +69,7 @@ public class TableSectionController implements Initializable {
 
     ArrayList<ArrayList> formDisplayDropDownLists = new ArrayList();
 
+    // constructor taking the search bar, current node, url and form lists
     public TableSectionController(Initializable searchBarController, String searchBarFXMLPath, JsonNode currentNode,
             Function<JsonNode, TableRowable> getItemfromNode, String baseUrl,
             ArrayList<String> formDropDownAttributes) {
@@ -121,6 +111,7 @@ public class TableSectionController implements Initializable {
     @FXML
     private Button addButton;
 
+    // moves to the next page or not if the current page is the last page
     @FXML
     void nextPage(ActionEvent event) {
         if (currentPage < maxPages - 1) {
@@ -131,13 +122,13 @@ public class TableSectionController implements Initializable {
         }
     }
 
-    // Table
     @FXML
     TableView<TableRowable> table;
 
     @FXML
     StackPane searchPane;
 
+    // moves to previous page or not if the current page is the first page
     @FXML
     void previousPage(ActionEvent event) {
         if (currentPage > 0) {
@@ -161,11 +152,9 @@ public class TableSectionController implements Initializable {
         bindTablePaneWithNumberOfDisplayItems();
         bindTableRowsWithEditAction();
         loadSearchPane();
-        // loadMockItems();
-
-        // refreshRows();
     }
 
+    // double clicking a table row opens a form
     void bindTableRowsWithEditAction() {
         table.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -181,16 +170,15 @@ public class TableSectionController implements Initializable {
         });
     }
 
+    // opens a popup for editing an item based
     void editItemByIndex(int index) {
         int actualIndex = (currentPage * maxPageItems) + index;
         TableRowable toBeEdited = items.get(actualIndex);
         displayEditItemPane(toBeEdited);
-        // System.out.println("Edit item at index "+
-        // ((currentPage*maxPageItems)+index));
     }
 
+    // displays edit item dialog for given data
     void displayEditItemPane(TableRowable toBeEdited) {
-
         String addFormViewPath = currentNode.get("form_view").asText();
         String addControllerPath = currentNode.get("form_controller").asText();
         Class[] classArgs = { getCurrentClass(), ArrayList.class, ArrayList.class, Function.class };
@@ -199,6 +187,8 @@ public class TableSectionController implements Initializable {
         Tools.showModal(addFormController, addFormViewPath, Tools.getStageFromNode(basePane));
     }
 
+    // ensures that when resizing the table pane, the number of items
+    // fits the size of the screen
     void bindTablePaneWithNumberOfDisplayItems() {
         tablePane.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -211,21 +201,21 @@ public class TableSectionController implements Initializable {
         });
     }
 
+    // refreshes the items displayed with the current url
     void refreshDisplayItems() {
-        // if (itemsAreNotEmpty()) {
-            removeLoadingIcon();
-            setMaxPages();
-            setDisplayItems();
-            refreshRows();
-            refreshMaxPages();
-            refreshCurrentPage();
-        // } else {
-        //     showLoadingIcon();
-        // }
+        removeLoadingIcon();
+        setMaxPages();
+        setDisplayItems();
+        refreshRows();
+        refreshMaxPages();
+        refreshCurrentPage();
     }
 
+    // sets the display items based on the number of items to be displayed on a
+    // page.
     void setDisplayItems() {
         System.out.println("items: " + items);
+
         if (currentPage > maxPages) {
             currentPage = maxPages;
         }
@@ -242,14 +232,17 @@ public class TableSectionController implements Initializable {
         }
     }
 
+    // set max pages based on items
     void setMaxPages() {
         maxPages = items.size() / maxPageItems;
     }
 
+    // adds displayItems into table
     void refreshRows() {
+        
         System.out.println("refresh rows");
         table.getItems().clear();
-        ;
+        
         for (TableRowable item : displayItems) {
             table.getItems().add(item);
         }
@@ -257,27 +250,13 @@ public class TableSectionController implements Initializable {
         refreshDeleteIcons();
     }
 
+    // initialize columns in table
     void initializeTable() {
         table.getColumns().clear();
         table.getColumns().addAll(columns);
-        // addColumns();
     }
 
-    // void addColumns() {
-    // int index = 0;
-    // for (String title : titles) {
-    // System.out.println(title);
-    // TableColumn<TableRowable, String> column = new TableColumn<>(title);
-    // column.setCellValueFactory(new PropertyValueFactory<TableRowable,
-    // String>("pupilName"));
-    // column.setCellFactory(cellFactories.get(index));
-    // // column.setPrefWidth(Control.USE_COMPUTED_SIZE);
-    // table.getColumns().add(column);
-    // // column
-    // index++;
-    // }
-    // }
-
+    // refreshes the indices on the left based on the number of items displayed
     void refreshIndices() {
         System.out.println("refresh indices");
         indicesPane.getChildren().clear();
@@ -287,6 +266,7 @@ public class TableSectionController implements Initializable {
         }
     }
 
+    // returns an index pane
     StackPane getIndexPane(int paneIndex) {
         StackPane pane = new StackPane();
         pane.setPrefWidth(10);
@@ -296,9 +276,9 @@ public class TableSectionController implements Initializable {
         pane.getChildren().add(content);
         pane.setStyle("-fx-background-color:transparent;");
         return pane;
-        // return new StackPane(new Text("" + paneIndex));
     }
 
+    // refreshes the delete icons
     void refreshDeleteIcons() {
         deleteIconsPane.getChildren().clear();
         for (int i = 0; i < displayItems.size(); i++) {
@@ -307,13 +287,14 @@ public class TableSectionController implements Initializable {
         }
     }
 
+    // refreshes the max number of pages based on the the number of items
     void refreshMaxPages() {
-        // round up division
         maxPages = (int) Math.ceil((double) items.size() / maxPageItems);
         totalItems.setText("" + items.size());
         itemsRange.setText(getItemRangeStr());
     }
 
+    // returns the range of values for the pages
     String getItemRangeStr() {
         int itemsSize = items.size();
         if (itemsSize > 0) {
@@ -325,8 +306,8 @@ public class TableSectionController implements Initializable {
         }
     }
 
+    // returns the delete icon pane;
     StackPane getDeleteIconPane(final int paneIndex) {
-        // StackPane deleteIconPane = new StackPane(new Text("" + paneIndex));
         StackPane deleteIconPane = new StackPane();
         Function<NullType, Stage> getPrimaryStage = new Function<NullType, Stage>() {
             @Override
@@ -335,7 +316,6 @@ public class TableSectionController implements Initializable {
             }
         };
         Function onDelete = getDeleteFunctionFromIndex(paneIndex);
-        // Stage primaryStage = getPrimaryStage();
         deleteIconPane.setPrefHeight(Config.iconHeight);
         deleteIconPane.setMinHeight(Config.iconHeight);
         deleteIconPane.setMaxHeight(Config.iconHeight);
@@ -352,48 +332,22 @@ public class TableSectionController implements Initializable {
         return deleteIconPane;
     }
 
+    // returns if an item is empty
     boolean itemsAreNotEmpty() {
         return !items.isEmpty();
     }
 
-    void loadMockItems() {
-        // items = null;
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        items.add(new Student());
-        // items.add(
-        //         new Student("kkk", "Luna", "Class 1", "20000", 1, "Luna parent", "654370303", "true", "15000", "0", "0",
-        //                 "0", "0"));
-
-        // ArrayList<String> classes = new ArrayList<>();
-        // classes.add("class 1");
-        // classes.add("class 2");
-        // classes.add("class 3");
-        // classes.add("class 4");
-        // classes.add("class 5");
-        // classes.add("class 6");
-        // formDropDownLists.add(classes);
-        // displayItems.add(new Student("class 2"));
-        // table.getItems().add(new Student());
-    }
-
+    // notifies last page reached
     void showLastPageMessage() {
         System.out.println("This is the last page");
     }
 
+    // notifies currently in first page
     void showNoPreviousPageMessage() {
         System.out.println("This is the first page you can't go back");
     }
 
+    // shows the loading icon
     void showLoadingIcon() {
         if (cachedBasePane == null) {
             cachedBasePane = basePane.getChildren().get(0);
@@ -406,6 +360,7 @@ public class TableSectionController implements Initializable {
         System.out.println("Loading icon...");
     }
 
+    // starts the service to fetch items
     void fetchItems(Service service) {
         try {
             service.start();
@@ -414,33 +369,38 @@ public class TableSectionController implements Initializable {
         }
     }
 
+    // removes the loading icon
     void removeLoadingIcon() {
         System.out.println("removed loading icon...");
     }
 
+    // sets columns
     void setColumns(ArrayList columns) {
         this.columns = columns;
     }
 
+    // loads the search pane
     void loadSearchPane() {
-
         searchPane.getChildren().add(Tools.getPaneFromControllerAndFxmlPath(searchBarController, searchBarFXMLPath));
-
     }
 
+    // returns the primary stage
     Stage getPrimaryStage() {
         System.out.println(deleteIconsPane.getScene());
         return (Stage) ((deleteIconsPane.getScene()).getWindow());
     }
 
+    // refreshes the current page
     void refreshCurrentPage() {
         pageNumber.setText("" + (currentPage + 1));
     }
 
+    // returns the loading icon
     Node getLoadingIcon(Service service) {
         return Tools.getLoadingIcon(service);
     }
 
+    // returns the service to fetch the items of the table
     Service getFetchItemsService() {
         Service service = new Service() {
             @Override
@@ -536,6 +496,7 @@ public class TableSectionController implements Initializable {
         return service;
     }
 
+    // ensures that te progression is represented on design
     void bindServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -554,16 +515,19 @@ public class TableSectionController implements Initializable {
         });
     }
 
+    // loads the cached pane
     void loadCachedPane() {
         basePane.getChildren().clear();
         basePane.getChildren().add(cachedBasePane);
     }
 
+    // displays the error pane
     void displayErrorPane() {
         basePane.getChildren().clear();
         basePane.getChildren().add(getErrorPane());
     }
 
+    // returns the error pane
     Pane getErrorPane() {
         Function<NullType, NullType> refresh = new Function<NullType, NullType>() {
             @Override
@@ -575,15 +539,18 @@ public class TableSectionController implements Initializable {
         return Tools.getPaneFromControllerAndFxmlPath(new ErrorPaneController(refresh), "/sections/ErrorPane.fxml");
     }
 
+    // sets the title from the node
     void initializeTitle() {
         title.setText(currentNode.get("title").asText());
     }
 
+    // initializes the add button text and action
     void initializeAddButton() {
         addButton.setText(currentNode.get("add_button_title").asText());
         addButton.setOnAction(getAddActionFromCurrentNode());
     }
 
+    // returns the add action retrieved from the current node
     EventHandler<ActionEvent> getAddActionFromCurrentNode() {
         return new EventHandler<ActionEvent>() {
             @Override
@@ -598,10 +565,12 @@ public class TableSectionController implements Initializable {
         };
     }
 
+    // adds an item from a response
     void addItemFromResponse(Response response) {
         items.add(getItemFromNode.apply(response.getData()));
     }
 
+    // adds drop down items from keys and drop down objects
     void addDropDownItemsFromResponse(Response response) {
         formDropDownLists = new ArrayList();
         formDisplayDropDownLists = new ArrayList<>();
@@ -623,6 +592,7 @@ public class TableSectionController implements Initializable {
         System.out.println(formDisplayDropDownLists);
     }
 
+    // returns a function to refresh the table
     Function getRefreshFunction() {
         return new Function<NullType, NullType>() {
             @Override
@@ -641,14 +611,17 @@ public class TableSectionController implements Initializable {
         };
     }
 
+    // returns the drop down item
     String getDisplayDropDownFromItemAndIndex(JsonNode dropDownItem, int index) {
         return dropDownItem.get(formDropDownAttributes.get(index)).asText();
     }
 
+    // returns the number of items from a response
     int getNumberOfItemsFromResponse(Response numOfItemsresponse) {
         return numOfItemsresponse.getData().get("count").asInt();
     }
 
+    // Computes the increment of loading icon based on the number of items
     double computeItemRequestLoadingIncrement(int numberOfItems) {
         double itemsRequestLoadingIncrement = 100
                 - (Config.dropDownRequestLoadingIncrement + Config.numItemsRequestLoadingIncrement);
@@ -660,6 +633,7 @@ public class TableSectionController implements Initializable {
 
     }
 
+    // returns the delete icon for a given index
     Function getDeleteFunctionFromIndex(int itemIndex) {
         return new Function<NullType, CompletableFuture<HttpResponse<String>>>() {
             @Override
@@ -670,11 +644,13 @@ public class TableSectionController implements Initializable {
         };
     }
 
+    // returns an item by index
     String getItemIdByIndex(int itemIndex) {
         TableRowable item = items.get(itemIndex);
         return item.getId();
     }
 
+    // refreshes the table
     void refresh() {
         items = null;
 
@@ -688,20 +664,24 @@ public class TableSectionController implements Initializable {
         table.refresh();
     }
 
+    // set the items to 
     void initializeItems() {
         if (items == null) {
             items = new ArrayList<>();
         }
     }
 
+    // clears the base pane
     void clearBasePane() {
         basePane.getChildren().clear();
     }
 
+    // ensures that searching a new url refreshes the table
     void bindSearchBarWithSearchUrl() {
         ((ISearchBar) searchBarController).setChangeUrl(getChangeUrlFunction());
     }
 
+    // returns the function for seting the search url
     Function<String, NullType> getChangeUrlFunction() {
         return new Function<String, NullType>() {
             @Override
@@ -712,21 +692,25 @@ public class TableSectionController implements Initializable {
         };
     }
 
+    // sets the search url
     void setSearchUrl(String newSearchUrl) {
         System.out.println("new search url :" + newSearchUrl);
         this.searchUrl = newSearchUrl;
         refresh();
     }
 
+    // sets the search bar drop down items
     void setSearchBarDropDownItems() {
         ((ISearchBar) searchBarController).setDropDownItems(formDisplayDropDownLists);
     }
 
+    // sets the initial url for the variable search url
     void initializeSearchUrl() {
         searchUrl = "";
     }
 
-    Class getCurrentClass(){
+    // returns the current class for the table objects
+    Class getCurrentClass() {
         try {
             return Class.forName(currentNode.get("class_path").asText());
         } catch (Exception e) {

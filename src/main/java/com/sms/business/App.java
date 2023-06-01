@@ -17,6 +17,7 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
+    // Starts the application
     @Override
     public void start(Stage primaryStage) {
         try {

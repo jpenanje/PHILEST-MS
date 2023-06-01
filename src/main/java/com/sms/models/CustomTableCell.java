@@ -14,6 +14,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
+// Custom implementation of a table cell
+
 public class CustomTableCell extends TableCell<TableRowable, String> {
     private final Label label;
     private final StackPane pane = new StackPane();
@@ -37,9 +39,9 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         pane.setMaxWidth(USE_COMPUTED_SIZE);
 
         setGraphic(pane);
-        // setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
     }
 
+    // custom implementation of update method for a table cell
     @Override
     protected void updateItem(String item, boolean empty) {
         super.updateItem(item, empty);
@@ -67,6 +69,7 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
 
     }
 
+    // sets the label of this cell to the given value
     void loadTextItem(String item, boolean empty) {
         pane.getChildren().clear();
         pane.getChildren().add(label);
@@ -77,6 +80,7 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         }
     }
 
+    // sets the label to a formatted date
     void loadDateItem(String item, boolean empty) {
         pane.getChildren().clear();
         pane.getChildren().add(label);
@@ -88,6 +92,7 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         }
     }
 
+    // sets the text of this cell to a given id with the appropriate color
     void loadIDItem(String item, boolean empty) {
         pane.getChildren().clear();
         pane.getChildren().add(label);
@@ -99,6 +104,7 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         label.setTextFill(Color.valueOf("#A6A6A6"));
     }
 
+    // sets the content of this cell to the custom tick item
     void loadTickItem(String item, boolean empty) {
         pane.getChildren().clear();
         if (item == null || empty) {
@@ -112,6 +118,7 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         }
     }
 
+    // returns the cross icon
     StackPane getCrossIcon() {
         try {
             return FXMLLoader.load(getClass().getResource("/components/CrossIcon.fxml"), null);
@@ -121,6 +128,7 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         }
     }
 
+    // returns the tick icon
     StackPane getTickIcon() {
         try {
             return FXMLLoader.load(getClass().getResource("/components/TickIcon.fxml"), null);
@@ -130,6 +138,8 @@ public class CustomTableCell extends TableCell<TableRowable, String> {
         }
     }
 
+    // sets the content of this cell to the custom value item 
+    // represented by the RowValueWithLine
     void loadValueItem(String item, boolean empty) {
         pane.getChildren().clear();
         if (item == null || empty) {

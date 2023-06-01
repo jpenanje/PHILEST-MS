@@ -5,6 +5,10 @@ package com.sms.tools;
 /**
  * Config
  */
+
+//  Configuration parameters for the application. 
+// With some global varibles as well
+
 public class Config {
 
     public static String primaryColor = "#4A0000";
@@ -16,9 +20,10 @@ public class Config {
     public static int saveItemTimeout = 30;
     public static double numItemsRequestLoadingIncrement = 10;
     public static double dropDownRequestLoadingIncrement = 5;
+    public static double metricsLoadingIncrement = 1/4;
+    public static double yearsLoadingIncrement = 1/4;
     public static int deleteItemTimeout = 30;
 
-    // public static String token = "5644029f942e815732679b78054e39997d767d94";
     public static String token;
     public static String baseUrl = "http://127.0.0.1:8000";
 

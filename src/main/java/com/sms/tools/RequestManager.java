@@ -15,7 +15,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sms.models.Response;
 import com.sms.models.Student;
 
+// Manages requests of the application
 public class RequestManager {
+
+    // fetches the number of items to be returned for a given url
     public static CompletableFuture<HttpResponse<String>> fetchNumberOfItems(String baseUrl, String searchUrl) {
         System.out.println("fetch number of items");
         HttpClient client = HttpClient.newHttpClient();
@@ -32,6 +35,41 @@ public class RequestManager {
         return responseFuture;
     }
 
+    // fetches the years for the dashboard
+    public static CompletableFuture<HttpResponse<String>> fetchYears(String baseUrl) {
+        System.out.println("fetch years for dashboard");
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.baseUrl+"/" + baseUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Token " + Config.token)
+                .build();
+
+        CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        return responseFuture;
+    }
+
+    // fetches the metrics for the dashboard
+    public static CompletableFuture<HttpResponse<String>> fetchMetrics(String baseUrl, String endUrl) {
+        System.out.println("fetch metrics for dashboard");
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.baseUrl+"/" + baseUrl +endUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Token " + Config.token)
+                .build();
+
+        CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        return responseFuture;
+    }
+
+    // fetches the items based on a given url
     public static ArrayList<Response> fetchItems(String baseUrl, String searchUrl,
             Function<Double, NullType> incrementFunction, int numberOfItems, double progress) {
         ArrayList<Response> items = new ArrayList();
@@ -62,6 +100,7 @@ public class RequestManager {
         return items;
     }
 
+    // fetches a single item based on a given url
     public static CompletableFuture<HttpResponse<String>> fetchItem(int index, String endUrl, String searchUrl,
             Function<Double, NullType> incrementFunction, double progress) {
         System.out.println("fetch item");
@@ -87,6 +126,7 @@ public class RequestManager {
         return responseFuture;
     }
 
+    // fetches the list of lists for the dropdown fields
     public static CompletableFuture<HttpResponse<String>> fetchDropDownLists(String endUrl,
             Function<Double, NullType> incrementFunction, double increment) {
         System.out.println("fetch drop down items");
@@ -105,8 +145,8 @@ public class RequestManager {
         return responseFuture;
     }
 
+    // posts a json string to a given url
     public static CompletableFuture<HttpResponse<String>> postItem(String endUrl, String body){
-        // Create an instance of HttpClient
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request;
 
@@ -126,7 +166,6 @@ public class RequestManager {
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build(); 
         }
-        
 
         // Send the request asynchronously
         CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
@@ -134,11 +173,10 @@ public class RequestManager {
         return responseFuture;
     }
 
+    // updates an item from a given url and json string
     public static CompletableFuture<HttpResponse<String>> updateItem(String endUrl, String body){
-        // Create an instance of HttpClient
         HttpClient client = HttpClient.newHttpClient();
 
-        // Create an instance of HttpRequest
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.baseUrl+"/"+endUrl))
                 .header("Content-Type", "application/json")
@@ -146,17 +184,15 @@ public class RequestManager {
                 .PUT(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
 
-        // Send the request asynchronously
         CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         return responseFuture;
     }
 
+    // deletes an item from a url and an id
     public static CompletableFuture<HttpResponse<String>> deleteItem(String endUrl, String id){
-        // Create an instance of HttpClient
         HttpClient client = HttpClient.newHttpClient();
 
-        // Create an instance of HttpRequest
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.baseUrl+"/"+endUrl+id+"/"))
                 .header("Content-Type", "application/json")
@@ -164,7 +200,6 @@ public class RequestManager {
                 .DELETE()
                 .build();
 
-        // Send the request asynchronously
         CompletableFuture<HttpResponse<String>> responseFuture = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         return responseFuture;

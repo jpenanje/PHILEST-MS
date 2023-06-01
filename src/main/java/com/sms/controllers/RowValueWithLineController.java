@@ -16,6 +16,8 @@ import javafx.scene.text.Text;
 /**
  * RowValueWithLineController
  */
+
+//  Controller for showing the special cell which has a line and a percentage
 public class RowValueWithLineController implements Initializable {
 
     String valueStr;
@@ -42,16 +44,19 @@ public class RowValueWithLineController implements Initializable {
         initProgressBar(percentage);
     }
 
+    // initializes the text to be shown above the line
     void initValue(String[] items) {
         value.setText(Tools.addCommasToStringValue(items[0]));
     }
 
+    // initializes the percentage to be shown above the line
     int initPercentage(String[] items) {
         int percentage = (int) Tools.getPercentage(Double.parseDouble(items[0]), Double.parseDouble(items[1]));
         this.percentage.setText(percentage + "%");
         return percentage;
     }
 
+    // initializes progress bar value and display
     void initProgressBar(int percentage) {
         int maxPaneWidth = 65;
         progressPane.setPrefWidth(maxPaneWidth * percentage / 100);

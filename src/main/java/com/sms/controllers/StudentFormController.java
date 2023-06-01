@@ -37,6 +37,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+// Controller for the popup form for adding or editing a Student item
 public class StudentFormController implements Initializable {
 
     @FXML
@@ -100,11 +101,13 @@ public class StudentFormController implements Initializable {
 
     private ArrayList<JsonNode> classesObjs;
 
+    // cancels the addition or editing of an item
     @FXML
     void cancel(ActionEvent event) {
         Tools.closeStageFromNode(formPane);
     }
 
+    // confirms the addition or editing of an item
     @FXML
     void save(ActionEvent event) {
         boolean isValidForm = validateForm();
@@ -120,6 +123,7 @@ public class StudentFormController implements Initializable {
         super();
     }
 
+    // constructor with drop down strings for drop down fields
     public StudentFormController(ArrayList<ArrayList> dropDownLists, ArrayList<ArrayList> dropDownListsObjects,
             Function refresh) {
         super();
@@ -131,6 +135,7 @@ public class StudentFormController implements Initializable {
         this.refresh = refresh;
     }
 
+    // constructor with student item and with drop down strings for drop down fields
     public StudentFormController(Student student, ArrayList<ArrayList> dropDownLists,
             ArrayList<ArrayList> dropDownListsObjects, Function refresh) {
         super();
@@ -145,6 +150,7 @@ public class StudentFormController implements Initializable {
         this.refresh = refresh;
     }
 
+    // shows a loading icon when waiting for a response from db
     void showLoadingIcon() {
         System.out.println("Show student form loading icon");
         buttons = FXCollections.observableArrayList(buttonsPane.getChildren());
@@ -152,12 +158,14 @@ public class StudentFormController implements Initializable {
         buttonsPane.getChildren().add(loadingIcon);
     }
 
+    // removes the loading icon
     void removeLoadingIcon() {
         System.out.println("Remove loading icon");
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().addAll(buttons);
     }
 
+    // shows a dialogue error message
     void showErrorMessage() {
         System.out.println("show error message");
         Initializable errorInSavingPageController = new ErrorPageController(
@@ -166,18 +174,21 @@ public class StudentFormController implements Initializable {
                 Tools.getStageFromNode(addStudentModal));
     }
 
+    // shows the success icon for a few seconds
     void showSuccessIconForSeconds() {
         buttonsPane.getChildren().clear();
         buttonsPane.getChildren().add(getSuccessPane());
         waitAndGoBack();
     }
 
+    // freezes the app for some time before closing the popup
     void waitAndGoBack() {
         Service service = getWaitService();
         bindWaitServiceWithDisplay(service);
         service.start();
     }
 
+    // ensures that after waiting, the popup is closed
     void bindWaitServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -189,6 +200,7 @@ public class StudentFormController implements Initializable {
         });
     }
 
+    // ensures that after saving the loading icon is removed and appropriate action is taken
     void bindSaveServiceWithDisplay(Service service) {
         service.progressProperty().addListener(new ChangeListener<Object>() {
             public void changed(javafx.beans.value.ObservableValue<? extends Object> arg0, Object oldValue,
@@ -209,6 +221,7 @@ public class StudentFormController implements Initializable {
         });
     }
 
+    // a service for freezing the popup for sometime
     Service getWaitService() {
         Service service = new Service() {
             @Override
@@ -251,14 +264,18 @@ public class StudentFormController implements Initializable {
         return service;
     }
 
+    // returns a success pane
     Pane getSuccessPane() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/SuccessPane.fxml");
     }
 
+    // returns a loading icon
     Pane getLoadingIcon() {
         return Tools.getPaneFromControllerAndFxmlPath(null, "/components/CircleLoadingIcon.fxml");
     }
 
+    // returns a service for saving the item information in the remote db
+    // in an asynchronous way(without blocking the whole app)
     Service getSaveService() {
         System.out.println("get Save Student Service");
         Service service = new Service() {
@@ -316,10 +333,12 @@ public class StudentFormController implements Initializable {
         return service;
     }
 
+    // saves a new student object in the remote db
     HttpResponse<String> addStudent(String requestBody) throws Exception {
         return RequestManager.postItem("students/", requestBody).get();
     }
 
+    // updates the cashin object in the remote db
     HttpResponse<String> updateStudent(String requestBody) throws Exception {
         return RequestManager.updateItem("students/" + student.getId() + "/", requestBody).get();
     }
@@ -345,6 +364,7 @@ public class StudentFormController implements Initializable {
         loadingIcon = getLoadingIcon();
     }
 
+    // sets the names of the classes in the class dropdown field
     void setClassesOptions() {
         System.out.println("init student classes");
         ArrayList<MenuItem> menuItems = new ArrayList<>();
@@ -355,21 +375,19 @@ public class StudentFormController implements Initializable {
         pupilClass.getItems().addAll(menuItems);
     }
 
+    // sets the years in the academic year dropdown field
     void setYearsOptions() {
         System.out.println("init student years");
         currentYear.getItems().clear();
         Tools.addDropDownItemsFromFieldAndItems(currentYear, academicYears);
-        // ArrayList<MenuItem> menuItems = new ArrayList<>();
-        // for (String academicYear : academicYears) {
-        //     menuItems.add(getMenuItem(clazz));
-        // }
-        // pupilClass.getItems().addAll(menuItems);
     }
 
+    // sets a new title
     void changeTitle() {
         title.setText("Edit pupil");
     }
 
+    // returns a menuItem object from a text for a dropdown
     MenuItem getMenuItem(String text) {
         MenuItem toBeReturned = new MenuItem();
         toBeReturned.setText(text);
@@ -384,6 +402,7 @@ public class StudentFormController implements Initializable {
         return toBeReturned;
     }
 
+    // sets an initial value for form fields except drop downs
     void initializeFormFields() {
         if (student.getPupilName() != null) {
             pupilName.setText(student.getPupilName());
@@ -396,6 +415,8 @@ public class StudentFormController implements Initializable {
         }
     }
 
+    // sets an initial value for the class drop down field
+    // if required.
     void initializeClass() {
         String initialClass = classes.get(0);
         for(JsonNode clazz : classesObjs){
@@ -408,6 +429,8 @@ public class StudentFormController implements Initializable {
         
     }
 
+    // sets an initial value for the year drop down field
+    // if required.
     void initializeYear() {
         String initialYear = academicYears.get(0);
         for(String academicYear : academicYears){
@@ -419,6 +442,7 @@ public class StudentFormController implements Initializable {
         }
     }
 
+    // validates the cashIn form fields and shows error messages if required
     boolean validateForm() {
         return (validatePupilNameField() &
                 validateClassField() &
@@ -447,6 +471,7 @@ public class StudentFormController implements Initializable {
         return Tools.dropDownValidation(currentYear,"Current Year", currentYearErrorMessage);
     }
 
+    // returns the current student objects from the form information
     Student getCurrentStudent() {
         if (student == null) {
             student = new Student();
@@ -459,6 +484,7 @@ public class StudentFormController implements Initializable {
         return student;
     }
 
+    // returns the student id from his/her name
     int getClassIdFromName(String className) {
         for (JsonNode node : this.classesObjs) {
             if ((node.get("name").asText()).equals(className)) {

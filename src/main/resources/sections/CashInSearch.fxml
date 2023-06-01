@@ -12,7 +12,7 @@
 <FlowPane hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextField fx:id="searchId" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" promptText="Search Id" style="-fx-border-color: E6E6E6; -fx-background-color: transparent;" />
-      <TextField fx:id="searchStudent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" promptText="Search Student" style="-fx-border-color: E6E6E6; -fx-background-color: transparent;" />
+      <TextField fx:id="searchStudent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="110.0" promptText="Search Pupil" style="-fx-border-color: E6E6E6; -fx-background-color: transparent;" />
       <MenuButton fx:id="searchPurpose" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="110.0" style="-fx-background-color: transparent; -fx-border-color: E6E6E6;" text="Purpose">
          <items>
             <MenuItem mnemonicParsing="false" text="Action 1" />

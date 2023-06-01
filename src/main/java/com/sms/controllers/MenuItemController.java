@@ -14,13 +14,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
+// controller of a drawer menu item
 public class MenuItemController implements Initializable {
 
     JsonNode menuItem;
     boolean selected;
     Function<Integer, NullType> onClick;
     int index;
-
+    
     public MenuItemController(JsonNode menuItem, boolean selected, Function<Integer, NullType> onClick, int index) {
         this.menuItem = menuItem;
         this.selected = selected;
